@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 
 import ThemeToggler from "./ThemeToggler";
 import menuData from "./menuData";
+import { googleLogin } from "@/utils/signInWithGoogle";
 
 const Header = () => {
   const [navigationOpen, setNavigationOpen] = useState(false);
@@ -148,12 +149,14 @@ const Header = () => {
               GitHub Repo 
             </Link>
 
+	    <div onClick={googleLogin}>
             <Link
-              href="/auth"
+              href="#"
               className="flex items-center justify-center rounded-full bg-primary px-7.5 py-2.5 text-regular text-white duration-300 ease-in-out hover:bg-primaryho"
             >
               Get Started
             </Link>
+      </div>
           </div>
         </div>
       </div>
