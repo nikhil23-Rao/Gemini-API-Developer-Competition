@@ -6,6 +6,7 @@ import { setUser } from "@/utils/getCurrentUser";
 import { motion } from "framer-motion";
 import { ReactTyped } from "react-typed";
 import { User } from "@/types/auth/User";
+import { Splash } from "@/components/general/Splash";
 
 export default function Setup() {
   const [username, setUsername] = useState("");
@@ -21,22 +22,7 @@ export default function Setup() {
     console.log(currentUser);
   }, [currentUser]);
 
-  if (!currentUser)
-    return (
-      <>
-        <div
-          style={{
-            flexDirection: "column",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            height: "100vh",
-          }}
-        >
-          <img src="/logo.png" width={200} alt="" />
-        </div>
-      </>
-    );
+  if (!currentUser) return <Splash />;
   return (
     <>
       <motion.div
