@@ -21,7 +21,22 @@ export default function Setup() {
     console.log(currentUser);
   }, [currentUser]);
 
-  if (!currentUser) return <h1>loading</h1>;
+  if (!currentUser)
+    return (
+      <>
+        <div
+          style={{
+            flexDirection: "column",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100vh",
+          }}
+        >
+          <img src="/logo.png" width={200} alt="" />
+        </div>
+      </>
+    );
   return (
     <>
       <motion.div
