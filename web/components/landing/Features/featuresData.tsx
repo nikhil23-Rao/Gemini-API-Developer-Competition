@@ -1,4 +1,4 @@
-import { Feature } from "@/types/feature";
+import { Feature } from "@/types/landing/feature";
 
 const featuresData: Feature[] = [
   {
@@ -33,8 +33,7 @@ const featuresData: Feature[] = [
     id: 5,
     icon: "/images/icon/icon-05.svg",
     title: "Email Writer",
-    description:
-      "Emails to your teachers, in the blink of an eye.",
+    description: "Emails to your teachers, in the blink of an eye.",
   },
   {
     id: 6,

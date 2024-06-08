@@ -1,4 +1,4 @@
-import { FeatureTab } from "@/types/featureTab";
+import { FeatureTab } from "@/types/landing/featureTab";
 
 const featuresTabData: FeatureTab[] = [
   {
@@ -9,7 +9,6 @@ const featuresTabData: FeatureTab[] = [
     image: "/images/features/features-light-01.png",
     imageDark: "/images/features/features-dark-01.svg",
   },
-  
 ];
 
 export default featuresTabData;

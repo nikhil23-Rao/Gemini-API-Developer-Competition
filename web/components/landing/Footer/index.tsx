@@ -29,20 +29,7 @@ const Footer = () => {
                 className="animate_top w-1/2 lg:w-1/4"
               >
                 <a href="index.html" className="relative">
-                  <Image
-                    width={110}
-                    height={80}
-                    src="/images/logo/logo-light.svg"
-                    alt="Logo"
-                    className="dark:hidden"
-                  />
-                  <Image
-                    width={110}
-                    height={80}
-                    src="/images/logo/logo-dark.svg"
-                    alt="Logo"
-                    className="hidden dark:block"
-                  />
+                  <Image width={110} height={80} src="/logo.png" alt="Logo" />
                 </a>
 
                 <p className="mb-10 mt-5">
@@ -56,7 +43,7 @@ const Footer = () => {
                   href="#"
                   className="text-itemtitle font-medium text-black dark:text-white"
                 >
-                  hello@solid.com
+                  vertex.naav@gmail.com
                 </a>
               </motion.div>
 

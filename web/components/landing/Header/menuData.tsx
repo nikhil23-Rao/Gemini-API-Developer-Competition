@@ -1,4 +1,4 @@
-import { Menu } from "@/types/menu";
+import { Menu } from "@/types/landing/menu";
 
 const menuData: Menu[] = [
   {
@@ -25,7 +25,6 @@ const menuData: Menu[] = [
     newTab: false,
     path: "/docs",
   },
-
 
   {
     id: 4,

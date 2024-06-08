@@ -1,5 +1,5 @@
 import React from "react";
-import { FeatureTab } from "@/types/featureTab";
+import { FeatureTab } from "@/types/landing/featureTab";
 import Image from "next/image";
 
 const FeaturesTabItem = ({ featureTab }: { featureTab: FeatureTab }) => {
