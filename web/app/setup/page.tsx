@@ -27,6 +27,8 @@ import {
 import { classes } from "@/data/classes";
 import ComponentTab, { CustomTabPanel } from "@/components/general/Tabs";
 import { arrayOfClassesTabs } from "@/data/arrayOfClassesTabs";
+import { doc, updateDoc } from "@firebase/firestore";
+import db from "@/utils/initDB";
 
 export default function Setup() {
   const [displayName, setDisplayName] = useState("");
@@ -39,6 +41,7 @@ export default function Setup() {
   const [bio, setBio] = useState("");
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [tabValue, setTabValue] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setUser(setCurrentUser);
@@ -52,7 +55,26 @@ export default function Setup() {
     console.log(currentUser);
   }, [currentUser]);
 
+  useEffect(() => {
+    if (loading && currentUser) {
+      updateDoc(doc(db, "users", currentUser.docid), {
+        gradDate,
+        grade,
+        selectedClasses,
+        communityUsername: username,
+      }).then(() => {
+        console.log("done");
+        window.location.href = "/home";
+      });
+    }
+  }, [loading]);
+
   if (!currentUser) return <Splash />;
+
+  if (loading) {
+    return <Splash />;
+  }
+
   return (
     <>
       <div style={{ display: "flex", flexDirection: "column" }}>
@@ -569,8 +591,7 @@ export default function Setup() {
                 }}
                 disabled={gradDate && grade ? false : true}
                 onClick={() => {
-                  setActiveStep(activeStep + 1);
-                  setButtonCount(2);
+                  setLoading(true);
                 }}
               >
                 <span
