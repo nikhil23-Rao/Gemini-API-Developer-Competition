@@ -12,6 +12,10 @@ import {
   Box,
   Button,
   Chip,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
   Step,
   StepLabel,
   Stepper,
@@ -26,6 +30,8 @@ import { arrayOfClassesTabs } from "@/data/arrayOfClassesTabs";
 
 export default function Setup() {
   const [displayName, setDisplayName] = useState("");
+  const [grade, setGrade] = useState<number>();
+  const [gradDate, setGradDate] = useState<number>();
   const [selectedClasses, setSelectedClasses] = useState<Array<string>>([]);
   const [activeStep, setActiveStep] = useState(0);
   const [buttonCount, setButtonCount] = useState(0);
@@ -482,6 +488,10 @@ export default function Setup() {
                             : "not-allowed",
                       }}
                       disabled={selectedClasses.length > 0 ? false : true}
+                      onClick={() => {
+                        setActiveStep(activeStep + 1);
+                        setButtonCount(2);
+                      }}
                     >
                       <span
                         style={{
@@ -499,7 +509,79 @@ export default function Setup() {
               </div>
             </>
           ) : (
-            <></>
+            <>
+              <FormControl
+                style={{ width: 400, marginTop: 20, marginBottom: 20 }}
+              >
+                <InputLabel id="demo-simple-select-label">
+                  Expected Graduation Year
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={gradDate}
+                  label="Expected Graduation Year"
+                  onChange={(e) =>
+                    setGradDate(parseInt(e.target.value as string))
+                  }
+                >
+                  <MenuItem value={new Date().getFullYear()}>
+                    {new Date().getFullYear()}
+                  </MenuItem>
+                  <MenuItem value={new Date().getFullYear() + 1}>
+                    {new Date().getFullYear() + 1}
+                  </MenuItem>
+                  <MenuItem value={new Date().getFullYear() + 2}>
+                    {new Date().getFullYear() + 2}
+                  </MenuItem>
+                  <MenuItem value={new Date().getFullYear() + 3}>
+                    {new Date().getFullYear() + 3}
+                  </MenuItem>
+                </Select>
+              </FormControl>
+
+              <FormControl style={{ width: 400 }}>
+                <InputLabel id="demo-simple-select-label">
+                  Current Grade
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={grade}
+                  label="Current Grade"
+                  onChange={(e) => setGrade(parseInt(e.target.value as string))}
+                >
+                  <MenuItem value={9}>9th</MenuItem>
+                  <MenuItem value={10}>10th</MenuItem>
+                  <MenuItem value={11}>11th</MenuItem>
+                  <MenuItem value={12}>12th</MenuItem>
+                </Select>
+              </FormControl>
+              <button
+                className={
+                  gradDate && grade ? "btn-effect" : "btn-effect-disabled"
+                }
+                style={{
+                  width: 400,
+                  borderRadius: 200,
+                  marginTop: 50,
+                  cursor: gradDate && grade ? "pointer" : "not-allowed",
+                }}
+                disabled={gradDate && grade ? false : true}
+                onClick={() => {
+                  setActiveStep(activeStep + 1);
+                  setButtonCount(2);
+                }}
+              >
+                <span
+                  style={{
+                    cursor: gradDate && grade ? "pointer" : "not-allowed",
+                  }}
+                >
+                  Finish
+                </span>
+              </button>
+            </>
           )}
         </motion.div>
       </div>
