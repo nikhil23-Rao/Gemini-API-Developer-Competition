@@ -1,4 +1,5 @@
 "use client";
+
 import { Metadata } from "next";
 import Hero from "@/components/landing/Hero";
 import Feature from "@/components/landing/Features";

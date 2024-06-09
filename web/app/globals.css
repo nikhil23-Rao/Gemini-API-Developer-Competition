@@ -118,4 +118,260 @@
   font-weight: 600;
 }
 
+.btn-effect {
+  position: relative;
+}
+.btn-effect > span {
+  display: block;
+  background: linear-gradient(120deg, #b651e1, #fd4428, #E15175);
+  background-size: 400% 400%;
+  -moz-animation: gradient 3s ease-in-out infinite;
+  -webkit-animation: gradient 3s ease-in-out infinite;
+  animation: gradient 3s ease-in-out infinite;
+  color: #fff;
+  padding: 20px 100px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 200px;
+}
+.btn-effect {
+  text-decoration: none;
+  text-align: center;
+  font-size: 14px;
+  display: inline-block;
+}
 
+
+.btn-effect-disabled {
+  position: relative;
+}
+.btn-effect-disabled > span {
+  display: block;
+  background: gray;
+  background-size: 400% 400%;
+  -moz-animation: gradient 3s ease-in-out infinite;
+  -webkit-animation: gradient 3s ease-in-out infinite;
+  animation: gradient 3s ease-in-out infinite;
+  color: #fff;
+  padding: 20px 100px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 200px;
+}
+.btn-effect {
+  text-decoration: none;
+  text-align: center;
+  font-size: 14px;
+  display: inline-block;
+}
+
+
+
+
+/* motion */
+@-moz-keyframes gradient {
+0% {
+background-position: 14% 0%;
+}
+50% {
+background-position: 87% 100%;
+}
+100% {
+background-position: 14% 0%;
+}
+}
+@-webkit-keyframes gradient {
+0% {
+background-position: 14% 0%;
+}
+50% {
+background-position: 87% 100%;
+}
+100% {
+background-position: 14% 0%;
+}
+}
+@keyframes gradient {
+0% {
+background-position: 14% 0%;
+}
+50% {
+background-position: 87% 100%;
+}
+100% {
+background-position: 14% 0%;
+}
+}
+.btn-effect2 {
+  display: inline-block;
+  text-decoration: none;
+  color: #FFF;
+   padding: 20px 100px;
+  font-size: 16px;
+  font-weight: 600;
+  position: relative;
+  text-align: center;
+  background: #0075f9;
+  -webkit-transition: background 0.15s ease-in-out;
+  -moz-transition: background 0.15s ease-in-out;
+  -ms-transition: background 0.15s ease-in-out;
+  -o-transition: background 0.15s ease-in-out;
+  transition: background 0.15s ease-in-out;
+}
+.btn-effect2 i {
+  /*   positioning */
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  left: 0;
+  /*   gradient   */
+  background: -moz-linear-gradient(left, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.03) 1%, rgba(255, 255, 255, 0.6) 30%, rgba(255, 255, 255, 0.85) 50%, rgba(255, 255, 255, 0.85) 70%, rgba(255, 255, 255, 0.85) 71%, rgba(255, 255, 255, 0) 100%);
+  /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, right top, color-stop(0%, rgba(255, 255, 255, 0)), color-stop(1%, rgba(255, 255, 255, 0.03)), color-stop(30%, rgba(255, 255, 255, 0.85)), color-stop(50%, rgba(255, 255, 255, 0.85)), color-stop(70%, rgba(255, 255, 255, 0.85)), color-stop(71%, rgba(255, 255, 255, 0.85)), color-stop(100%, rgba(255, 255, 255, 0)));
+  /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(left, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.03) 1%, rgba(255, 255, 255, 0.6) 30%, rgba(255, 255, 255, 0.85) 50%, rgba(255, 255, 255, 0.85) 70%, rgba(255, 255, 255, 0.85) 71%, rgba(255, 255, 255, 0) 100%);
+  /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(left, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.03) 1%, rgba(255, 255, 255, 0.6) 30%, rgba(255, 255, 255, 0.85) 50%, rgba(255, 255, 255, 0.85) 70%, rgba(255, 255, 255, 0.85) 71%, rgba(255, 255, 255, 0) 100%);
+  /* Opera 11.10+ */
+  background: -ms-linear-gradient(left, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.03) 1%, rgba(255, 255, 255, 0.6) 30%, rgba(255, 255, 255, 0.85) 50%, rgba(255, 255, 255, 0.85) 70%, rgba(255, 255, 255, 0.85) 71%, rgba(255, 255, 255, 0) 100%);
+  /* IE10+ */
+  background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.03) 1%, rgba(255, 255, 255, 0.6) 30%, rgba(255, 255, 255, 0.85) 50%, rgba(255, 255, 255, 0.85) 70%, rgba(255, 255, 255, 0.85) 71%, rgba(255, 255, 255, 0) 100%);
+/* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#00ffffff', GradientType=1 );
+  /* IE6-9 */
+/*  forming the shine element
+    play around with the width, skew and gradient to get different effects
+  */
+  width: 15%;
+  height: 100%;
+  transform: skew(-10deg, 0deg);
+  -webkit-transform: skew(-50deg, 0deg);
+  -moz-transform: skew(-50deg, 0deg);
+  -ms-transform: skew(-50deg, 0deg);
+  -o-transform: skew(-50deg, 0deg);
+  /*  animating it  */
+  animation: move 2s;
+  animation-iteration-count: infinite;
+  animation-delay: 1s;
+  -webkit-animation: move 2s;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-delay: 1s;
+  -moz-transform: skew(-50deg, 0deg);
+  -moz-animation: move 2s;
+  -moz-animation-iteration-count: infinite;
+  -moz-animation-delay: 1s;
+  -ms-transform: skew(-50deg, 0deg);
+  -ms-animation: move 2s;
+  -ms-animation-iteration-count: infinite;
+  -ms-animation-delay: 1s;
+  -o-transform: skew(-50deg, 0deg);
+  -o-animation: move 2s;
+  -o-animation-iteration-count: infinite;
+  -o-animation-delay: 1s;
+}
+
+/*  */
+@keyframes move {
+0% {
+left: 0;
+opacity: 0;
+}
+5% {
+opacity: 0.0;
+}
+48% {
+opacity: 0.2;
+}
+80% {
+opacity: 0.0;
+}
+100% {
+left: 82%;
+}
+}
+@-webkit-keyframes move {
+0% {
+left: 0;
+opacity: 0;
+}
+5% {
+opacity: 0.0;
+}
+48% {
+opacity: 0.2;
+}
+80% {
+opacity: 0.0;
+}
+100% {
+left: 82%;
+}
+}
+@-moz-keyframes move {
+0% {
+left: 0;
+opacity: 0;
+}
+5% {
+opacity: 0.0;
+}
+48% {
+opacity: 0.2;
+}
+80% {
+opacity: 0.0;
+}
+100% {
+left: 88%;
+}
+}
+@-ms-keyframes move {
+0% {
+left: 0;
+opacity: 0;
+}
+5% {
+opacity: 0.0;
+}
+48% {
+opacity: 0.2;
+}
+80% {
+opacity: 0.0;
+}
+100% {
+left: 82%;
+}
+}
+@-o-keyframes move {
+0% {
+left: 0;
+opacity: 0;
+}
+5% {
+opacity: 0.0;
+}
+48% {
+opacity: 0.2;
+}
+80% {
+opacity: 0.0;
+}
+100% {
+left: 82%;
+}
+}
+
+
+.mycontainer {
+  display: grid;
+  grid-template-columns: (auto-fit, minmax(179px, max-content));
+  place-items: center;
+max-width: 900px;
+}
+
+.mycontainer > div {
+  grid-row: 1; /* keeps all items on the first row */
+  border-radius: 5px;
+  place-self: center;
+}
