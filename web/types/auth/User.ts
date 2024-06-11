@@ -4,4 +4,5 @@ export interface User {
   docid: string;
   pfp: string;
   email: string;
+  flashcardsCreated: number;
 }
