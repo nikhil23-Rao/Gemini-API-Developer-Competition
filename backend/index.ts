@@ -33,28 +33,6 @@ export const generateFlashcards = async (req: Request, res: Response) => {
         // temperature: 1,
         // topP: 0.95,
       },
-      // safetySettings: [
-      //   {
-      //     category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-      //     threshold: HarmBlockThreshold.BLOCK_NONE,
-      //   },
-      //   {
-      //     category: HarmCategory.HARM_CATEGORY_HARASSMENT,
-      //     threshold: HarmBlockThreshold.BLOCK_NONE,
-      //   },
-      //   {
-      //     category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
-      //     threshold: HarmBlockThreshold.BLOCK_NONE,
-      //   },
-      //   {
-      //     category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
-      //     threshold: HarmBlockThreshold.BLOCK_NONE,
-      //   },
-      //   {
-      //     category: HarmCategory.HARM_CATEGORY_UNSPECIFIED,
-      //     threshold: HarmBlockThreshold.BLOCK_NONE,
-      //   },
-      // ],
     });
 
     const { response } = await chat.sendMessage(prompt);
@@ -82,28 +60,6 @@ export const generateUnit = async (req: Request, res: Response) => {
         // temperature: 1,
         // topP: 0.95,
       },
-      // safetySettings: [
-      //   {
-      //     category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-      //     threshold: HarmBlockThreshold.BLOCK_NONE,
-      //   },
-      //   {
-      //     category: HarmCategory.HARM_CATEGORY_HARASSMENT,
-      //     threshold: HarmBlockThreshold.BLOCK_NONE,
-      //   },
-      //   {
-      //     category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
-      //     threshold: HarmBlockThreshold.BLOCK_NONE,
-      //   },
-      //   {
-      //     category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
-      //     threshold: HarmBlockThreshold.BLOCK_NONE,
-      //   },
-      //   {
-      //     category: HarmCategory.HARM_CATEGORY_UNSPECIFIED,
-      //     threshold: HarmBlockThreshold.BLOCK_NONE,
-      //   },
-      // ],
     });
 
     const { response } = await chat.sendMessage(
