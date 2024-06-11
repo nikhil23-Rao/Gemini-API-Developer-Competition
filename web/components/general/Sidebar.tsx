@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import {
   Sidebar,
@@ -14,6 +16,8 @@ import { SidebarFooter } from "../sidebar/SidebarFooter";
 import { PackageBadges } from "../sidebar/PackageBadges";
 import { Switch } from "../sidebar/Switch";
 import "font-awesome/css/font-awesome.min.css";
+import { NavLinks } from "@/data/navLinks";
+import Link from "next/link";
 
 type Theme = "light" | "dark";
 
@@ -186,81 +190,24 @@ export const AppSidebar: React.FC = () => {
               </Typography>
             </div>
             <Menu menuItemStyles={menuItemStyles} style={{ marginLeft: -7 }}>
-              <MenuItem
-                style={{
-                  fontSize: 18,
-                  color: "#000",
-                  fontWeight: "bold",
-                }}
-                icon={
-                  <i
-                    className="fa fa-home"
-                    style={{ color: "#000", zoom: 1.6, marginRight: 0 }}
-                  />
-                }
-              >
-                Dashboard
-              </MenuItem>
-              <MenuItem
-                style={{
-                  fontSize: 18,
-                  color: "#000",
-                  fontWeight: "bold",
-                }}
-                icon={
-                  <i
-                    className="fa fa-question-circle"
-                    style={{ color: "#000", zoom: 1.6, marginRight: 0 }}
-                  />
-                }
-              >
-                Question Maker
-              </MenuItem>
-              <MenuItem
-                style={{
-                  fontSize: 18,
-                  color: "#000",
-                  fontWeight: "bold",
-                }}
-                icon={
-                  <i
-                    className="fa fa-pencil-square"
-                    style={{ color: "#000", zoom: 1.6, marginRight: 0 }}
-                  />
-                }
-              >
-                Flashcards
-              </MenuItem>
-              <MenuItem
-                style={{
-                  fontSize: 18,
-                  color: "#000",
-                  fontWeight: "bold",
-                }}
-                icon={
-                  <i
-                    className="fa fa-bookmark"
-                    style={{ color: "#000", zoom: 1.6, marginRight: 0 }}
-                  />
-                }
-              >
-                Study Assist
-              </MenuItem>
-              <MenuItem
-                style={{
-                  fontSize: 18,
-                  color: "#000",
-                  fontWeight: "bold",
-                }}
-                icon={
-                  <i
-                    className="fa fa-users"
-                    style={{ color: "#000", zoom: 1.6, marginRight: 0 }}
-                  />
-                }
-              >
-                Community
-              </MenuItem>
+              {NavLinks.slice(0, 5).map((l) => (
+                <MenuItem
+                  href={l.link}
+                  style={{
+                    fontSize: 18,
+                    color: "#000",
+                    fontWeight: "bold",
+                  }}
+                  icon={
+                    <i
+                      className={l.icon}
+                      style={{ color: "#000", zoom: 1.6, marginRight: 0 }}
+                    />
+                  }
+                >
+                  {l.name}
+                </MenuItem>
+              ))}
             </Menu>
 
             <div
@@ -284,37 +231,25 @@ export const AppSidebar: React.FC = () => {
               </Typography>
             </div>
 
-            <Menu menuItemStyles={menuItemStyles} style={{ marginLeft: -8 }}>
-              <MenuItem
-                style={{
-                  fontSize: 18,
-                  color: "#000",
-                  fontWeight: "bold",
-                }}
-                icon={
-                  <i
-                    className="fa fa-sign-out"
-                    style={{ color: "#000", zoom: 1.6, marginRight: 0 }}
-                  />
-                }
-              >
-                Sign Out
-              </MenuItem>
-              <MenuItem
-                style={{
-                  fontSize: 18,
-                  color: "#000",
-                  fontWeight: "bold",
-                }}
-                icon={
-                  <i
-                    className="fa fa-bug"
-                    style={{ color: "#000", zoom: 1.6, marginRight: 0 }}
-                  />
-                }
-              >
-                Bug Report
-              </MenuItem>
+            <Menu menuItemStyles={menuItemStyles} style={{ marginLeft: -7 }}>
+              {NavLinks.slice(5, 7).map((l) => (
+                <MenuItem
+                  href={l.link}
+                  style={{
+                    fontSize: 18,
+                    color: "#000",
+                    fontWeight: "bold",
+                  }}
+                  icon={
+                    <i
+                      className={l.icon}
+                      style={{ color: "#000", zoom: 1.6, marginRight: 0 }}
+                    />
+                  }
+                >
+                  {l.name}
+                </MenuItem>
+              ))}
             </Menu>
           </div>
           {/* <SidebarFooter collapsed={collapsed} /> */}
