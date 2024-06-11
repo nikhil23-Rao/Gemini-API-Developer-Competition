@@ -5,4 +5,8 @@ export interface User {
   pfp: string;
   email: string;
   flashcardsCreated: number;
+  communityUsername: string;
+  gradDate: string;
+  grade: number;
+  selectedClasses: string[];
 }

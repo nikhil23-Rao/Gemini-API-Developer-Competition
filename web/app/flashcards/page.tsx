@@ -3,7 +3,7 @@
 import { AppSidebar } from "@/components/general/Sidebar";
 import "../globals.css";
 import { None } from "@/components/flashcards/none";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
   Box,
@@ -20,13 +20,32 @@ import {
 import ComponentTab from "@/components/general/Tabs";
 import { classes } from "@/data/classes";
 import { flashcardOptions } from "@/data/optionsFlashcards";
+import { User } from "@/types/auth/User";
+import { setUser } from "@/utils/getCurrentUser";
+import { getUnitsForClass } from "@/api/getUnitsForClass";
 
 export default function Flashcards() {
   const [modal, setModal] = useState(false);
+  const [currentUser, setCurrentUser] = useState<User | null>();
   const [tabValue, setTabValue] = useState(0);
   const [name, setName] = useState("");
   const [chosenClass, setChosenClass] = useState("");
   const [selectedUnits, setSelectedUnits] = useState<string[]>([]);
+  const [possibleUnits, setPossibleUnits] = useState<
+    [{ name: string }] | null
+  >();
+
+  useEffect(() => {
+    setUser(setCurrentUser);
+  }, []);
+
+  useEffect(() => {
+    if (chosenClass.length > 0) {
+      // Call getUnits API
+      getUnitsForClass(chosenClass, setPossibleUnits);
+    }
+  }, [chosenClass]);
+
   if (modal) {
     return (
       <>
@@ -83,7 +102,11 @@ export default function Flashcards() {
               label="Expected Graduation Year"
               onChange={(e) => setChosenClass(e.target?.value as string)}
             >
-              <MenuItem value={"hello"}>Hello</MenuItem>
+              {currentUser?.selectedClasses.map((c, idx) => (
+                <MenuItem value={c} key={idx}>
+                  {c}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
           <Box>
@@ -116,15 +139,27 @@ export default function Flashcards() {
                   label="Expected Graduation Year"
                   onClick={() => {}}
                 >
-                  <div style={{ display: "flex", flexDirection: "row" }}>
-                    <ListItemText primary={"hey"} style={{ padding: 20 }} />
-                    <Checkbox
-                      checked={selectedUnits.includes("hey")}
-                      onClick={() => {
-                        setSelectedUnits([...selectedUnits, "hey"]);
-                      }}
-                    />
-                  </div>
+                  {possibleUnits?.map((u) => (
+                    <>
+                      <div style={{ display: "flex", flexDirection: "row" }}>
+                        <ListItemText
+                          primary={u.name}
+                          style={{ padding: 20 }}
+                        />
+                        <Checkbox
+                          checked={selectedUnits.includes(u.name)}
+                          onClick={() => {
+                            if (selectedUnits.includes(u.name)) {
+                              return selectedUnits.filter(
+                                (unit) => unit !== u.name,
+                              );
+                            }
+                            setSelectedUnits([...selectedUnits, u.name]);
+                          }}
+                        />
+                      </div>
+                    </>
+                  ))}
                 </Select>
               </FormControl>
               <p>Units Selected</p>

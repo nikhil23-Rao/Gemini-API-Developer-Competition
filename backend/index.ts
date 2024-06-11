@@ -6,6 +6,7 @@ import {
   HarmBlockThreshold,
   HarmCategory,
 } from "@google/generative-ai";
+const cors = require("cors");
 
 dotenv.config();
 
@@ -14,6 +15,7 @@ const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 app.use(express.json());
+app.use(cors());
 
 // Setup gemini api
 const configuration = new GoogleGenerativeAI(process.env.API_KEY as string);
@@ -63,7 +65,9 @@ export const generateUnit = async (req: Request, res: Response) => {
     });
 
     const { response } = await chat.sendMessage(
-      `Provide a list of all the Unit names in ${ap} according to Collegeboard's assigned units; Follow JSON format of just [{name:}]`
+      `Provide a list of all the Unit names in ${ap} ${
+        ap.includes("AP") ? "according to Collegeboard's assigned units" : ""
+      }; Follow JSON format of just [{name:}]`
     );
     const responseText = response;
 
@@ -79,7 +83,7 @@ app.get("/flashcards", async (req: Request, res: Response) => {
   await generateFlashcards(req, res);
 });
 
-app.get("/get-AP-unit", async (req: Request, res: Response) => {
+app.post("/get-AP-unit", async (req: Request, res: Response) => {
   await generateUnit(req, res);
 });
 
