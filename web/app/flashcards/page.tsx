@@ -34,10 +34,21 @@ import {
   where,
 } from "@firebase/firestore";
 import db from "@/utils/initDB";
+import "react-responsive-modal/styles.css";
+import { Modal } from "react-responsive-modal";
+import ReactCardFlip from "react-card-flip";
 import "../globals.css";
+import { Splash } from "@/components/general/Splash";
+import Lottie from "lottie-react";
+import animation from "../../public/loadingspace.json";
 
 export default function Flashcards() {
   const [modal, setModal] = useState(false);
+  const [openSet, setOpenSet] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [currentSetInView, setCurrentSetInView] = useState<any[]>([]);
+  const [currentCardInView, setCurrentCardInView] = useState<any[]>([]);
+  const [cardFlipped, setCardFlipped] = useState<boolean>(false);
   const [currentUser, setCurrentUser] = useState<User | null>();
   const [tabValue, setTabValue] = useState(0);
   const [name, setName] = useState("My First Set");
@@ -83,6 +94,32 @@ export default function Flashcards() {
     console.log(flashcards);
   }, [flashcards]);
 
+  if (loading) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "100vh",
+          flexDirection: "column",
+        }}
+      >
+        <img
+          src="/logo.png"
+          style={{ position: "relative", bottom: 50, width: 40 }}
+          alt=""
+        />
+        <Lottie animationData={animation} />
+        <p
+          style={{ fontSize: 20, fontWeight: "bold" }}
+          className="text-gradient-black"
+        >
+          Processing request...
+        </p>
+      </div>
+    );
+  }
   if (flashcards.length > 0) {
     return (
       <>
@@ -409,10 +446,12 @@ export default function Flashcards() {
             }}
             onClick={async () => {
               if (selectedUnits.length > 0) {
+                setLoading(true);
                 const generated = await getFlashcardsByUnit(
                   `${chosenClass} - Unit about: ${selectedUnits.join(", ")}`,
                 );
                 setFlashcards(generated);
+                setLoading(false);
               }
             }}
           >
@@ -432,6 +471,55 @@ export default function Flashcards() {
   return (
     <>
       <AppSidebar />
+      <Modal
+        open={openSet}
+        onClose={() => setOpenSet(false)}
+        styles={{
+          modal: {
+            width: "100vw",
+            overflowY: "scroll",
+            overflowX: "hidden",
+          },
+          modalContainer: {
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          },
+        }}
+      >
+        <div>
+          <ReactCardFlip isFlipped={cardFlipped} flipDirection="vertical">
+            <div
+              style={{
+                backgroundColor: "#fff",
+                justifyContent: "center",
+                alignItems: "center",
+                display: "flex",
+                cursor: "pointer",
+                padding: 200,
+              }}
+              onClick={() => setCardFlipped(!cardFlipped)}
+            >
+              <h1 style={{ fontSize: 35 }}>{currentCardInView.term}</h1>
+            </div>
+
+            <div
+              style={{
+                backgroundColor: "#fff",
+                justifyContent: "center",
+                alignItems: "center",
+                display: "flex",
+                cursor: "pointer",
+                padding: 200,
+              }}
+              onClick={() => setCardFlipped(!cardFlipped)}
+            >
+              <h1 style={{ fontSize: 18 }}>{currentCardInView.definition}</h1>
+            </div>
+          </ReactCardFlip>
+          <p>Next</p>
+        </div>
+      </Modal>
       <div
         style={{
           display: "flex",
@@ -474,6 +562,11 @@ export default function Flashcards() {
                     cursor: "pointer",
                     marginTop: 50,
                   }}
+                  onClick={() => {
+                    setCurrentSetInView([...set.flashcardSet]);
+                    setCurrentCardInView([...set.flashcardSet][0]);
+                    setOpenSet(true);
+                  }}
                 >
                   <figure className="figure">
                     <img
@@ -511,7 +604,6 @@ export default function Flashcards() {
                 </section>
               ))}
             </main>
-            <div className="grid"></div>
           </>
         ) : (
           <None setModal={setModal} />
