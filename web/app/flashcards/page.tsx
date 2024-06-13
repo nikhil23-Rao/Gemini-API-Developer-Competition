@@ -25,6 +25,7 @@ import { User } from "@/types/auth/User";
 import { setUser } from "@/utils/getCurrentUser";
 import { getUnitsForClass } from "@/api/getUnitsForClass";
 import { getFlashcardsByUnit } from "@/api/getFlashcardsByUnit";
+import ProgressBar from "@ramonak/react-progress-bar";
 import {
   addDoc,
   collection,
@@ -57,6 +58,7 @@ export default function Flashcards() {
   const [name, setName] = useState("My New Set");
   const [prompt, setPrompt] = useState("");
   const [chosenClass, setChosenClass] = useState("");
+  const [progressView, setProgressView] = useState(0);
   const [selectedUnits, setSelectedUnits] = useState<string[]>([]);
   const [userFlashCardSets, setUserFlashCardSets] = useState<any[]>([]);
   const [possibleUnits, setPossibleUnits] = useState<
@@ -102,6 +104,10 @@ export default function Flashcards() {
       });
     }
   }, [currentUser]);
+
+  useEffect(() => {
+    console.log(progressView);
+  }, [progressView]);
 
   useEffect(() => {
     console.log(flashcards);
@@ -515,6 +521,13 @@ export default function Flashcards() {
       >
         {currentCardInView && (
           <div>
+            <div style={{ marginBottom: 20 }}>
+              <ProgressBar
+                completed={progressView}
+                width="95%"
+                bgColor="#1F2E5E"
+              />
+            </div>
             <ReactCardFlip isFlipped={cardFlipped} flipDirection="vertical">
               <div
                 style={{
@@ -586,11 +599,22 @@ export default function Flashcards() {
                     setCurrentCardInView(
                       currentSetInView[currentSetInView.length - 1],
                     );
+                    const numerator = currentSetInView.length;
+                    const denominator = currentSetInView.length;
+                    setProgressView(
+                      Math.round((numerator / denominator) * 100),
+                    );
                   } else {
                     setCurrentCardInView(
                       currentSetInView[
                         currentSetInView.indexOf(currentCardInView) + -1
                       ],
+                    );
+                    const numerator =
+                      currentSetInView.indexOf(currentCardInView) - 1;
+                    const denominator = currentSetInView.length;
+                    setProgressView(
+                      Math.round((numerator / denominator) * 100),
                     );
                   }
                 }}
@@ -630,11 +654,22 @@ export default function Flashcards() {
                       currentSetInView.length
                     ) {
                       setCurrentCardInView(currentSetInView[0]);
+                      const numerator = 0;
+                      const denominator = currentSetInView.length;
+                      setProgressView(
+                        Math.round((numerator / denominator) * 100),
+                      );
                     } else {
                       setCurrentCardInView(
                         currentSetInView[
                           currentSetInView.indexOf(currentCardInView) + 1
                         ],
+                      );
+                      const numerator =
+                        currentSetInView.indexOf(currentCardInView) + 2;
+                      const denominator = currentSetInView.length;
+                      setProgressView(
+                        Math.round((numerator / denominator) * 100),
                       );
                     }
                   }}
