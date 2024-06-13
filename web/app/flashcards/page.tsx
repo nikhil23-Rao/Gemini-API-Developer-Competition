@@ -176,7 +176,7 @@ export default function Flashcards() {
           {flashcards.map((card) => (
             <>
               <div className="card-main" style={{ marginTop: 80 }}>
-                <div className="card-img">
+                <div className="card-img" style={{ maxWidth: 50 }}>
                   <div
                     style={{ backgroundColor: "#000", height: "100%" }}
                     className="gradientbg"
@@ -353,8 +353,10 @@ export default function Flashcards() {
               labelId="demo-simple-select-label"
               id="demo-simple-select"
               value={chosenClass}
-              label="Expected Graduation Year"
-              onChange={(e) => setChosenClass(e.target?.value as string)}
+              onChange={(e) => {
+                setPossibleUnits(null);
+                setChosenClass(e.target?.value as string);
+              }}
             >
               {currentUser?.selectedClasses.map((c, idx) => (
                 <MenuItem value={c} key={idx}>
@@ -392,9 +394,12 @@ export default function Flashcards() {
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
                   value={selectedUnits.length > 0 ? "" : "Units Listed Below"}
-                  label="Expected Graduation Year"
+                  label="Select Units"
                   onClick={() => {}}
                 >
+                  {!possibleUnits && (
+                    <h1 style={{ padding: 20 }}>loading...</h1>
+                  )}
                   {possibleUnits?.map((u) => (
                     <>
                       <div
