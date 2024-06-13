@@ -56,6 +56,7 @@ export default function Flashcards() {
   const [currentUser, setCurrentUser] = useState<User | null>();
   const [tabValue, setTabValue] = useState(0);
   const [name, setName] = useState("My New Set");
+  const [search, setSearch] = useState("");
   const [prompt, setPrompt] = useState("");
   const [chosenClass, setChosenClass] = useState("");
   const [progressView, setProgressView] = useState(0);
@@ -719,6 +720,25 @@ export default function Flashcards() {
           <p style={{ marginTop: 1 }}>Create New Set</p>
         </Button>
 
+        <TextField
+          style={{ borderRadius: 400, width: "40%", marginTop: 40 }}
+          placeholder="Search for a set by name or class..."
+          onChange={(e) => {
+            // setUserFlashCardSets(
+            //   userFlashCardSets.filter(
+            //     (s) =>
+            //       s.cardsetName
+            //         .toLowerCase()
+            //         .includes(e.target.value.toLowerCase()) ||
+            //       s.class.toLowerCase().includes(e.target.value.toLowerCase()),
+            //   ),
+            // );
+
+            setSearch(e.target.value);
+          }}
+          InputProps={{ sx: { borderRadius: 100, paddingLeft: 2 } }}
+        ></TextField>
+
         {userFlashCardSets.length > 0 ? (
           <>
             <div
@@ -729,60 +749,68 @@ export default function Flashcards() {
               }}
             >
               <main className="main">
-                {userFlashCardSets.map((set) => (
-                  <section
-                    className="section"
-                    style={{
-                      width: 400,
-                      border: "2px solid #eee",
-                      padding: 20,
-                      cursor: "pointer",
-                      marginTop: 50,
-                      zoom: 0.8,
-                    }}
-                    onClick={() => {
-                      setCurrentSetInView([...set.flashcardSet]);
-                      setCurrentCardInView([...set.flashcardSet][0]);
-                      setOpenSet(true);
-                      setProgressView(0);
-                    }}
-                  >
-                    <figure className="figure">
-                      <img
-                        className="img"
-                        style={{
-                          border: "2px solid #eee",
-                        }}
-                        src={set.seed}
-                      />
-                    </figure>
-                    <article
-                      className="article"
+                {userFlashCardSets
+                  .filter(
+                    (s) =>
+                      s.cardsetName
+                        .toLowerCase()
+                        .includes(search.toLowerCase()) ||
+                      s.class.toLowerCase().includes(search.toLowerCase()),
+                  )
+                  .map((set) => (
+                    <section
+                      className="section"
                       style={{
-                        paddingTop: 25,
-                        paddingBottom: 25,
-                        paddingLeft: 10,
+                        width: 400,
+                        border: "2px solid #eee",
+                        padding: 20,
+                        cursor: "pointer",
+                        marginTop: 50,
+                        zoom: 0.8,
+                      }}
+                      onClick={() => {
+                        setCurrentSetInView([...set.flashcardSet]);
+                        setCurrentCardInView([...set.flashcardSet][0]);
+                        setOpenSet(true);
+                        setProgressView(0);
                       }}
                     >
-                      <span className="span" style={{ letterSpacing: 1 }}>
-                        {set.class}
-                      </span>
-                      <h1
-                        className="h3"
+                      <figure className="figure">
+                        <img
+                          className="img"
+                          style={{
+                            border: "2px solid #eee",
+                          }}
+                          src={set.seed}
+                        />
+                      </figure>
+                      <article
+                        className="article"
                         style={{
-                          marginTop: 20,
-                          fontWeight: "bold",
-                          fontSize: 24,
+                          paddingTop: 25,
+                          paddingBottom: 25,
+                          paddingLeft: 10,
                         }}
                       >
-                        {set.cardsetName}
-                      </h1>
-                      <p className="p" style={{ marginTop: 8 }}>
-                        Covers concepts on: {set.units.join(", ")}
-                      </p>
-                    </article>
-                  </section>
-                ))}
+                        <span className="span" style={{ letterSpacing: 1 }}>
+                          {set.class}
+                        </span>
+                        <h1
+                          className="h3"
+                          style={{
+                            marginTop: 20,
+                            fontWeight: "bold",
+                            fontSize: 24,
+                          }}
+                        >
+                          {set.cardsetName}
+                        </h1>
+                        <p className="p" style={{ marginTop: 8 }}>
+                          Covers concepts on: {set.units.join(", ")}
+                        </p>
+                      </article>
+                    </section>
+                  ))}
               </main>
             </div>
           </>
