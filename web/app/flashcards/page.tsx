@@ -527,7 +527,16 @@ export default function Flashcards() {
                 }}
                 onClick={() => setCardFlipped(!cardFlipped)}
               >
-                <h1 style={{ fontSize: 35 }}>{currentCardInView.term}</h1>
+                <h1
+                  style={{
+                    fontSize: 35,
+                    height: 20,
+                    lineHeight: 1.4,
+                    textAlign: "center",
+                  }}
+                >
+                  {currentCardInView.term}
+                </h1>
               </div>
 
               <div
@@ -573,7 +582,7 @@ export default function Flashcards() {
                   borderRadius: 200,
                 }}
                 onClick={() => {
-                  if (currentSetInView.indexOf(currentCardInView) + -1 === 3) {
+                  if (currentSetInView.indexOf(currentCardInView) + -1 === -1) {
                     setCurrentCardInView(
                       currentSetInView[currentSetInView.length - 1],
                     );
