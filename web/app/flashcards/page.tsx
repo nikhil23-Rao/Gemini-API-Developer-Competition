@@ -139,7 +139,7 @@ export default function Flashcards() {
       </div>
     );
   }
-  if (flashcards.length > 0) {
+  if (flashcards.length > 0 && modal) {
     return (
       <>
         <i
@@ -526,6 +526,7 @@ export default function Flashcards() {
                 completed={progressView}
                 width="95%"
                 bgColor="#1F2E5E"
+                customLabel=" "
               />
             </div>
             <ReactCardFlip isFlipped={cardFlipped} flipDirection="vertical">
@@ -732,7 +733,7 @@ export default function Flashcards() {
                   <section
                     className="section"
                     style={{
-                      maxWidth: 400,
+                      width: 400,
                       border: "2px solid #eee",
                       padding: 20,
                       cursor: "pointer",
@@ -743,6 +744,7 @@ export default function Flashcards() {
                       setCurrentSetInView([...set.flashcardSet]);
                       setCurrentCardInView([...set.flashcardSet][0]);
                       setOpenSet(true);
+                      setProgressView(0);
                     }}
                   >
                     <figure className="figure">
