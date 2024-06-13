@@ -122,7 +122,7 @@ export const generateFlashcardsBasedOnPrompt = async (
   res: Response
 ) => {
   try {
-    const { prompt } = req.body;
+    const { prompt, className } = req.body;
     console.log(prompt);
 
     // Restore the previous context
@@ -137,7 +137,7 @@ export const generateFlashcardsBasedOnPrompt = async (
     });
 
     const { response } = await chat.sendMessage(
-      `Generate a set of around 10 to 15 flashcards on the most important key terms, people, and/or concepts for ${prompt}; Provide answer in JSON format like so:[{term:'', definition:''}];`
+      `Generate a set of around 10 to 15 flashcards on the most important key terms, people, and/or concepts for ${prompt} for the class ${className}; Provide answer in JSON format like so:[{term:'', definition:''}];`
     );
     const responseText = response;
 

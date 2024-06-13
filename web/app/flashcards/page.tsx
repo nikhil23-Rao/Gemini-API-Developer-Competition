@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
   Box,
+  Button,
   Checkbox,
   FormControl,
   InputLabel,
@@ -41,17 +42,20 @@ import "../globals.css";
 import { Splash } from "@/components/general/Splash";
 import Lottie from "lottie-react";
 import animation from "../../public/loadingspace.json";
+import axios from "axios";
+import { getFlashcardsThroughPrompt } from "@/api/getFlashcardsThroughPrompt";
 
 export default function Flashcards() {
   const [modal, setModal] = useState(false);
   const [openSet, setOpenSet] = useState(false);
   const [loading, setLoading] = useState(false);
   const [currentSetInView, setCurrentSetInView] = useState<any[]>([]);
-  const [currentCardInView, setCurrentCardInView] = useState<any[]>([]);
+  const [currentCardInView, setCurrentCardInView] = useState<any>();
   const [cardFlipped, setCardFlipped] = useState<boolean>(false);
   const [currentUser, setCurrentUser] = useState<User | null>();
   const [tabValue, setTabValue] = useState(0);
-  const [name, setName] = useState("My First Set");
+  const [name, setName] = useState("My New Set");
+  const [prompt, setPrompt] = useState("");
   const [chosenClass, setChosenClass] = useState("");
   const [selectedUnits, setSelectedUnits] = useState<string[]>([]);
   const [userFlashCardSets, setUserFlashCardSets] = useState<any[]>([]);
@@ -79,12 +83,21 @@ export default function Flashcards() {
         where("createdById", "==", currentUser?.id),
       );
 
-      let createdSets: any = [];
+      let duplicate = false;
       const unsubscribe = onSnapshot(q, (snapshot) => {
+        let createdSets: any = [];
         snapshot.docs.forEach((doc) => {
-          createdSets.push(doc.data());
-          setUserFlashCardSets(createdSets);
-          console.log(createdSets);
+          userFlashCardSets.map((set) => {
+            if (set.seed === doc.data().seed) duplicate = true;
+          });
+          if (duplicate) return;
+          // if (userFlashCardSets.includes(doc.data())) return;
+          else {
+            createdSets.push(doc.data());
+            setUserFlashCardSets(createdSets);
+            console.log(createdSets);
+            duplicate = false;
+          }
         });
       });
     }
@@ -257,6 +270,9 @@ export default function Flashcards() {
                 cardsetName: name,
                 class: chosenClass,
                 units: selectedUnits,
+                seed: `https://api.dicebear.com/8.x/identicon/svg?seed=${Math.floor(
+                  Math.random() * 1000000,
+                ).toString()}`,
               });
 
               setModal(false);
@@ -408,8 +424,8 @@ export default function Flashcards() {
               {" "}
               <TextareaAutosize
                 id="outlined-basic"
-                placeholder="What do you need flashcards about?..."
-                value={name}
+                placeholder="Generate flashcards on..."
+                value={prompt}
                 style={{
                   width: 400,
                   marginTop: 20,
@@ -420,9 +436,9 @@ export default function Flashcards() {
                   padding: 20,
                 }}
                 onChange={(e) => {
-                  setName(e.currentTarget.value);
+                  setPrompt(e.currentTarget.value);
                 }}
-                color={name.length > 0 ? "primary" : "error"}
+                color={prompt.length > 0 ? "primary" : "error"}
               />
             </>
           ) : (
@@ -445,6 +461,16 @@ export default function Flashcards() {
                   : "",
             }}
             onClick={async () => {
+              if (tabValue == 1) {
+                setLoading(true);
+                const generated = await getFlashcardsThroughPrompt(
+                  prompt,
+                  chosenClass,
+                );
+                setFlashcards(generated);
+                setLoading(false);
+              }
+
               if (selectedUnits.length > 0) {
                 setLoading(true);
                 const generated = await getFlashcardsByUnit(
@@ -487,38 +513,127 @@ export default function Flashcards() {
           },
         }}
       >
-        <div>
-          <ReactCardFlip isFlipped={cardFlipped} flipDirection="vertical">
-            <div
-              style={{
-                backgroundColor: "#fff",
-                justifyContent: "center",
-                alignItems: "center",
-                display: "flex",
-                cursor: "pointer",
-                padding: 200,
-              }}
-              onClick={() => setCardFlipped(!cardFlipped)}
-            >
-              <h1 style={{ fontSize: 35 }}>{currentCardInView.term}</h1>
-            </div>
+        {currentCardInView && (
+          <div>
+            <ReactCardFlip isFlipped={cardFlipped} flipDirection="vertical">
+              <div
+                style={{
+                  backgroundColor: "#fff",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  display: "flex",
+                  cursor: "pointer",
+                  padding: 200,
+                }}
+                onClick={() => setCardFlipped(!cardFlipped)}
+              >
+                <h1 style={{ fontSize: 35 }}>{currentCardInView.term}</h1>
+              </div>
 
+              <div
+                style={{
+                  backgroundColor: "#fff",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  display: "flex",
+                  cursor: "pointer",
+                  padding: 200,
+                }}
+                onClick={() => setCardFlipped(!cardFlipped)}
+              >
+                <h1 style={{ fontSize: 18 }}>{currentCardInView.definition}</h1>
+              </div>
+            </ReactCardFlip>
+            <div style={{ position: "absolute", bottom: 20, right: 20 }}>
+              <Button style={{ color: "#fff", backgroundColor: "#4255FF" }}>
+                Export to Quizlet
+              </Button>
+            </div>
+            <div style={{ position: "absolute", bottom: 20, left: 20 }}>
+              <Button style={{ color: "#fff", backgroundColor: "#8B4448" }}>
+                Edit Flashcards
+              </Button>
+            </div>
             <div
               style={{
-                backgroundColor: "#fff",
-                justifyContent: "center",
-                alignItems: "center",
                 display: "flex",
-                cursor: "pointer",
-                padding: 200,
+                alignItems: "center",
+                justifyContent: "center",
+                flexDirection: "row",
               }}
-              onClick={() => setCardFlipped(!cardFlipped)}
             >
-              <h1 style={{ fontSize: 18 }}>{currentCardInView.definition}</h1>
+              <div
+                style={{
+                  width: 50,
+                  height: 50,
+                  justifyContent: "center",
+                  display: "flex",
+                  alignItems: "center",
+                  border: "1px solid #eee",
+                  borderRadius: 200,
+                }}
+                onClick={() => {
+                  if (currentSetInView.indexOf(currentCardInView) + -1 === 3) {
+                    setCurrentCardInView(
+                      currentSetInView[currentSetInView.length - 1],
+                    );
+                  } else {
+                    setCurrentCardInView(
+                      currentSetInView[
+                        currentSetInView.indexOf(currentCardInView) + -1
+                      ],
+                    );
+                  }
+                }}
+              >
+                <i
+                  className="fa fa-arrow-left fa-2x"
+                  style={{
+                    cursor: "pointer",
+                    color: "navy",
+                  }}
+                ></i>
+              </div>
+
+              <p style={{ marginRight: 20, marginLeft: 20 }}>{`${
+                currentSetInView.indexOf(currentCardInView) + 1
+              } / ${currentSetInView.length}`}</p>
+              <div
+                style={{
+                  width: 50,
+                  height: 50,
+                  justifyContent: "center",
+                  display: "flex",
+                  alignItems: "center",
+                  border: "1px solid #eee",
+                  borderRadius: 200,
+                }}
+              >
+                <i
+                  className="fa fa-arrow-right fa-2x"
+                  style={{
+                    cursor: "pointer",
+                    color: "navy",
+                  }}
+                  onClick={() => {
+                    if (
+                      currentSetInView.indexOf(currentCardInView) + 1 ===
+                      currentSetInView.length
+                    ) {
+                      setCurrentCardInView(currentSetInView[0]);
+                    } else {
+                      setCurrentCardInView(
+                        currentSetInView[
+                          currentSetInView.indexOf(currentCardInView) + 1
+                        ],
+                      );
+                    }
+                  }}
+                ></i>
+              </div>
             </div>
-          </ReactCardFlip>
-          <p>Next</p>
-        </div>
+          </div>
+        )}
       </Modal>
       <div
         style={{
@@ -549,61 +664,81 @@ export default function Flashcards() {
           you can view them by clicking on the containers below. Use AI to help
           create a boilerplate to help you study.
         </p>
+
+        <Button
+          variant="outlined"
+          style={{ marginTop: 20 }}
+          onClick={() => setModal(true)}
+        >
+          <i className="fa fa-plus" style={{ marginRight: 10 }}></i>
+          <p style={{ marginTop: 1 }}>Create New Set</p>
+        </Button>
+
         {userFlashCardSets.length > 0 ? (
           <>
-            <main className="main">
-              {userFlashCardSets.map((set) => (
-                <section
-                  className="section"
-                  style={{
-                    maxWidth: 400,
-                    border: "2px solid #eee",
-                    padding: 20,
-                    cursor: "pointer",
-                    marginTop: 50,
-                  }}
-                  onClick={() => {
-                    setCurrentSetInView([...set.flashcardSet]);
-                    setCurrentCardInView([...set.flashcardSet][0]);
-                    setOpenSet(true);
-                  }}
-                >
-                  <figure className="figure">
-                    <img
-                      className="img"
-                      src="/pattern.jpeg"
-                      alt="Free Stock Photo from pexels.com"
-                      style={{ borderRadius: 20 }}
-                    />
-                  </figure>
-                  <article
-                    className="article"
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <main className="main">
+                {userFlashCardSets.map((set) => (
+                  <section
+                    className="section"
                     style={{
-                      paddingTop: 25,
-                      paddingBottom: 25,
-                      paddingLeft: 10,
+                      maxWidth: 400,
+                      border: "2px solid #eee",
+                      padding: 20,
+                      cursor: "pointer",
+                      marginTop: 50,
+                      zoom: 0.8,
+                    }}
+                    onClick={() => {
+                      setCurrentSetInView([...set.flashcardSet]);
+                      setCurrentCardInView([...set.flashcardSet][0]);
+                      setOpenSet(true);
                     }}
                   >
-                    <span className="span" style={{ letterSpacing: 1 }}>
-                      {set.class}
-                    </span>
-                    <h1
-                      className="h3"
+                    <figure className="figure">
+                      <img
+                        className="img"
+                        style={{
+                          border: "2px solid #eee",
+                        }}
+                        src={set.seed}
+                      />
+                    </figure>
+                    <article
+                      className="article"
                       style={{
-                        marginTop: 20,
-                        fontWeight: "bold",
-                        fontSize: 24,
+                        paddingTop: 25,
+                        paddingBottom: 25,
+                        paddingLeft: 10,
                       }}
                     >
-                      {set.cardsetName}
-                    </h1>
-                    <p className="p" style={{ marginTop: 8 }}>
-                      Covers concepts on: {set.units.join(", ")}
-                    </p>
-                  </article>
-                </section>
-              ))}
-            </main>
+                      <span className="span" style={{ letterSpacing: 1 }}>
+                        {set.class}
+                      </span>
+                      <h1
+                        className="h3"
+                        style={{
+                          marginTop: 20,
+                          fontWeight: "bold",
+                          fontSize: 24,
+                        }}
+                      >
+                        {set.cardsetName}
+                      </h1>
+                      <p className="p" style={{ marginTop: 8 }}>
+                        Covers concepts on: {set.units.join(", ")}
+                      </p>
+                    </article>
+                  </section>
+                ))}
+              </main>
+            </div>
           </>
         ) : (
           <None setModal={setModal} />
