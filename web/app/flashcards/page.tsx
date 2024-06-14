@@ -506,20 +506,23 @@ export default function Flashcards() {
                   onChange={onImageChange}
                   className="filetype custom-file-upload"
                   id="group_image"
+                  accept="image/*"
                 />
               </div>
               <p style={{ marginTop: 20 }}> Chosen File:</p>
-              <img
-                src={imgPreview && imgPreview}
-                style={{
-                  width: 440,
-                  height: 440,
-                  marginTop: 20,
-                  border: "2px solid lightblue",
-                  borderRadius: 15,
-                }}
-                alt=""
-              />
+              {imgPreview.length > 0 && (
+                <img
+                  src={imgPreview}
+                  style={{
+                    width: 440,
+                    height: 440,
+                    marginTop: 20,
+                    border: "2px solid lightblue",
+                    borderRadius: 15,
+                  }}
+                  alt=""
+                />
+              )}
             </>
           )}
 
