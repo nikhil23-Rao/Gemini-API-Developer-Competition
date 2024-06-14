@@ -45,6 +45,7 @@ import Lottie from "lottie-react";
 import animation from "../../public/loadingspace.json";
 import axios from "axios";
 import { getFlashcardsThroughPrompt } from "@/api/getFlashcardsThroughPrompt";
+import { getFlashcardsThroughImage } from "@/api/getFlashcardsThroughImport";
 
 export default function Flashcards() {
   const [modal, setModal] = useState(false);
@@ -59,17 +60,42 @@ export default function Flashcards() {
   const [search, setSearch] = useState("");
   const [prompt, setPrompt] = useState("");
   const [chosenClass, setChosenClass] = useState("");
+  const [imgPreview, setImgPreview] = useState("");
   const [progressView, setProgressView] = useState(0);
   const [selectedUnits, setSelectedUnits] = useState<string[]>([]);
   const [userFlashCardSets, setUserFlashCardSets] = useState<any[]>([]);
+  const [cardsetLoading, setCardsetLoading] = useState<boolean>(false);
+  const [imported, setImported] = useState<any>();
   const [possibleUnits, setPossibleUnits] = useState<
     [{ name: string }] | null
   >();
   const [flashcards, setFlashcards] = useState<any>([]);
 
+  const onImageChange = (event) => {
+    if (event.target.files && event.target.files[0]) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        console.log("res", reader.result);
+        setImgPreview(reader.result as string);
+        const base64String = (reader.result as string)
+          .replace("data:", "")
+          .replace(/^.+,/, "");
+
+        // console.log(base64String);
+        setImported(base64String);
+        // Logs data:<type>;base64,wL2dvYWwgbW9yZ...
+      };
+      reader.readAsDataURL(event.target.files[0]);
+    }
+  };
+
   useEffect(() => {
     setUser(setCurrentUser);
   }, []);
+
+  useEffect(() => {
+    console.log(imported);
+  }, [imported]);
 
   useEffect(() => {
     if (chosenClass.length > 0) {
@@ -398,7 +424,11 @@ export default function Flashcards() {
                   onClick={() => {}}
                 >
                   {!possibleUnits && (
-                    <h1 style={{ padding: 20 }}>loading...</h1>
+                    <h1 style={{ padding: 20 }}>
+                      {chosenClass.length > 0
+                        ? "loading..."
+                        : "please select a class..."}
+                    </h1>
                   )}
                   {possibleUnits?.map((u) => (
                     <>
@@ -454,7 +484,43 @@ export default function Flashcards() {
               />
             </>
           ) : (
-            <></>
+            <>
+              {" "}
+              <div style={{ marginTop: 40 }}>
+                <label htmlFor="group_image">
+                  <h1
+                    style={{
+                      cursor: "pointer",
+                      textTransform: "uppercase",
+                      color: "#1B596F",
+                      border: "1px solid #eee",
+                      padding: 15,
+                      borderRadius: 200,
+                    }}
+                  >
+                    Select A File
+                  </h1>
+                </label>
+                <input
+                  type="file"
+                  onChange={onImageChange}
+                  className="filetype custom-file-upload"
+                  id="group_image"
+                />
+              </div>
+              <p style={{ marginTop: 20 }}> Chosen File:</p>
+              <img
+                src={imgPreview && imgPreview}
+                style={{
+                  width: 440,
+                  height: 440,
+                  marginTop: 20,
+                  border: "2px solid lightblue",
+                  borderRadius: 15,
+                }}
+                alt=""
+              />
+            </>
           )}
 
           <button
@@ -473,6 +539,12 @@ export default function Flashcards() {
                   : "",
             }}
             onClick={async () => {
+              if (tabValue === 2) {
+                setLoading(true);
+                const generated = await getFlashcardsThroughImage(imported);
+                setFlashcards(generated);
+                setLoading(false);
+              }
               if (tabValue == 1) {
                 setLoading(true);
                 const generated = await getFlashcardsThroughPrompt(

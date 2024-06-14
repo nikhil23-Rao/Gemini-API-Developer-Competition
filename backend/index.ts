@@ -13,6 +13,8 @@ dotenv.config();
 const app: Express = express();
 const port = process.env.PORT || 3000;
 
+app.use(bodyParser.json({ limit: "50mb" }));
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 app.use(bodyParser.json());
 app.use(express.json());
 app.use(cors());
@@ -41,7 +43,7 @@ export const generateFlashcards = async (req: Request, res: Response) => {
     });
 
     const { response } = await chat.sendMessage(
-      `Generate a set of around 10 to 15 flashcards on the most important key terms, people, and/or concepts for ${prompt}; Provide answer in JSON format like so:[{term:'', definition:''}];`
+      `Generate a set of around 10 to 15 flashcards on the most important key terms, people, and/or concepts for ${prompt}; Provide answer in JSON format like so:[{term:"", definition:""}];`
     );
     const responseText = response;
 
@@ -89,8 +91,7 @@ export const generateFlashcardsBasedOnImage = async (
   res: Response
 ) => {
   try {
-    const { prompt, image } = req.body;
-    console.log(prompt);
+    const { image } = req.body;
 
     // Restore the previous context
 
@@ -104,7 +105,7 @@ export const generateFlashcardsBasedOnImage = async (
     });
 
     const { response } = await model.generateContent([
-      `Generate a set of around 10 to 15 flashcards on the most important key terms, people, and/or concepts for ${prompt}; Provide answer in JSON format like so:[{term:'', definition:''}]`,
+      `Generate a set of flashcards based on the image provided; INCLUDE ALL DATA IN THE IMAGE; Provide answer in an array in format like so: [{term:"", definition:""}]; DO NOT USE MARKDOWN.`,
       { inlineData: { data: image, mimeType: "image/png" } },
     ]);
     const responseText = response;
@@ -137,7 +138,7 @@ export const generateFlashcardsBasedOnPrompt = async (
     });
 
     const { response } = await chat.sendMessage(
-      `Generate a set of around 10 to 15 flashcards on the most important key terms, people, and/or concepts for ${prompt} for the class ${className}; Provide answer in JSON format like so:[{term:'', definition:''}];`
+      `Generate a set of around 10 to 15 flashcards on the most important key terms, people, and/or concepts for ${prompt} for the class ${className}; Provide answer in JSON format like so:[{term:"", definition:""}];`
     );
     const responseText = response;
 
