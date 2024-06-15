@@ -42,10 +42,10 @@ import ReactCardFlip from "react-card-flip";
 import "../globals.css";
 import { Splash } from "@/components/general/Splash";
 import Lottie from "lottie-react";
-import animation from "../../public/loadingspace.json";
 import axios from "axios";
 import { getFlashcardsThroughPrompt } from "@/api/getFlashcardsThroughPrompt";
 import { getFlashcardsThroughImage } from "@/api/getFlashcardsThroughImport";
+import { ProcessingRequest } from "@/components/general/ProcessingRequest";
 
 export default function Flashcards() {
   const [modal, setModal] = useState(false);
@@ -140,32 +140,7 @@ export default function Flashcards() {
     console.log(flashcards);
   }, [flashcards]);
 
-  if (loading) {
-    return (
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          height: "100vh",
-          flexDirection: "column",
-        }}
-      >
-        <img
-          src="/logo.png"
-          style={{ position: "relative", bottom: 50, width: 40 }}
-          alt=""
-        />
-        <Lottie animationData={animation} />
-        <p
-          style={{ fontSize: 20, fontWeight: "bold" }}
-          className="text-gradient-black"
-        >
-          Processing request...
-        </p>
-      </div>
-    );
-  }
+  if (loading) return <ProcessingRequest />;
   if (flashcards.length > 0 && modal) {
     return (
       <>
