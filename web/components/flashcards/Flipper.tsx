@@ -32,7 +32,14 @@ export const Flipper = ({
           customLabel=" "
         />
       </div>
-      <ReactCardFlip isFlipped={cardFlipped} flipDirection="vertical">
+      <ReactCardFlip
+        isFlipped={cardFlipped}
+        flipDirection="vertical"
+        cardStyles={{
+          back: { height: 400, overflowY: "scroll" },
+          front: { height: 400, overflowY: "scroll" },
+        }}
+      >
         <div
           style={{
             backgroundColor: "#fff",
@@ -40,7 +47,7 @@ export const Flipper = ({
             alignItems: "center",
             display: "flex",
             cursor: "pointer",
-            padding: 200,
+            padding: 100,
           }}
           onClick={() => setCardFlipped(!cardFlipped)}
         >
@@ -50,6 +57,7 @@ export const Flipper = ({
               height: 20,
               lineHeight: 1.4,
               textAlign: "center",
+              marginTop: 100,
             }}
           >
             {currentCardInView.term}
@@ -72,16 +80,7 @@ export const Flipper = ({
           </p>
         </div>
       </ReactCardFlip>
-      <div style={{ position: "absolute", bottom: 20, right: 20 }}>
-        <Button style={{ color: "#fff", backgroundColor: "#4255FF" }}>
-          Export to Quizlet
-        </Button>
-      </div>
-      <div style={{ position: "absolute", bottom: 20, left: 20 }}>
-        <Button style={{ color: "#fff", backgroundColor: "#8B4448" }}>
-          Edit Flashcards
-        </Button>
-      </div>
+
       <div
         style={{
           display: "flex",
@@ -172,6 +171,16 @@ export const Flipper = ({
             }}
           ></i>
         </div>
+      </div>
+      <div style={{ position: "absolute", bottom: 20, right: 20 }}>
+        <Button style={{ color: "#fff", backgroundColor: "#4255FF" }}>
+          Export to Quizlet
+        </Button>
+      </div>
+      <div style={{ position: "absolute", bottom: 20, left: 20 }}>
+        <Button style={{ color: "#fff", backgroundColor: "#8B4448" }}>
+          Edit Flashcards
+        </Button>
       </div>
     </div>
   );
