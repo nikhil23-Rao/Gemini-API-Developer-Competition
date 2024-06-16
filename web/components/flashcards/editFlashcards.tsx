@@ -41,7 +41,11 @@ export const EditFlashcards = ({
           right: 100,
           cursor: "pointer",
         }}
-        onClick={() => setModal(false)}
+        onClick={() => {
+          setModal(false);
+          setFlashcards([]);
+          setName("My New Set");
+        }}
       ></i>
       <motion.div
         initial={{ opacity: 0, y: 300 }}
@@ -127,7 +131,6 @@ export const EditFlashcards = ({
                     width: "35vw",
                     height: 20,
                   }}
-                  maxRows={1}
                   onChange={(e) => {
                     let oldFlashcards = [...flashcards];
                     const target: any = oldFlashcards.find(
