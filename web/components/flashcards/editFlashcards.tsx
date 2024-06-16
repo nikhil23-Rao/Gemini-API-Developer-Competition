@@ -16,6 +16,8 @@ interface IProps {
   editMode?: boolean;
   setdocid?: string;
   setName: (name: string) => void;
+  setSelectedUnits: (a: any[]) => void;
+  setClass: (name: string) => void;
 }
 
 export const EditFlashcards = ({
@@ -29,6 +31,8 @@ export const EditFlashcards = ({
   editMode = false,
   setName,
   setdocid,
+  setClass,
+  setSelectedUnits,
 }: IProps) => {
   return (
     <>
@@ -154,14 +158,13 @@ export const EditFlashcards = ({
             </div>
           </>
         ))}
-        {editMode && (
-          <div
-            style={{ marginTop: 20, cursor: "pointer" }}
-            className="text-gradient-black"
-          >
-            <i className="fa fa-arrow-down"></i> Generate More with AI
-          </div>
-        )}
+
+        <div
+          style={{ marginTop: 20, cursor: "pointer" }}
+          className="text-gradient-black"
+        >
+          <i className="fa fa-arrow-down"></i> Generate More with AI
+        </div>
         <div
           style={{ marginTop: 20, cursor: "pointer" }}
           className="text-gradient-black"
@@ -199,18 +202,17 @@ export const EditFlashcards = ({
               await updateDoc(doc(db, "flashcards", docid.id), {
                 docid: docid.id,
               });
-
-              setModal(false);
-              setFlashcards([]);
             } else {
               await updateDoc(doc(db, "flashcards", setdocid as string), {
                 flashcardSet: flashcards,
                 cardsetName: name,
               });
-              setModal(false);
-              setFlashcards([]);
             }
-
+            setName("");
+            setSelectedUnits([]);
+            setClass("");
+            setModal(false);
+            setFlashcards([]);
             // firebase save
           }}
         >

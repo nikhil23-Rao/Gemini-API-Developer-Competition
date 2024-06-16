@@ -67,7 +67,9 @@ export const Flipper = ({
           }}
           onClick={() => setCardFlipped(!cardFlipped)}
         >
-          <h1 style={{ fontSize: 18 }}>{currentCardInView.definition}</h1>
+          <p style={{ fontSize: 25, lineHeight: 1.4, width: "100%" }}>
+            {currentCardInView.definition}
+          </p>
         </div>
       </ReactCardFlip>
       <div style={{ position: "absolute", bottom: 20, right: 20 }}>

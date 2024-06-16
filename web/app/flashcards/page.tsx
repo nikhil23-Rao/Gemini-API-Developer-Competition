@@ -145,6 +145,8 @@ export default function Flashcards() {
         editMode={true}
         setName={setName}
         setdocid={id}
+        setClass={setChosenClass}
+        setSelectedUnits={setSelectedUnits}
       />
     );
   if (flashcards.length > 0 && modal) {
@@ -158,6 +160,8 @@ export default function Flashcards() {
         chosenClass={chosenClass}
         setModal={setModal}
         selectedUnits={selectedUnits}
+        setClass={setChosenClass}
+        setSelectedUnits={setSelectedUnits}
       />
     );
   }
@@ -434,44 +438,53 @@ export default function Flashcards() {
           marginLeft: "10%",
         }}
       >
-        <h1
-          className="text-gradient-black"
-          style={{ fontSize: "4vw", marginTop: 50 }}
-        >
-          My Flashcards
-        </h1>
-        <p
+        <div
           style={{
-            marginTop: 40,
-            maxWidth: "30%",
-            textAlign: "center",
-            color: "gray",
-            fontSize: 14,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexDirection: "column",
           }}
         >
-          Welcome to your flashcards. To get started, create a new set of
-          flashcards with the button below. If you already have flashcard sets,
-          you can view them by clicking on the containers below. Use AI to help
-          create a boilerplate to help you study.
-        </p>
+          <h1
+            className="text-gradient-black"
+            style={{ fontSize: "4vw", marginTop: 50 }}
+          >
+            My Flashcards
+          </h1>
+          <p
+            style={{
+              marginTop: 40,
+              maxWidth: "30%",
+              textAlign: "center",
+              color: "gray",
+              fontSize: 14,
+            }}
+          >
+            Welcome to your flashcards. To get started, create a new set of
+            flashcards with the button below. If you already have flashcard
+            sets, you can view them by clicking on the containers below. Use AI
+            to help create a boilerplate to help you study.
+          </p>
 
-        <Button
-          variant="outlined"
-          style={{ marginTop: 20 }}
-          onClick={() => setModal(true)}
-        >
-          <i className="fa fa-plus" style={{ marginRight: 10 }}></i>
-          <p style={{ marginTop: 1 }}>Create New Set</p>
-        </Button>
+          <Button
+            variant="outlined"
+            style={{ marginTop: 20 }}
+            onClick={() => setModal(true)}
+          >
+            <i className="fa fa-plus" style={{ marginRight: 10 }}></i>
+            <p style={{ marginTop: 1 }}>Create New Set</p>
+          </Button>
 
-        <TextField
-          style={{ borderRadius: 400, width: "40%", marginTop: 40 }}
-          placeholder="Search for a set by name or class..."
-          onChange={(e) => {
-            setSearch(e.target.value);
-          }}
-          InputProps={{ sx: { borderRadius: 100, paddingLeft: 2 } }}
-        ></TextField>
+          <TextField
+            style={{ borderRadius: 400, width: "40%", marginTop: 40 }}
+            placeholder="Search for a set by name or class..."
+            onChange={(e) => {
+              setSearch(e.target.value);
+            }}
+            InputProps={{ sx: { borderRadius: 100, paddingLeft: 2 } }}
+          ></TextField>
+        </div>
 
         {userFlashCardSets.length > 0 ? (
           <>
@@ -480,12 +493,15 @@ export default function Flashcards() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
+                height: "100vh",
+                width: "100%",
               }}
             >
               <main
                 className="main"
                 style={{
-                  height: 900,
+                  height: "100%",
+                  marginTop: 200,
                 }}
               >
                 {userFlashCardSets

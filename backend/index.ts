@@ -72,8 +72,10 @@ export const generateUnit = async (req: Request, res: Response) => {
     });
 
     const { response } = await chat.sendMessage(
-      `Provide a list of all the Unit names in ${ap} ${
-        ap.includes("AP") ? "according to Collegeboard's assigned units" : ""
+      `Provide a list of all the Unit content names in the class ${ap} ${
+        ap.includes("AP")
+          ? "according to the official Collegeboard's assigned units"
+          : ""
       }; Follow JSON format of just [{name:}]`
     );
     const responseText = response;
@@ -85,6 +87,24 @@ export const generateUnit = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+const safetySettings = [
+  {
+    category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+    threshold: HarmBlockThreshold.BLOCK_NONE,
+  },
+  {
+    category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+    threshold: HarmBlockThreshold.BLOCK_NONE,
+  },
+  {
+    category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+    threshold: HarmBlockThreshold.BLOCK_NONE,
+  },
+  {
+    category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+    threshold: HarmBlockThreshold.BLOCK_NONE,
+  },
+];
 
 export const generateFlashcardsBasedOnImage = async (
   req: Request,
@@ -95,23 +115,27 @@ export const generateFlashcardsBasedOnImage = async (
 
     // Restore the previous context
 
-    const chat = fastModel.startChat({
+    const chat = model.startChat({
       history: [],
-      generationConfig: {
-        responseMimeType: "application/json",
-        // temperature: 1,
-        // topP: 0.95,
-      },
+      safetySettings,
     });
 
-    const { response } = await model.generateContent([
-      `Generate a set of flashcards based on the image provided; INCLUDE ALL DATA IN THE IMAGE; Provide answer in an array in format like so: [{term:"", definition:""}]; DO NOT USE MARKDOWN.`,
+    const result = await chat.sendMessageStream([
+      `Generate a list of all flashcards based on the content in the image; FILL EVERY DEFINITION; Return in JSON Format: [{term:"", definition:""}]; DON'T USE MARKDOWN`,
       { inlineData: { data: image, mimeType: "image/png" } },
     ]);
-    const responseText = response;
+
+    let data = "";
+    for await (const chunk of result.stream) {
+      console.log(chunk.text());
+      data = data.concat(chunk.text()); // also prints "42"
+      console.log("DATA", data);
+    }
+
+    // const responseText = response;
 
     // Stores the conversation
-    res.send({ response: responseText });
+    res.send({ response: data });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Internal server error" });

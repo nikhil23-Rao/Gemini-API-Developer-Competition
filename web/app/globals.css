@@ -506,12 +506,13 @@ max-width: 900px;
   grid-gap: 100px;
   place-content: center;
   place-items: center;
+  row-gap: 160px;
 }
 
 @media (max-width: 400px) {
   .main {
-      grid-template-columns: 1fr !important;
-      width: 20px;
+  
+  row-gap: 80px;
   }
 }
 

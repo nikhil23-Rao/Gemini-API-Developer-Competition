@@ -14,9 +14,7 @@ export const getFlashcardsThroughImage = async (image: string) => {
 
   console.log(res);
 
-  console.log(
-    JSON.parse(res.data.response.candidates[0].content.parts[0].text),
-  );
+  console.log(JSON.parse(res.data.response));
 
-  return JSON.parse(res.data.response.candidates[0].content.parts[0].text);
+  return JSON.parse(res.data.response);
 };

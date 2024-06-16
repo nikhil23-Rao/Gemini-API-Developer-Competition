@@ -1,6 +1,6 @@
 import { Cardset } from "@/types/flashcard/Cardset";
 import { Flashcard } from "@/types/flashcard/Flashcard";
-import { Button } from "@mui/material";
+import { Badge, Button } from "@mui/material";
 
 interface IProps {
   set: Cardset;
@@ -33,7 +33,7 @@ export const SetView = ({
         padding: 20,
         cursor: "pointer",
         zoom: 0.8,
-        marginTop: 400,
+        marginTop: 360,
       }}
     >
       <figure
