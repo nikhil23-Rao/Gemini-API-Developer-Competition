@@ -1,8 +1,8 @@
 import { User } from "@/types/auth/User";
 import { Flashcard } from "@/types/flashcard/Flashcard";
 import db from "@/utils/initDB";
-import { addDoc, collection } from "@firebase/firestore";
-import { TextareaAutosize } from "@mui/material";
+import { addDoc, collection, doc, updateDoc } from "@firebase/firestore";
+import { TextField, TextareaAutosize } from "@mui/material";
 import { motion } from "framer-motion";
 
 interface IProps {
@@ -13,6 +13,9 @@ interface IProps {
   currentUser: User;
   chosenClass?: string;
   selectedUnits?: string[];
+  editMode?: boolean;
+  setdocid?: string;
+  setName: (name: string) => void;
 }
 
 export const EditFlashcards = ({
@@ -23,6 +26,9 @@ export const EditFlashcards = ({
   currentUser,
   chosenClass,
   selectedUnits,
+  editMode = false,
+  setName,
+  setdocid,
 }: IProps) => {
   return (
     <>
@@ -52,9 +58,27 @@ export const EditFlashcards = ({
       >
         <h1
           className="text-gradient-black"
-          style={{ fontSize: "4vw", marginTop: 130 }}
+          style={{ fontSize: "4vw", marginTop: 130, marginLeft: "-28%" }}
         >
-          Review: {name}
+          Review:{" "}
+          <TextareaAutosize
+            className="card-title"
+            value={name.length <= 16 ? name : name.substring(0, 16) + "..."}
+            style={{
+              border: "none",
+              outline: "none",
+              resize: "none",
+              width: "52vw",
+              fontSize: "4vw",
+              position: "absolute",
+              height: 20,
+              marginLeft: 20,
+            }}
+            maxRows={1}
+            onChange={(e) => {
+              setName(e.target.value);
+            }}
+          ></TextareaAutosize>
         </h1>
         {flashcards.map((card) => (
           <>
@@ -101,7 +125,9 @@ export const EditFlashcards = ({
                     outline: "none",
                     resize: "none",
                     width: "35vw",
+                    height: 20,
                   }}
+                  maxRows={1}
                   onChange={(e) => {
                     let oldFlashcards = [...flashcards];
                     const target: any = oldFlashcards.find(
@@ -125,12 +151,14 @@ export const EditFlashcards = ({
             </div>
           </>
         ))}
-        <div
-          style={{ marginTop: 20, cursor: "pointer" }}
-          className="text-gradient-black"
-        >
-          <i className="fa fa-arrow-down"></i> Generate More with AI
-        </div>
+        {editMode && (
+          <div
+            style={{ marginTop: 20, cursor: "pointer" }}
+            className="text-gradient-black"
+          >
+            <i className="fa fa-arrow-down"></i> Generate More with AI
+          </div>
+        )}
         <div
           style={{ marginTop: 20, cursor: "pointer" }}
           className="text-gradient-black"
@@ -153,20 +181,33 @@ export const EditFlashcards = ({
             position: "fixed",
           }}
           onClick={async () => {
-            await addDoc(collection(db, "flashcards"), {
-              createdById: currentUser?.id,
-              createdByDocId: currentUser?.docid,
-              flashcardSet: flashcards,
-              cardsetName: name,
-              class: chosenClass,
-              units: selectedUnits,
-              seed: `https://api.dicebear.com/8.x/identicon/svg?seed=${Math.floor(
-                Math.random() * 1000000,
-              ).toString()}`,
-            });
+            if (!editMode) {
+              const docid = await addDoc(collection(db, "flashcards"), {
+                createdById: currentUser?.id,
+                createdByDocId: currentUser?.docid,
+                flashcardSet: flashcards,
+                cardsetName: name,
+                class: chosenClass,
+                units: selectedUnits,
+                seed: `https://api.dicebear.com/8.x/identicon/svg?seed=${Math.floor(
+                  Math.random() * 1000000,
+                ).toString()}`,
+              });
+              await updateDoc(doc(db, "flashcards", docid.id), {
+                docid: docid.id,
+              });
 
-            setModal(false);
-            setFlashcards([]);
+              setModal(false);
+              setFlashcards([]);
+            } else {
+              await updateDoc(doc(db, "flashcards", setdocid as string), {
+                flashcardSet: flashcards,
+                cardsetName: name,
+              });
+              setModal(false);
+              setFlashcards([]);
+            }
+
             // firebase save
           }}
         >

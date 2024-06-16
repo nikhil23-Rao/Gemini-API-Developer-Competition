@@ -39,6 +39,7 @@ import { SetView } from "@/components/flashcards/SetView";
 
 export default function Flashcards() {
   const [modal, setModal] = useState(false);
+  const [editModal, setEditModal] = useState(false);
   const [openSet, setOpenSet] = useState(false);
   const [loading, setLoading] = useState(false);
   const [currentSetInView, setCurrentSetInView] = useState<Flashcard[]>([]);
@@ -53,6 +54,7 @@ export default function Flashcards() {
   const [imgPreview, setImgPreview] = useState("");
   const [progressView, setProgressView] = useState(0);
   const [selectedUnits, setSelectedUnits] = useState<string[]>([]);
+  const [id, setId] = useState<string>();
   const [userFlashCardSets, setUserFlashCardSets] = useState<any[]>([]);
   const [imported, setImported] = useState<string>();
   const [possibleUnits, setPossibleUnits] = useState<
@@ -130,6 +132,21 @@ export default function Flashcards() {
   }, [flashcards]);
 
   if (loading) return <ProcessingRequest />;
+  if (editModal)
+    return (
+      <EditFlashcards
+        currentUser={currentUser as User}
+        flashcards={flashcards}
+        name={name}
+        setFlashcards={setFlashcards}
+        chosenClass={chosenClass}
+        setModal={setEditModal}
+        selectedUnits={selectedUnits}
+        editMode={true}
+        setName={setName}
+        setdocid={id}
+      />
+    );
   if (flashcards.length > 0 && modal) {
     return (
       <EditFlashcards
@@ -137,6 +154,7 @@ export default function Flashcards() {
         flashcards={flashcards}
         name={name}
         setFlashcards={setFlashcards}
+        setName={setName}
         chosenClass={chosenClass}
         setModal={setModal}
         selectedUnits={selectedUnits}
@@ -464,7 +482,12 @@ export default function Flashcards() {
                 justifyContent: "center",
               }}
             >
-              <main className="main">
+              <main
+                className="main"
+                style={{
+                  height: 900,
+                }}
+              >
                 {userFlashCardSets
                   .filter(
                     (s) =>
@@ -474,14 +497,20 @@ export default function Flashcards() {
                       s.class.toLowerCase().includes(search.toLowerCase()),
                   )
                   .map((set) => (
-                    <SetView
-                      set={set}
-                      setCurrentCardInView={setCurrentCardInView}
-                      setCurrentSetInView={setCurrentSetInView}
-                      setOpenSet={setOpenSet}
-                      setProgressView={setProgressView}
-                      key={JSON.stringify(set)}
-                    />
+                    <>
+                      <SetView
+                        setName={setName}
+                        setId={setId}
+                        set={set}
+                        setCurrentCardInView={setCurrentCardInView}
+                        setCurrentSetInView={setCurrentSetInView}
+                        setOpenSet={setOpenSet}
+                        setProgressView={setProgressView}
+                        setEditModal={setEditModal}
+                        setFlashcards={setFlashcards}
+                        key={JSON.stringify(set)}
+                      />
+                    </>
                   ))}
               </main>
             </div>

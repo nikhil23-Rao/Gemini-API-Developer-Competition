@@ -1,12 +1,17 @@
 import { Cardset } from "@/types/flashcard/Cardset";
 import { Flashcard } from "@/types/flashcard/Flashcard";
+import { Button } from "@mui/material";
 
 interface IProps {
   set: Cardset;
   setCurrentSetInView: (i: Flashcard[]) => void;
   setCurrentCardInView: (i: Flashcard) => void;
   setOpenSet: (i: boolean) => void;
+  setEditModal: (i: boolean) => void;
   setProgressView: (i: number) => void;
+  setFlashcards?: (i: Flashcard[]) => void;
+  setId: (i: string) => void;
+  setName: (i: string) => void;
 }
 export const SetView = ({
   set,
@@ -14,6 +19,10 @@ export const SetView = ({
   setCurrentSetInView,
   setOpenSet,
   setProgressView,
+  setEditModal,
+  setFlashcards,
+  setId,
+  setName,
 }: IProps) => {
   return (
     <section
@@ -23,17 +32,19 @@ export const SetView = ({
         border: "2px solid #eee",
         padding: 20,
         cursor: "pointer",
-        marginTop: 50,
         zoom: 0.8,
-      }}
-      onClick={() => {
-        setCurrentSetInView([...set.flashcardSet]);
-        setCurrentCardInView([...set.flashcardSet][0]);
-        setOpenSet(true);
-        setProgressView(0);
+        marginTop: 400,
       }}
     >
-      <figure className="figure">
+      <figure
+        className="figure"
+        onClick={() => {
+          setCurrentSetInView([...set.flashcardSet]);
+          setCurrentCardInView([...set.flashcardSet][0]);
+          setOpenSet(true);
+          setProgressView(0);
+        }}
+      >
         <img
           className="img"
           style={{
@@ -43,6 +54,12 @@ export const SetView = ({
         />
       </figure>
       <article
+        onClick={() => {
+          setCurrentSetInView([...set.flashcardSet]);
+          setCurrentCardInView([...set.flashcardSet][0]);
+          setOpenSet(true);
+          setProgressView(0);
+        }}
         className="article"
         style={{
           paddingTop: 25,
@@ -67,6 +84,25 @@ export const SetView = ({
           Covers concepts on: {set.units.join(", ")}
         </p>
       </article>
+      <Button
+        style={{
+          position: "relative",
+          marginLeft: "84%",
+          marginTop: 20,
+          color: "#000",
+        }}
+        onClick={() => {
+          setName(set.cardsetName);
+          setId(set.docid);
+          if (setFlashcards) {
+            setFlashcards([...set.flashcardSet] as Flashcard[]);
+          }
+          setOpenSet(false);
+          setEditModal(true);
+        }}
+      >
+        <i className="fa fa-gear fa-2x"></i>
+      </Button>
     </section>
   );
 };

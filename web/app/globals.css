@@ -500,9 +500,10 @@ max-width: 900px;
 
 .main{
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  width: 50vw;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   grid-template-rows: 1fr 1fr 1fr;
-  grid-gap: 40px;
+  grid-gap: 100px;
   place-content: center;
   place-items: center;
 }
@@ -510,6 +511,7 @@ max-width: 900px;
 @media (max-width: 400px) {
   .main {
       grid-template-columns: 1fr !important;
+      width: 20px;
   }
 }
 

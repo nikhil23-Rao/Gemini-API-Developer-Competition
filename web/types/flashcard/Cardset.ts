@@ -8,4 +8,5 @@ export interface Cardset {
   flashcardSet: Array<Flashcard>;
   seed: string;
   units: string[];
+  docid: string;
 }

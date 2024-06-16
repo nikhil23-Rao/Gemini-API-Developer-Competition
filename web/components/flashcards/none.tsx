@@ -19,6 +19,7 @@ export const None = ({ setModal }: IProps) => {
           width: 400,
           borderRadius: 200,
           marginTop: 50,
+          marginBottom: 50,
           cursor: "pointer",
         }}
         onClick={() => setModal(true)}
