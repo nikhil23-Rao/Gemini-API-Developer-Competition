@@ -36,8 +36,8 @@ export const Flipper = ({
         isFlipped={cardFlipped}
         flipDirection="vertical"
         cardStyles={{
-          back: { height: 400, overflowY: "scroll" },
-          front: { height: 400, overflowY: "scroll" },
+          back: { height: 400, overflowY: "scroll", textAlign: "center" },
+          front: { height: 400, overflowY: "scroll", textAlign: "center" },
         }}
       >
         <div
@@ -173,13 +173,12 @@ export const Flipper = ({
         </div>
       </div>
       <div style={{ position: "absolute", bottom: 20, right: 20 }}>
-        <Button style={{ color: "#fff", backgroundColor: "#4255FF" }}>
+        <Button
+          style={{ color: "#fff", backgroundColor: "#4255FF" }}
+          href="https://quizlet.com/create-set"
+          target="_blank"
+        >
           Export to Quizlet
-        </Button>
-      </div>
-      <div style={{ position: "absolute", bottom: 20, left: 20 }}>
-        <Button style={{ color: "#fff", backgroundColor: "#8B4448" }}>
-          Edit Flashcards
         </Button>
       </div>
     </div>

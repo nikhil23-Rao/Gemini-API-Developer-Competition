@@ -205,7 +205,7 @@ export const EditFlashcards = ({
             } else {
               await updateDoc(doc(db, "flashcards", setdocid as string), {
                 flashcardSet: flashcards,
-                cardsetName: name,
+                cardsetName: name.length == 0 ? "New Set (edited)" : name,
               });
             }
             setName("");

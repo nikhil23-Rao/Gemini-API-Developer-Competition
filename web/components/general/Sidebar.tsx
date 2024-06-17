@@ -198,6 +198,8 @@ export const AppSidebar: React.FC = () => {
                     fontSize: 18,
                     color: "#000",
                     fontWeight: "bold",
+                    backgroundColor:
+                      window.location.pathname === l.link ? "#F1F0F0" : "",
                   }}
                   icon={
                     <i
