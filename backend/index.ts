@@ -55,6 +55,32 @@ export const generateFlashcards = async (req: Request, res: Response) => {
   }
 };
 
+export const getQuote = async (req: Request, res: Response) => {
+  try {
+    // Restore the previous context
+
+    const chat = fastModel.startChat({
+      history: [],
+      generationConfig: {
+        responseMimeType: "application/json",
+        // temperature: 1,
+        // topP: 0.95,
+      },
+    });
+
+    const { response } = await chat.sendMessage(
+      `Give me a random quote to inspire a student; Provide in json object like: {quote:""}; DO NOT USE MARKDOWN;`
+    );
+    const responseText = response;
+
+    // Stores the conversation
+    res.send({ response: responseText });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 export const generateUnit = async (req: Request, res: Response) => {
   try {
     const { ap } = req.body;
@@ -176,6 +202,10 @@ export const generateFlashcardsBasedOnPrompt = async (
 
 app.post("/flashcards", async (req: Request, res: Response) => {
   await generateFlashcards(req, res);
+});
+
+app.get("/quote", async (req: Request, res: Response) => {
+  await getQuote(req, res);
 });
 
 app.post("/get-AP-unit", async (req: Request, res: Response) => {

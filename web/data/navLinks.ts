@@ -21,7 +21,7 @@ export const NavLinks = [
   },
   {
     name: "Community",
-    link: "/home",
+    link: "/community",
     icon: "fa fa-users",
   },
   {
