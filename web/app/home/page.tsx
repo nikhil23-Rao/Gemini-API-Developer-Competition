@@ -8,13 +8,48 @@ import {
   ListItemText,
   TextareaAutosize,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { User } from "@/types/auth/User";
 import { setUser } from "@/utils/getCurrentUser";
 import { Splash } from "@/components/general/Splash";
 import { getHomeScreenQuote } from "@/api/getHomeScreenQuote";
+import {
+  ReactSketchCanvas,
+  type ReactSketchCanvasRef,
+} from "react-sketch-canvas";
+import { NewModal } from "@/components/general/newModal";
 
 export default function Dashboard() {
+  const canvasRef = useRef<ReactSketchCanvasRef>(null);
+  const [eraseMode, setEraseMode] = useState(false);
+  const [drawingModal, setDrawingModal] = useState(false);
+
+  const handleEraserClick = () => {
+    setEraseMode(true);
+    canvasRef.current?.eraseMode(true);
+  };
+
+  const handlePenClick = () => {
+    setEraseMode(false);
+    canvasRef.current?.eraseMode(false);
+  };
+
+  const handleUndoClick = () => {
+    canvasRef.current?.undo();
+  };
+
+  const handleRedoClick = () => {
+    canvasRef.current?.redo();
+  };
+
+  const handleClearClick = () => {
+    canvasRef.current?.clearCanvas();
+  };
+
+  const handleResetClick = () => {
+    canvasRef.current?.resetCanvas();
+  };
+
   function ordinal_suffix_of(i) {
     let j = i % 10,
       k = i % 100;
@@ -29,8 +64,11 @@ export default function Dashboard() {
     }
     return i + "th";
   }
+
   const [currentUser, setCurrentUser] = useState<User | null>();
   const [quote, setQuote] = useState("");
+  const nodeRef = useRef(null);
+
   const [todos, setTodos] = useState<
     Array<{ todo: string; checked: boolean; idx: number }>
   >([]);
@@ -45,6 +83,92 @@ export default function Dashboard() {
     // });
   }, []);
 
+  if (drawingModal)
+    return (
+      <>
+        {" "}
+        <NewModal modal={drawingModal} setModal={setDrawingModal}>
+          <div
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+              display: "flex",
+              flexDirection: "column",
+              marginTop: 100,
+            }}
+          >
+            <div style={{ display: "flex", flexDirection: "row" }}>
+              <Button
+                disabled={!eraseMode}
+                onClick={handlePenClick}
+                variant="outlined"
+              >
+                <i className="fa fa-paint-brush"></i>
+              </Button>
+              <Button
+                disabled={eraseMode}
+                onClick={handleEraserClick}
+                variant="outlined"
+              >
+                <i className="fa fa-eraser"></i>
+              </Button>
+              <div className="vr" />
+              <Button onClick={handleUndoClick} variant="outlined">
+                <i className="fa fa-undo"></i>
+              </Button>
+              <Button onClick={handleRedoClick} variant="outlined">
+                <i className="fa fa-rotate-right"></i>
+              </Button>
+              <Button onClick={handleClearClick} variant="outlined">
+                <i className="fa fa-minus"></i>
+              </Button>
+              <a href="/logo.png" download></a>
+              <Button
+                onClick={() => {
+                  async function saveBase64Image(base64Url, filename) {
+                    try {
+                      // Fetch the image data
+                      const response = await fetch(base64Url);
+                      const blob = await response.blob();
+
+                      // Create a URL for the Blob
+                      const blobUrl = URL.createObjectURL(blob);
+
+                      // Create an anchor element to download
+                      const link = document.createElement("a");
+                      link.href = blobUrl;
+                      link.download = filename; // Set the desired filename
+
+                      // Simulate a click to trigger the download
+                      document.body.appendChild(link);
+                      link.click();
+                      document.body.removeChild(link);
+                    } catch (error) {
+                      console.error("Error saving image:", error);
+                      // Handle the error (e.g., show an error message to the user)
+                    }
+                  }
+
+                  function saveFile() {
+                    // Create a Blob object containing the data to be saved.
+
+                    canvasRef.current?.exportImage("png").then((data) => {
+                      saveBase64Image(data, "vertexwhiteboard.png");
+                    });
+                  }
+
+                  saveFile();
+                }}
+                variant="outlined"
+              >
+                <i className="fa fa-save"></i>
+              </Button>
+            </div>
+            <ReactSketchCanvas width="80vw" height="80vh" ref={canvasRef} />
+          </div>
+        </NewModal>
+      </>
+    );
   if (!currentUser) return <Splash />;
   return (
     <>
@@ -132,7 +256,7 @@ export default function Dashboard() {
           style={{ marginLeft: "16%", marginBottom: 0, width: "75%" }}
         >
           <ul className="infographic-cards" style={{ marginTop: 50 }}>
-            <li className="color-1">
+            <li className="color-1" onClick={() => setDrawingModal(true)}>
               <i className="fa fa-paint-brush"></i>
               <h5>New Whiteboard</h5>
               <h6>Need a quick drawing? Open up a canvas.</h6>
@@ -265,8 +389,8 @@ export default function Dashboard() {
               </li>
 
               <li className="color-3" style={{ width: "100%" }}>
-                <i className="fa fa-check-square"></i>
-                <h5>My Tasks</h5>
+                <i className="fa fa-calendar mb-5"></i>
+                <h5>My Calendar</h5>
                 <h6>Keep track of upcoming tasks</h6>
                 <div
                   style={{
@@ -283,71 +407,7 @@ export default function Dashboard() {
                       alignItems: "center",
                     }}
                   >
-                    {todos.length == 0 && <p>No todos yet. Add one below.</p>}
-                    {todos.map((t, idx) => (
-                      <>
-                        <div
-                          style={{
-                            display: "flex",
-                            flexDirection: "row",
-                            padding: 15,
-                            alignItems: "center",
-                          }}
-                        >
-                          <ListItemText>
-                            <TextareaAutosize
-                              className="card-title"
-                              value={t.todo}
-                              style={{
-                                backgroundColor: "transparent",
-                                outline: "none",
-                                resize: "none",
-                                overflow: "hidden",
-                                textDecoration: t.checked ? "line-through" : "",
-                              }}
-                              maxRows={1}
-                              onChange={(e) => {
-                                let oldTodos = [...todos];
-                                const target: any = todos.find(
-                                  (c) => c.idx === idx,
-                                );
-
-                                const newTodo = {
-                                  todo: e.target.value,
-                                  checked: t.checked,
-                                  idx,
-                                };
-
-                                Object.assign(target, newTodo);
-
-                                setTodos([...todos]);
-                              }}
-                            ></TextareaAutosize>
-                          </ListItemText>
-                          <Checkbox
-                            checked={t.checked}
-                            color="success"
-                            onClick={() => {
-                              let oldTodos = [...todos];
-                              const target: any = todos.find(
-                                (c) => c.idx === idx,
-                              );
-
-                              const newTodo = {
-                                todo: t.todo,
-                                checked: !t.checked,
-                                idx,
-                              };
-
-                              Object.assign(target, newTodo);
-
-                              setTodos([...todos]);
-                            }}
-                            style={{ color: "#fff", marginTop: -20 }}
-                          />
-                        </div>
-                      </>
-                    ))}
+                    <h1>hey</h1>
                   </div>
                 </div>
                 <i
