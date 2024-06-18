@@ -509,6 +509,165 @@ max-width: 900px;
   row-gap: 160px;
 }
 
+.main{
+  display: grid;
+  width: 50vw;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-rows: 1fr 1fr 1fr;
+  grid-gap: 100px;
+  place-content: center;
+  place-items: center;
+  row-gap: 160px;
+}
+
+.main-dash{
+  display: grid;
+  width: 50vw;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-rows: 1fr 1fr;
+  grid-gap: 100px;
+  place-content: center;
+  place-items: center;
+  row-gap: 160px;
+}
+
+.infographic-cards {
+  width: 100%;
+  position: relative;
+  display: flex;
+  gap: 2%;
+  justify-content: center;
+  padding-left: 0;
+
+}
+.infographic-cards li {
+  list-style: none;
+  width: calc(100% /2);
+  height: 230px;
+  padding: 25px 30px;
+  background: #eee;
+  position: relative;
+  background-image: linear-gradient(to bottom right, #e9eaecda, #ffffff);
+  filter: drop-shadow(10px 10px 10px rgba(0, 0, 0, 0.25));
+  box-shadow: inset 2px 2px 2px white, inset -1px -1px 1px rgba(0, 0, 0, 0.25);
+  text-align: center;
+  display: inline-block;
+  margin-bottom: 25px;
+  border-radius: 20px;
+}
+.infographic-cards li h5{
+  font-size: 25px;
+  font-weight: 800;
+  margin-bottom: 15px;
+}
+.infographic-cards li h6{
+  font-size: 14px;
+  font-weight: 400;
+  margin-bottom: 0;
+}
+.infographic-cards li.color-1{
+  background: #8E2DE2;  /* fallback for old browsers */
+background: -webkit-linear-gradient(to right, #4A00E0, #8E2DE2);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to right, #4A00E0, #8E2DE2); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+color:#FFF;
+cursor: pointer;
+
+}
+
+.infographic-cards li.color-2{
+  border: 10px solid var(red);
+}
+
+.infographic-cards li.color-3{
+  background: #232526;  /* fallback for old browsers */
+background: -webkit-linear-gradient(to right, #414345, #232526);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to right, #414345, #232526); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+ height: 100%; 
+color: #FFF;
+
+}
+
+.infographic-cards li.color-4{
+  background: #FF416C;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #FF4B2B, #FF416C);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #FF4B2B, #FF416C); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+cursor: pointer;
+  
+  
+color: #FFF;
+
+  
+}
+
+
+.infographic-cards li i{
+  font-size: 35px;
+  margin-bottom: 15px;
+}
+.infographic-cards li.color-1 i{
+  color: var(red);
+}
+
+.infographic-cards li.color-2 i{
+  color: var(red);
+}
+
+.infographic-cards li.color-3 i{
+  color: var(--color-3);
+}
+
+.infographic-cards li.color-4 i{
+  color: var(red);
+}
+
+.number-box{
+  position: absolute;
+    bottom: 0;
+    padding: 15px;
+    font-size: 23px;
+    border-radius: 60px 60px 0 0;
+    width: 60px;
+    height: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    box-shadow: inset 0.25em 0.25em 0.25em rgba(0, 0, 0, 0.2), 0em 0.05em rgba(255, 255, 255, 0);
+    font-weight: 800;
+    color: #fff;
+}
+.infographic-cards li.color-1 .number-box{
+  background: var(red);
+}
+
+.infographic-cards li.color-2 .number-box{
+  background: var(red);
+}
+
+.infographic-cards li.color-3 .number-box{
+  background: var(--color-3);
+}
+
+.infographic-cards li.color-4 .number-box{
+  background: var(red);
+}
+
+@media screen and (max-width:991px){
+  .infographic-cards{
+      flex-wrap: wrap;
+  }
+  .infographic-cards li {
+      flex: 0 0 auto;
+      width: calc(100% /2.5);
+  }
+}
+@media screen and (max-width:578px){
+  
+  .infographic-cards li {
+      width: calc(100% /1);
+  }
+}
+
+
 @media (max-width: 400px) {
   .main {
   

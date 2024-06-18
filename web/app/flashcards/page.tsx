@@ -36,6 +36,7 @@ import { Flashcard } from "@/types/flashcard/Flashcard";
 import { NewModal } from "@/components/general/newModal";
 import { Flipper } from "@/components/flashcards/Flipper";
 import { SetView } from "@/components/flashcards/SetView";
+import { Splash } from "@/components/general/Splash";
 
 export default function Flashcards() {
   const [modal, setModal] = useState(false);
@@ -131,6 +132,9 @@ export default function Flashcards() {
     console.log(flashcards);
   }, [flashcards]);
 
+  if (typeof window === "undefined") {
+    return <Splash />;
+  }
   if (loading) return <ProcessingRequest />;
   if (editModal)
     return (
