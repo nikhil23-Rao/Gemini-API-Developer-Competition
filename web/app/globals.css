@@ -524,7 +524,7 @@ max-width: 900px;
   display: grid;
   width: 50vw;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  grid-template-rows: 1fr 1fr;
+  grid-template-rows: 1fr;
   grid-gap: 100px;
   place-content: center;
   place-items: center;
@@ -575,7 +575,11 @@ cursor: pointer;
 }
 
 .infographic-cards li.color-2{
-  border: 10px solid var(red);
+  background: #396afc;  /* fallback for old browsers */
+background: -webkit-linear-gradient(to right, #2948ff, #396afc);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to right, #2948ff, #396afc); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+color:#FFF;
+cursor: pointer;
 }
 
 .infographic-cards li.color-3{

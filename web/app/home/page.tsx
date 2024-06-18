@@ -59,7 +59,7 @@ export default function Dashboard() {
       >
         <div
           className="large-banner"
-          style={{ alignItems: "flex-start", width: "80%", marginLeft: "13%" }}
+          style={{ alignItems: "flex-start", width: "75%", marginLeft: "16%" }}
         >
           <p style={{ fontWeight: "bold", color: "#fff" }}>
             <i className="fa fa-calendar mb-5 mr-2"></i>{" "}
@@ -127,7 +127,10 @@ export default function Dashboard() {
             </Button>
           </div>
         </div>
-        <div className="container" style={{ marginLeft: "13%" }}>
+        <div
+          className="main-dash"
+          style={{ marginLeft: "16%", marginBottom: 0, width: "75%" }}
+        >
           <ul className="infographic-cards" style={{ marginTop: 50 }}>
             <li className="color-1">
               <i className="fa fa-paint-brush"></i>
@@ -143,7 +146,7 @@ export default function Dashboard() {
               <i className="fa fa-pencil-square mt-4"></i>
             </li>
 
-            <li className="color-1">
+            <li className="color-2">
               <i className="fa fa-user"></i>
               <h5>View Profile</h5>
               <h6>Need a quick drawing? Open up a canvas.</h6>
@@ -154,15 +157,113 @@ export default function Dashboard() {
 
         <div
           style={{
-            width: "45%",
-            marginLeft: "-20%",
+            marginLeft: "16%",
+            marginTop: 40,
           }}
         >
-          <div className="container">
-            <ul
-              className="infographic-cards"
-              style={{ marginTop: 50, width: "100%" }}
-            >
+          <div className="main-dash container">
+            <ul className="infographic-cards" style={{ width: "100%" }}>
+              <li className="color-3" style={{ width: "100%" }}>
+                <i className="fa fa-check-square"></i>
+                <h5>My Tasks</h5>
+                <h6>Keep track of upcoming tasks</h6>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      padding: 15,
+                      alignItems: "center",
+                    }}
+                  >
+                    {todos.length == 0 && <p>No todos yet. Add one below.</p>}
+                    {todos.map((t, idx) => (
+                      <>
+                        <div
+                          style={{
+                            display: "flex",
+                            flexDirection: "row",
+                            padding: 15,
+                            alignItems: "center",
+                          }}
+                        >
+                          <ListItemText>
+                            <TextareaAutosize
+                              className="card-title"
+                              value={t.todo}
+                              style={{
+                                backgroundColor: "transparent",
+                                outline: "none",
+                                resize: "none",
+                                overflow: "hidden",
+                                textDecoration: t.checked ? "line-through" : "",
+                              }}
+                              maxRows={1}
+                              onChange={(e) => {
+                                let oldTodos = [...todos];
+                                const target: any = todos.find(
+                                  (c) => c.idx === idx,
+                                );
+
+                                const newTodo = {
+                                  todo: e.target.value,
+                                  checked: t.checked,
+                                  idx,
+                                };
+
+                                Object.assign(target, newTodo);
+
+                                setTodos([...todos]);
+                              }}
+                            ></TextareaAutosize>
+                          </ListItemText>
+                          <Checkbox
+                            checked={t.checked}
+                            color="success"
+                            onClick={() => {
+                              let oldTodos = [...todos];
+                              const target: any = todos.find(
+                                (c) => c.idx === idx,
+                              );
+
+                              const newTodo = {
+                                todo: t.todo,
+                                checked: !t.checked,
+                                idx,
+                              };
+
+                              Object.assign(target, newTodo);
+
+                              setTodos([...todos]);
+                            }}
+                            style={{ color: "#fff", marginTop: -20 }}
+                          />
+                        </div>
+                      </>
+                    ))}
+                  </div>
+                </div>
+                <i
+                  className="fa fa-plus-circle mt-4"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => {
+                    let oldTodos = [...todos];
+                    oldTodos.push({
+                      todo: "New todo",
+                      checked: false,
+                      idx: oldTodos.length,
+                    });
+                    setTodos(oldTodos);
+                  }}
+                ></i>
+              </li>
+
               <li className="color-3" style={{ width: "100%" }}>
                 <i className="fa fa-check-square"></i>
                 <h5>My Tasks</h5>
