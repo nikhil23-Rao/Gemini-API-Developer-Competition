@@ -18,11 +18,14 @@ import {
   type ReactSketchCanvasRef,
 } from "react-sketch-canvas";
 import { NewModal } from "@/components/general/newModal";
+import { HexColorPicker } from "react-colorful";
 
 export default function Dashboard() {
   const canvasRef = useRef<ReactSketchCanvasRef>(null);
   const [eraseMode, setEraseMode] = useState(false);
   const [drawingModal, setDrawingModal] = useState(false);
+  const [showColorPicker, setShowColorPicker] = useState(false);
+  const [color, setColor] = useState("#000000");
 
   const handleEraserClick = () => {
     setEraseMode(true);
@@ -88,6 +91,17 @@ export default function Dashboard() {
       <>
         {" "}
         <NewModal modal={drawingModal} setModal={setDrawingModal}>
+          {showColorPicker && (
+            <HexColorPicker
+              onChange={setColor}
+              style={{
+                position: "absolute",
+                top: 160,
+                right: 850,
+                zIndex: 100,
+              }}
+            />
+          )}
           <div
             style={{
               alignItems: "center",
@@ -104,6 +118,20 @@ export default function Dashboard() {
                 variant="outlined"
               >
                 <i className="fa fa-paint-brush"></i>
+              </Button>
+              <Button
+                onClick={() => setShowColorPicker(!showColorPicker)}
+                variant="outlined"
+              >
+                <div
+                  style={{
+                    width: 20,
+                    height: 20,
+                    borderRadius: 20,
+                    backgroundColor: color,
+                    cursor: "pointer",
+                  }}
+                ></div>
               </Button>
               <Button
                 disabled={eraseMode}
@@ -164,7 +192,12 @@ export default function Dashboard() {
                 <i className="fa fa-save"></i>
               </Button>
             </div>
-            <ReactSketchCanvas width="80vw" height="80vh" ref={canvasRef} />
+            <ReactSketchCanvas
+              width="80vw"
+              height="80vh"
+              ref={canvasRef}
+              strokeColor={color}
+            />
           </div>
         </NewModal>
       </>
@@ -271,9 +304,9 @@ export default function Dashboard() {
             </li>
 
             <li className="color-2">
-              <i className="fa fa-user"></i>
-              <h5>View Profile</h5>
-              <h6>Need a quick drawing? Open up a canvas.</h6>
+              <i className="fa fa-folder"></i>
+              <h5>My Folders</h5>
+              <h6>See saved generation for classes.</h6>
               <i className="fa fa-arrow-circle-right mt-4"></i>
             </li>
           </ul>

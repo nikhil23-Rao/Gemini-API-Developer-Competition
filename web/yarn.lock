@@ -4075,6 +4075,11 @@ react-card-flip@^1.2.3:
   resolved "https://registry.npmjs.org/react-card-flip/-/react-card-flip-1.2.3.tgz"
   integrity sha512-yb8+yyeTf5UVlZ/FC78XDgxYeWhgA0W28OXNB31LjiFeY1Y2kFhLP7bFiED4KNaRWKjaafT74G38XU53a6eIuw==
 
+react-colorful@^5.6.1:
+  version "5.6.1"
+  resolved "https://registry.npmjs.org/react-colorful/-/react-colorful-5.6.1.tgz"
+  integrity sha512-1exovf0uGTGyq5mXQT0zgQ80uvj2PCwvF8zY1RN9/vbJVSjSo3fsB/4L3ObbF7u70NduSiK4xu4Y6q1MHoUGEw==
+
 react-dom@*, "react-dom@^0.14.0 || ^15.0.0-0 || ^16.0.0 || ^17.0.0", "react-dom@^0.14.0 || ^15.0.0-rc || ^16.0.0-rc || ^16.0.0", "react-dom@^0.14.0 || ^15.0.1 || ^16.0.0", react-dom@^16.0.0, "react-dom@^16.0.0 || ^17 || ^18", "react-dom@^16.8.0 || ^17 || ^18", "react-dom@^16.8.0 || ^17.0.0 || ^18.0.0", "react-dom@^17.0.0 || ^18.0.0", react-dom@^18.0.0, react-dom@^18.2.0, "react-dom@>= 16.8.0", react-dom@>=15.0.0, react-dom@>=15.x, react-dom@>=16, react-dom@>=16.0.0, react-dom@>=16.5.2, react-dom@>=16.6.0, react-dom@>=16.8.0:
   version "18.2.0"
   resolved "https://registry.npmjs.org/react-dom/-/react-dom-18.2.0.tgz"
