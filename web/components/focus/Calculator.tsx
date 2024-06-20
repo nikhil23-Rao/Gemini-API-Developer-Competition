@@ -25,7 +25,7 @@ export const Calculator = () => {
   return (
     <>
       <Draggable>
-        <div className="calculator">
+        <div className="calculator" style={{ cursor: "grab" }}>
           <input
             type="text"
             className="form-control mb-3"
