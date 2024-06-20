@@ -1215,7 +1215,6 @@ body {
 }
 
 button {
-  padding: 15px;
   font-size: 20px;
   border: none;
   outline: none;
@@ -1252,13 +1251,4 @@ button.clear:hover {
 
 button.wide {
   grid-column: span 2;
-}
-
-h1 {
-  text-align: center;
-  color: green;
-}
-
-h2 {
-  text-align: center;
 }
