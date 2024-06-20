@@ -29,6 +29,7 @@ import { CountdownCircleTimer } from "react-countdown-circle-timer";
 import CountdownTimer from "@/components/focus/TimerIntegration";
 import Script from "next/script";
 import Draggable from "react-draggable";
+import { Calculator } from "@/components/focus/Calculator";
 
 export default function Dashboard() {
   const canvasRef = useRef<ReactSketchCanvasRef>(null);
@@ -36,6 +37,7 @@ export default function Dashboard() {
   const [focusMode, setFocusMode] = useState(false);
   const [drawingModal, setDrawingModal] = useState(false);
   const [showDesmos, setShowDesmos] = useState(false);
+  const [showCalculator, setShowCalculator] = useState(false);
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [color, setColor] = useState("#000000");
 
@@ -174,7 +176,12 @@ export default function Dashboard() {
                     marginTop: 40,
                   }}
                 >
-                  <Button variant="contained" style={{ marginRight: 10 }}>
+                  <Button
+                    variant="contained"
+                    style={{ marginRight: 10 }}
+                    color={showCalculator ? "success" : "primary"}
+                    onClick={() => setShowCalculator(!showCalculator)}
+                  >
                     <i className="fa fa-calculator fa-2x"></i>
                   </Button>
 
@@ -195,6 +202,7 @@ export default function Dashboard() {
                     <i className="fa fa-image fa-2x"></i>
                   </Button>
                 </div>
+                {showCalculator && <Calculator></Calculator>}
                 {showDesmos && (
                   <Draggable onStart={() => console.log("drag")}>
                     <div

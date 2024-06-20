@@ -22,6 +22,8 @@
     "@types/react-dom": "^18.2.14",
     "autoprefixer": "^10.4.16",
     "axios": "^1.7.2",
+    "basic-react-calculator": "^0.13.0",
+    "bootstrap": "^5.3.3",
     "desmos": "^1.5.4",
     "desmos-react": "^1.2.0",
     "eslint": "8.41.0",
