@@ -19,13 +19,27 @@ import {
 } from "react-sketch-canvas";
 import { NewModal } from "@/components/general/newModal";
 import { HexColorPicker } from "react-colorful";
+import auth from "@/utils/initAuth";
+import { getIdToken } from "firebase/auth";
+import Lottie from "lottie-react";
+import animation from "../../public/zen.json";
+import { motion } from "framer-motion";
+import { ReactTyped } from "react-typed";
+import { CountdownCircleTimer } from "react-countdown-circle-timer";
+import CountdownTimer from "@/components/focus/TimerIntegration";
+import Script from "next/script";
+import Draggable from "react-draggable";
 
 export default function Dashboard() {
   const canvasRef = useRef<ReactSketchCanvasRef>(null);
   const [eraseMode, setEraseMode] = useState(false);
+  const [focusMode, setFocusMode] = useState(false);
   const [drawingModal, setDrawingModal] = useState(false);
+  const [showDesmos, setShowDesmos] = useState(false);
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [color, setColor] = useState("#000000");
+
+  // google calendar stuff
 
   const handleEraserClick = () => {
     setEraseMode(true);
@@ -85,6 +99,134 @@ export default function Dashboard() {
     //   setQuote(res);
     // });
   }, []);
+
+  function convertSecondsToTime(seconds) {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secondsRemaining = seconds % 60;
+
+    const timeString = `${hours}:${minutes}:${secondsRemaining}`;
+
+    return timeString;
+  }
+
+  if (focusMode) {
+    return (
+      <>
+        <motion.div
+          initial={{ opacity: 0.5 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          animate={{ scale: [0.95, 1] }}
+          style={{
+            backgroundColor: "#000",
+            width: "100vw",
+            height: "100vh",
+            background: `url("https://images.pexels.com/photos/290595/pexels-photo-290595.jpeg?cs=srgb&dl=pexels-pixabay-290595.jpg&fm=jpg") no-repeat center center fixed`,
+            backgroundSize: "cover",
+            overflow: "hidden",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: -1,
+            backgroundPosition: "0px",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              backdropFilter: "blur(5px)",
+              height: "100%",
+              width: "100%",
+            }}
+          >
+            <div style={{ position: "absolute", top: 40 }}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexDirection: "column",
+                }}
+              >
+                <ReactTyped
+                  strings={[
+                    "The Zen...",
+                    "My Session...",
+                    "Focusing...",
+                    "Reaching Success...",
+                  ]}
+                  typeSpeed={190}
+                  style={{
+                    color: "#fff",
+                    fontSize: "2vw",
+                    fontWeight: "bold",
+                    top: 0,
+                  }}
+                  loop
+                />
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    marginTop: 40,
+                  }}
+                >
+                  <Button variant="contained" style={{ marginRight: 10 }}>
+                    <i className="fa fa-calculator fa-2x"></i>
+                  </Button>
+
+                  <Button
+                    variant="contained"
+                    style={{ marginRight: 10 }}
+                    color={showDesmos ? "success" : "primary"}
+                    onClick={() => setShowDesmos(!showDesmos)}
+                  >
+                    <i className="fa fa-line-chart fa-2x"></i>
+                  </Button>
+
+                  <Button variant="contained" style={{ marginRight: 10 }}>
+                    <i className="fa fa-check-circle fa-2x"></i>
+                  </Button>
+
+                  <Button variant="contained">
+                    <i className="fa fa-image fa-2x"></i>
+                  </Button>
+                </div>
+                {showDesmos && (
+                  <Draggable onStart={() => console.log("drag")}>
+                    <div
+                      style={{
+                        width: 700,
+                        height: 400,
+                        padding: 20,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        cursor: "grab",
+                      }}
+                    >
+                      <iframe
+                        src="https://www.desmos.com/calculator/"
+                        style={{
+                          width: "100%",
+                          height: 350,
+                          borderRadius: 20,
+                        }}
+                      ></iframe>
+                    </div>
+                  </Draggable>
+                )}
+              </div>
+            </div>
+          </div>
+          <div style={{}}></div>
+        </motion.div>
+      </>
+    );
+  }
 
   if (drawingModal)
     return (
@@ -279,6 +421,7 @@ export default function Dashboard() {
                 borderRadius: 200,
               }}
               variant="contained"
+              onClick={() => setFocusMode(true)}
             >
               Enter Focus Mode
             </Button>
