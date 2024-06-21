@@ -112,6 +112,17 @@ export default function Dashboard() {
     return timeString;
   }
 
+  function formatAMPM(date) {
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    var ampm = hours >= 12 ? "PM" : "AM";
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    minutes = minutes < 10 ? "0" + minutes : minutes;
+    var strTime = hours + ":" + minutes + " " + ampm;
+    return strTime;
+  }
+
   if (focusMode) {
     return (
       <>
@@ -132,8 +143,46 @@ export default function Dashboard() {
             justifyContent: "center",
             zIndex: -1,
             backgroundPosition: "0px",
+            overflowY: "scroll",
           }}
         >
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              marginTop: 40,
+              zIndex: 40000000,
+              position: "absolute",
+              top: -20,
+              left: 20,
+            }}
+          >
+            <Button
+              variant="contained"
+              style={{ marginRight: 10 }}
+              color={showCalculator ? "success" : "primary"}
+              onClick={() => setShowCalculator(!showCalculator)}
+            >
+              <i className="fa fa-calculator fa-2x"></i>
+            </Button>
+
+            <Button
+              variant="contained"
+              style={{ marginRight: 10 }}
+              color={showDesmos ? "success" : "primary"}
+              onClick={() => setShowDesmos(!showDesmos)}
+            >
+              <i className="fa fa-line-chart fa-2x"></i>
+            </Button>
+
+            <Button variant="contained" style={{ marginRight: 10 }}>
+              <i className="fa fa-check-circle fa-2x"></i>
+            </Button>
+
+            <Button variant="contained">
+              <i className="fa fa-image fa-2x"></i>
+            </Button>
+          </div>
           <div
             style={{
               display: "flex",
@@ -153,55 +202,15 @@ export default function Dashboard() {
                   flexDirection: "column",
                 }}
               >
-                <ReactTyped
-                  strings={[
-                    "The Zen...",
-                    "My Session...",
-                    "Focusing...",
-                    "Reaching Success...",
-                  ]}
-                  typeSpeed={190}
-                  style={{
-                    color: "#fff",
-                    fontSize: "2vw",
-                    fontWeight: "bold",
-                    top: 0,
-                  }}
-                  loop
-                />
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    marginTop: 40,
-                  }}
-                >
-                  <Button
-                    variant="contained"
-                    style={{ marginRight: 10 }}
-                    color={showCalculator ? "success" : "primary"}
-                    onClick={() => setShowCalculator(!showCalculator)}
+                <div className="glass" style={{ padding: 50 }}>
+                  <h1
+                    className="text-gradient-clock"
+                    style={{ fontSize: "6vw", fontFamily: "serif" }}
                   >
-                    <i className="fa fa-calculator fa-2x"></i>
-                  </Button>
-
-                  <Button
-                    variant="contained"
-                    style={{ marginRight: 10 }}
-                    color={showDesmos ? "success" : "primary"}
-                    onClick={() => setShowDesmos(!showDesmos)}
-                  >
-                    <i className="fa fa-line-chart fa-2x"></i>
-                  </Button>
-
-                  <Button variant="contained" style={{ marginRight: 10 }}>
-                    <i className="fa fa-check-circle fa-2x"></i>
-                  </Button>
-
-                  <Button variant="contained">
-                    <i className="fa fa-image fa-2x"></i>
-                  </Button>
+                    {formatAMPM(new Date())}
+                  </h1>
                 </div>
+
                 <div style={{ position: "absolute" }}>
                   {showCalculator && <Calculator></Calculator>}
                   {showDesmos && (
@@ -230,6 +239,14 @@ export default function Dashboard() {
                   )}
                 </div>
                 <Timer></Timer>
+                <Button
+                  variant="contained"
+                  style={{ marginTop: 50 }}
+                  color="error"
+                  onClick={() => setFocusMode(false)}
+                >
+                  Exit Focus Mode
+                </Button>
               </div>
             </div>
           </div>

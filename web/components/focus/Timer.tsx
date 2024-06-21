@@ -74,21 +74,38 @@ export const Timer = () => {
           alignItems: "center",
           justifyContent: "center",
           flexDirection: "column",
-          marginTop: 50,
+          marginTop: 20,
         }}
       >
         <div className="controls">
           <div className="break-container">
-            <h5
-              id="break-label"
+            <div
+              className="glass"
               style={{
-                textTransform: "uppercase",
-                letterSpacing: 2,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                height: 40,
+                textAlign: "center",
+                borderRadius: 200,
+                paddingLeft: 10,
+                paddingRight: 10,
+                marginBottom: 15,
               }}
-              className="text-gradient-timer"
             >
-              Break Length
-            </h5>
+              <h5
+                id="break-label"
+                style={{
+                  textTransform: "uppercase",
+                  letterSpacing: 2,
+                  top: 10,
+                  position: "relative",
+                }}
+                className="text-gradient-timer "
+              >
+                Break Length
+              </h5>
+            </div>
             <div className="btn-group">
               <button
                 onClick={() => changeTime(1, "Break")}
@@ -128,16 +145,34 @@ export const Timer = () => {
             </div>
           </div>
           <div className="session-container">
-            <h5
-              id="session-label"
+            <div
+              className="glass"
               style={{
-                textTransform: "uppercase",
-                letterSpacing: 2,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                height: 40,
+                textAlign: "center",
+                borderRadius: 200,
+                paddingLeft: 10,
+                paddingRight: 10,
+                marginBottom: 15,
               }}
-              className="text-gradient-timer"
             >
-              Session Length
-            </h5>
+              <h5
+                id="session-label"
+                style={{
+                  textTransform: "uppercase",
+                  letterSpacing: 2,
+                  top: 10,
+                  position: "relative",
+                }}
+                className="text-gradient-timer "
+              >
+                Session Length
+              </h5>
+            </div>
+
             <div className="btn-group">
               <button
                 onClick={() => changeTime(1, "Session")}

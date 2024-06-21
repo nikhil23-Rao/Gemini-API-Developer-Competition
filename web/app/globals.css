@@ -126,7 +126,30 @@
   background: -webkit-linear-gradient(to right, #004e92, #000428);  /* Chrome 10-25, Safari 5.1-6 */
   background: linear-gradient(to right, #004e92, #000428); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   
+   
   
+
+  
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+
+  padding-top: 0.5em;
+  margin-top: -0.5em;
+
+  padding-bottom: 0.5em;
+  margin-bottom: -0.5em;
+
+  font-weight: 600;
+}
+
+
+.text-gradient-clock,
+.text-gradient-clock > * {
+  
+  background: #232526;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #414345, #232526);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #414345, #232526); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+   
   
 
   
