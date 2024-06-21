@@ -26,10 +26,10 @@ import animation from "../../public/zen.json";
 import { motion } from "framer-motion";
 import { ReactTyped } from "react-typed";
 import { CountdownCircleTimer } from "react-countdown-circle-timer";
-import CountdownTimer from "@/components/focus/TimerIntegration";
 import Script from "next/script";
 import Draggable from "react-draggable";
 import { Calculator } from "@/components/focus/Calculator";
+import { Timer } from "@/components/focus/Timer";
 
 export default function Dashboard() {
   const canvasRef = useRef<ReactSketchCanvasRef>(null);
@@ -202,31 +202,34 @@ export default function Dashboard() {
                     <i className="fa fa-image fa-2x"></i>
                   </Button>
                 </div>
-                {showCalculator && <Calculator></Calculator>}
-                {showDesmos && (
-                  <Draggable onStart={() => console.log("drag")}>
-                    <div
-                      style={{
-                        width: 700,
-                        height: 400,
-                        padding: 20,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        cursor: "grab",
-                      }}
-                    >
-                      <iframe
-                        src="https://www.desmos.com/calculator/"
+                <div style={{ position: "absolute" }}>
+                  {showCalculator && <Calculator></Calculator>}
+                  {showDesmos && (
+                    <Draggable onStart={() => console.log("drag")}>
+                      <div
                         style={{
-                          width: "100%",
-                          height: 350,
-                          borderRadius: 20,
+                          width: 700,
+                          height: 400,
+                          padding: 20,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          cursor: "grab",
                         }}
-                      ></iframe>
-                    </div>
-                  </Draggable>
-                )}
+                      >
+                        <iframe
+                          src="https://www.desmos.com/calculator/"
+                          style={{
+                            width: "100%",
+                            height: 350,
+                            borderRadius: 20,
+                          }}
+                        ></iframe>
+                      </div>
+                    </Draggable>
+                  )}
+                </div>
+                <Timer></Timer>
               </div>
             </div>
           </div>
