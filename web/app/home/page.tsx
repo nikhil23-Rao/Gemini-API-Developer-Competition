@@ -13,21 +13,13 @@ import { useEffect, useRef, useState } from "react";
 import { User } from "@/types/auth/User";
 import { setUser } from "@/utils/getCurrentUser";
 import { Splash } from "@/components/general/Splash";
-import { getHomeScreenQuote } from "@/api/getHomeScreenQuote";
 import {
   ReactSketchCanvas,
   type ReactSketchCanvasRef,
 } from "react-sketch-canvas";
 import { NewModal } from "@/components/general/newModal";
 import { HexColorPicker } from "react-colorful";
-import auth from "@/utils/initAuth";
-import { getIdToken } from "firebase/auth";
-import Lottie from "lottie-react";
-import animation from "../../public/zen.json";
 import { motion } from "framer-motion";
-import { ReactTyped } from "react-typed";
-import { CountdownCircleTimer } from "react-countdown-circle-timer";
-import Script from "next/script";
 import Draggable from "react-draggable";
 import { Calculator } from "@/components/focus/Calculator";
 import { Timer } from "@/components/focus/Timer";
@@ -189,7 +181,19 @@ export default function Dashboard() {
               <i className="fa fa-check-circle fa-2x"></i>
             </Button>
 
-            <Button variant="contained">
+            <Button
+              variant="contained"
+              onClick={() => {
+                axios
+                  .get(
+                    "https://api.api-ninjas.com/v1/randomimage?category=city&x-api-key=" +
+                      process.env.NEXT_PUBLIC_API_KEY_IMG,
+                  )
+                  .then((res) => {
+                    setImg("data:image/png;base64," + res.data);
+                  });
+              }}
+            >
               <i className="fa fa-image fa-2x"></i>
             </Button>
           </div>
@@ -260,7 +264,6 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
-          <div style={{}}></div>
         </motion.div>
       </>
     );
@@ -395,7 +398,7 @@ export default function Dashboard() {
         }}
         initial={{ opacity: 0.9 }}
         whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
+        transition={{ duration: 0.5 }}
         animate={{ scale: [0.85, 1] }}
       >
         <div
