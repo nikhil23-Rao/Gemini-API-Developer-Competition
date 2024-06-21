@@ -1,5 +1,6 @@
 "use client";
 
+// data:image/jpeg;base64,
 import { AppSidebar } from "@/components/general/Sidebar";
 import "../globals.css";
 import {
@@ -30,6 +31,7 @@ import Script from "next/script";
 import Draggable from "react-draggable";
 import { Calculator } from "@/components/focus/Calculator";
 import { Timer } from "@/components/focus/Timer";
+import axios from "axios";
 
 export default function Dashboard() {
   const canvasRef = useRef<ReactSketchCanvasRef>(null);
@@ -40,6 +42,7 @@ export default function Dashboard() {
   const [showCalculator, setShowCalculator] = useState(false);
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [color, setColor] = useState("#000000");
+  const [img, setImg] = useState("");
 
   // google calendar stuff
 
@@ -97,9 +100,16 @@ export default function Dashboard() {
   }, []);
 
   useEffect(() => {
-    // getHomeScreenQuote().then((res) => {
-    //   setQuote(res);
-    // });
+    if (img.length === 0) {
+      axios
+        .get(
+          "https://api.api-ninjas.com/v1/randomimage?category=city&x-api-key=" +
+            process.env.NEXT_PUBLIC_API_KEY_IMG,
+        )
+        .then((res) => {
+          setImg("data:image/png;base64," + res.data);
+        });
+    }
   }, []);
 
   function convertSecondsToTime(seconds) {
@@ -135,7 +145,7 @@ export default function Dashboard() {
             backgroundColor: "#000",
             width: "100vw",
             height: "100vh",
-            background: `url("https://images.pexels.com/photos/290595/pexels-photo-290595.jpeg?cs=srgb&dl=pexels-pixabay-290595.jpg&fm=jpg") no-repeat center center fixed`,
+            background: `url("${img}") no-repeat center center fixed`,
             backgroundSize: "cover",
             overflow: "hidden",
             display: "flex",
@@ -376,13 +386,17 @@ export default function Dashboard() {
   return (
     <>
       <AppSidebar />
-      <div
+      <motion.div
         style={{
           alignItems: "center",
           justifyContent: "center",
           display: "flex",
           flexDirection: "column",
         }}
+        initial={{ opacity: 0.9 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
+        animate={{ scale: [0.85, 1] }}
       >
         <div
           className="large-banner"
@@ -631,7 +645,7 @@ export default function Dashboard() {
             </ul>
           </div>
         </div>
-      </div>
+      </motion.div>
     </>
   );
 }
