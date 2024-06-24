@@ -25,6 +25,7 @@ import ComponentTab from "@/components/general/Tabs";
 import { Searching } from "@/components/general/Searching";
 import { getPercentMatch } from "@/api/getPercentMatch";
 import { getResourcesAPI } from "@/api/getResourcesAPI";
+import { getSearchQueryThroughImg } from "@/api/getSearchQueryThroughImg";
 
 export default function QuestionGenerator() {
   const [questionGenerateModal, setQuestionGenerateModal] = useState(false);
@@ -41,6 +42,7 @@ export default function QuestionGenerator() {
   const [snackBar, setSnackBar] = useState(false);
   const [resourcesListModal, setResourcesListModal] = useState(false);
   const [searchedResources, setSearchedResources] = useState<any>([]);
+  const [imported, setImported] = useState("");
 
   const onImageChange = (event) => {
     if (event.target.files && event.target.files[0]) {
@@ -51,6 +53,7 @@ export default function QuestionGenerator() {
         const base64String = (reader.result as string)
           .replace("data:", "")
           .replace(/^.+,/, "");
+        setImported(base64String);
 
         // console.log(base64String);
         // Logs data:<type>;base64,wL2dvYWwgbW9yZ...
@@ -205,84 +208,25 @@ export default function QuestionGenerator() {
               ))}
             </Select>
           </FormControl>
-          <Box>
-            <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-              <Tabs
-                value={tabValue}
-                onChange={(e, value) => {
-                  setTabValue(value);
-                }}
-                aria-label="basic tabs example"
-              >
-                {resourceOptions.map((obj, idx) => (
-                  <ComponentTab t={obj} idx={idx} />
-                ))}
-              </Tabs>
-            </Box>
-          </Box>
-          {tabValue === 0 ? (
-            <>
-              <TextareaAutosize
-                id="outlined-basic"
-                placeholder="Enter a unit name, a quesion type, etc..."
-                value={prompt}
-                style={{
-                  width: 400,
-                  marginTop: 20,
-                  height: 100,
-                  border: "2px solid #CBCBCB",
-                  borderRadius: 5,
-                  resize: "none",
-                  padding: 20,
-                }}
-                onChange={(e) => {
-                  setPrompt(e.currentTarget.value);
-                }}
-                color={prompt.length > 0 ? "primary" : "error"}
-              />
-            </>
-          ) : (
-            <>
-              {" "}
-              <div style={{ marginTop: 40 }}>
-                <label htmlFor="group_image">
-                  <h1
-                    style={{
-                      cursor: "pointer",
-                      textTransform: "uppercase",
-                      color: "#1B596F",
-                      border: "1px solid #eee",
-                      padding: 15,
-                      borderRadius: 200,
-                    }}
-                  >
-                    Select A File
-                  </h1>
-                </label>
-                <input
-                  type="file"
-                  onChange={onImageChange}
-                  className="filetype custom-file-upload"
-                  id="group_image"
-                  accept="image/*"
-                />
-              </div>
-              <p style={{ marginTop: 20 }}> Chosen File:</p>
-              {imgPreview.length > 0 && (
-                <img
-                  src={imgPreview}
-                  style={{
-                    width: 440,
-                    height: 440,
-                    marginTop: 20,
-                    border: "2px solid lightblue",
-                    borderRadius: 15,
-                  }}
-                  alt=""
-                />
-              )}
-            </>
-          )}
+
+          <TextareaAutosize
+            id="outlined-basic"
+            placeholder="Enter a unit name, a quesion type, etc..."
+            value={prompt}
+            style={{
+              width: 400,
+              marginTop: 20,
+              height: 100,
+              border: "2px solid #CBCBCB",
+              borderRadius: 5,
+              resize: "none",
+              padding: 20,
+            }}
+            onChange={(e) => {
+              setPrompt(e.currentTarget.value);
+            }}
+            color={prompt.length > 0 ? "primary" : "error"}
+          />
 
           <Snackbar
             open={snackBar}
@@ -313,8 +257,8 @@ export default function QuestionGenerator() {
               } else {
                 console.log("Cmon cuh");
                 setSnackBar(true);
-                setSearching(false);
               }
+              setSearching(false);
             }}
           >
             <span

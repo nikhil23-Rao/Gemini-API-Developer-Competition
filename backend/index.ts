@@ -6,6 +6,7 @@ import {
   HarmBlockThreshold,
   HarmCategory,
 } from "@google/generative-ai";
+const removeMd = require("remove-markdown");
 const cors = require("cors");
 
 import fetch from "node-fetch";
@@ -276,6 +277,39 @@ export const validationBasedOnPrompt = async (req: Request, res: Response) => {
   }
 };
 
+export const resourceImgQuery = async (req: Request, res: Response) => {
+  try {
+    const { chosenClass, image } = req.body;
+
+    // Restore the previous context
+
+    const chat = model.startChat({
+      history: [],
+      safetySettings,
+    });
+
+    const result = await chat.sendMessageStream([
+      `DO NOT USE MARKDOWN WHEN RETURNING RESULT FOR ANY JSON AT ALL; IF THE IMAGE IS NOT RELATED TO ${chosenClass}, PLEASE RETURN A JSON OBJECT SAYING {match:false}; ELSE: Based on the concepts related to ${chosenClass}, in the image, give an example google search query that I can type to find problems similar to the one in the image; Give answer as json such as {searchQuery:""}; DO NOT USE MARKDOWN WHEN RETURNING RESULT FOR ANY JSON AT ALL;`,
+      { inlineData: { data: image, mimeType: "image/png" } },
+    ]);
+
+    let data = "";
+    for await (const chunk of result.stream) {
+      console.log(chunk.text());
+      data = data.concat(chunk.text()); // also prints "42"
+      console.log("DATA", removeMd(data));
+    }
+
+    // const responseText = response;
+
+    // Stores the conversation
+    res.send({ response: removeMd(data) });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 app.post("/flashcards", async (req: Request, res: Response) => {
   await generateFlashcards(req, res);
 });
@@ -305,6 +339,10 @@ app.post("/resourcefinder", async (req: Request, res: Response) => {
 
 app.post("/validation", async (req: Request, res: Response) => {
   await validationBasedOnPrompt(req, res);
+});
+
+app.post("/resourceimgquery", async (req: Request, res: Response) => {
+  await resourceImgQuery(req, res);
 });
 
 app.listen(port, () => {
