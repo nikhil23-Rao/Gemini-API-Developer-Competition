@@ -8,6 +8,7 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  Snackbar,
   Tabs,
   TextField,
   TextareaAutosize,
@@ -21,6 +22,9 @@ import { User } from "@/types/auth/User";
 import { setUser } from "@/utils/getCurrentUser";
 import { ResourceContent } from "@/types/questiongenerate/ResourceContent";
 import ComponentTab from "@/components/general/Tabs";
+import { Searching } from "@/components/general/Searching";
+import { getPercentMatch } from "@/api/getPercentMatch";
+import { getResourcesAPI } from "@/api/getResourcesAPI";
 
 export default function QuestionGenerator() {
   const [questionGenerateModal, setQuestionGenerateModal] = useState(false);
@@ -33,6 +37,10 @@ export default function QuestionGenerator() {
   const [tabValue, setTabValue] = useState(0);
   const [prompt, setPrompt] = useState("");
   const [imgPreview, setImgPreview] = useState("");
+  const [searching, setSearching] = useState(false);
+  const [snackBar, setSnackBar] = useState(false);
+  const [resourcesListModal, setResourcesListModal] = useState(false);
+  const [searchedResources, setSearchedResources] = useState<any>([]);
 
   const onImageChange = (event) => {
     if (event.target.files && event.target.files[0]) {
@@ -54,6 +62,80 @@ export default function QuestionGenerator() {
   useEffect(() => {
     setUser(setCurrentUser);
   }, []);
+
+  useEffect(() => {
+    console.log(searchedResources);
+  }, [searchedResources]);
+
+  if (resourcesListModal) {
+    return (
+      <NewModal modal={resourcesListModal} setModal={setResourcesListModal}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexDirection: "column",
+          }}
+        >
+          <h1
+            className="text-gradient-black"
+            style={{ fontSize: "4vw", marginTop: 120 }}
+          >
+            {chosenClass}: {content}
+          </h1>
+
+          <div
+            style={{
+              marginTop: 80,
+            }}
+          >
+            {searchedResources.map((r) => (
+              <>
+                <div
+                  className="card"
+                  style={{
+                    width: 400,
+                    height: "100%",
+                    marginBottom: 40,
+                    fontWeight: "bold",
+                    padding: 20,
+                    minHeight: 140,
+                  }}
+                >
+                  {r.title}{" "}
+                  <i
+                    className="fa fa-folder"
+                    style={{
+                      position: "absolute",
+                      marginTop: 70,
+                      zoom: 1.4,
+                      cursor: "pointer",
+                    }}
+                  ></i>{" "}
+                  <div>
+                    <a href={r.link} target="_blank">
+                      <i
+                        className="fa fa-arrow-circle-right"
+                        style={{
+                          cursor: "pointer",
+                          zoom: 1.4,
+                        }}
+                      ></i>
+                    </a>
+                  </div>
+                </div>
+              </>
+            ))}
+          </div>
+        </div>
+      </NewModal>
+    );
+  }
+
+  if (searching) {
+    return <Searching></Searching>;
+  }
 
   if (questionGenerateModal) {
     return (
@@ -201,6 +283,14 @@ export default function QuestionGenerator() {
               )}
             </>
           )}
+
+          <Snackbar
+            open={snackBar}
+            anchorOrigin={{ vertical: "top", horizontal: "left" }}
+            autoHideDuration={10000}
+            onClose={() => setSnackBar(false)}
+            message="Unrelated Search Detected. Please try again with a proper search..."
+          />
           <button
             className={"primary-effect"}
             style={{
@@ -208,7 +298,24 @@ export default function QuestionGenerator() {
               borderRadius: 200,
               marginTop: 50,
             }}
-            onClick={async () => {}}
+            onClick={async () => {
+              setSearching(true);
+              const res = await getPercentMatch(prompt, chosenClass);
+              if (parseInt(res.percentMatch) > 50) {
+                const state = await getResourcesAPI(
+                  `${chosenClass}: ${content} on "${prompt}"`,
+                );
+                setSearchedResources(state);
+                setSearching(false);
+                setResourcesListModal(true);
+                setResourceModal(false);
+                console.log("Will call API further");
+              } else {
+                console.log("Cmon cuh");
+                setSnackBar(true);
+                setSearching(false);
+              }
+            }}
           >
             <span
               style={{

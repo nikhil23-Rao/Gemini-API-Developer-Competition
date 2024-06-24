@@ -264,7 +264,7 @@ export const validationBasedOnPrompt = async (req: Request, res: Response) => {
     });
 
     const { response } = await chat.sendMessage(
-      `Give me a number ranging from 1 to 100 (1 being not a suitable match, 100 being relatable content match) for "${input}" when related to "${className}"; Return answer in JSON as so: [{percentMatch:""}]; DO NOT USE MARKDOWN`
+      `Give me a number ranging from 1 to 100 (1 being not a suitable match, 100 being relatable content match) for "${input}" when related to "${className}"; DO NOT USE MARKDOWN; Return answer in JSON as so: {percentMatch:}`
     );
     const responseText = response;
 
@@ -298,7 +298,7 @@ app.post("/flashcardImage", async (req: Request, res: Response) => {
 
 app.post("/resourcefinder", async (req: Request, res: Response) => {
   const { query } = req.body;
-  const firstPage = await getFirstPage(`${query} type:pdf`);
+  const firstPage = await getFirstPage(query);
 
   res.send(firstPage);
 });
