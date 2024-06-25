@@ -277,6 +277,38 @@ export const validationBasedOnPrompt = async (req: Request, res: Response) => {
   }
 };
 
+export const generateMCQFromPrompt = async (req: Request, res: Response) => {
+  try {
+    const { length, chosenClass, style, topic } = req.body;
+
+    // Restore the previous context
+
+    const chat = model.startChat({
+      history: [],
+      safetySettings,
+    });
+
+    const result = await chat.sendMessageStream([
+      `Create a ${length} question MCQ set of ${style} questions on ${topic} in ${chosenClass}; Return answer in JSON in this form: [{question:"", options:[""], correctAnswerOption:"", correctAnswerExplanation:"", wrongChoiceExplanations:[""]}]; ONLY APPLY MARKDOWN TO MATH SYMBOLS, NOT JSON STRUCTURE.`,
+    ]);
+
+    let data = "";
+    for await (const chunk of result.stream) {
+      console.log(chunk.text());
+      data = data.concat(chunk.text()); // also prints "42"
+      console.log("DATA", data);
+    }
+
+    // const responseText = response;
+
+    // Stores the conversation
+    res.send({ response: removeMd(data) });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 app.post("/flashcards", async (req: Request, res: Response) => {
   await generateFlashcards(req, res);
 });
@@ -306,6 +338,10 @@ app.post("/resourcefinder", async (req: Request, res: Response) => {
 
 app.post("/validation", async (req: Request, res: Response) => {
   await validationBasedOnPrompt(req, res);
+});
+
+app.post("/mcqprompt", async (req: Request, res: Response) => {
+  await generateMCQFromPrompt(req, res);
 });
 
 app.listen(port, () => {

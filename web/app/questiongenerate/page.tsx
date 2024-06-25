@@ -25,7 +25,7 @@ import ComponentTab from "@/components/general/Tabs";
 import { Searching } from "@/components/general/Searching";
 import { getPercentMatch } from "@/api/getPercentMatch";
 import { getResourcesAPI } from "@/api/getResourcesAPI";
-import { getSearchQueryThroughImg } from "@/api/getSearchQueryThroughImg";
+import { NumberInput } from "@/components/general/NumberInput";
 
 export default function QuestionGenerator() {
   const [questionGenerateModal, setQuestionGenerateModal] = useState(false);
@@ -33,6 +33,7 @@ export default function QuestionGenerator() {
   const [chosenClass, setChosenClass] = useState("");
   const [currentUser, setCurrentUser] = useState<User | null>();
   const [resourceContent] = useState(ResourceContent);
+  const [quizTypes] = useState(["MCQ", "FRQ"]);
   const [content, setContent] = useState("");
   const [resourceOptions] = useState(["User Input", "Import"]);
   const [tabValue, setTabValue] = useState(0);
@@ -43,6 +44,7 @@ export default function QuestionGenerator() {
   const [resourcesListModal, setResourcesListModal] = useState(false);
   const [searchedResources, setSearchedResources] = useState<any>([]);
   const [imported, setImported] = useState("");
+  const [length, setLength] = useState<number | null>();
 
   const onImageChange = (event) => {
     if (event.target.files && event.target.files[0]) {
@@ -146,7 +148,168 @@ export default function QuestionGenerator() {
         modal={questionGenerateModal}
         setModal={setQuestionGenerateModal}
       >
-        <h1>hey</h1>
+        <div
+          style={{
+            height: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexDirection: "column",
+          }}
+        >
+          <h1
+            className="text-gradient-black"
+            style={{ fontSize: "4vw", marginTop: 120 }}
+          >
+            Question Generator
+          </h1>
+          <FormControl style={{ width: 400, marginTop: 60, marginBottom: 20 }}>
+            <InputLabel id="demo-simple-select-label">
+              Class Related To
+            </InputLabel>
+            <Select
+              // color={chosenClass.length > 0 ? "primary" : "error"}
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={chosenClass}
+              onChange={(e) => {
+                setChosenClass(e.target.value);
+              }}
+            >
+              {currentUser?.selectedClasses.map((c, idx) => (
+                <MenuItem value={c} key={idx}>
+                  {c}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          <FormControl style={{ width: 400, marginTop: 10, marginBottom: 20 }}>
+            <InputLabel id="demo-simple-select-label">Content</InputLabel>
+            <Select
+              // color={chosenClass.length > 0 ? "primary" : "error"}
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={content}
+              onChange={(e) => {
+                setContent(e.target.value);
+              }}
+            >
+              {quizTypes.map((c, idx) => (
+                <MenuItem value={c} key={idx}>
+                  {c}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          <NumberInput
+            value={length as number}
+            placeholder="How many questions do you want..."
+            setValue={setLength}
+          />
+          <Box>
+            <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+              <Tabs
+                value={tabValue}
+                onChange={(e, value) => {
+                  setTabValue(value);
+                }}
+                aria-label="basic tabs example"
+              >
+                {["Manual", "Import"].map((obj, idx) => (
+                  <ComponentTab t={obj} idx={idx} />
+                ))}
+              </Tabs>
+            </Box>
+          </Box>
+          {tabValue === 0 ? (
+            <TextareaAutosize
+              id="outlined-basic"
+              placeholder="Topic... (Enter a unit name, a quesion type, etc)"
+              value={prompt}
+              style={{
+                width: 400,
+                marginTop: 20,
+                height: 100,
+                border: "2px solid #CBCBCB",
+                borderRadius: 5,
+                resize: "none",
+                padding: 20,
+              }}
+              onChange={(e) => {
+                setPrompt(e.currentTarget.value);
+              }}
+              color={prompt.length > 0 ? "primary" : "error"}
+            />
+          ) : (
+            <>
+              {" "}
+              <div style={{ marginTop: 20, textAlign: "center" }}>
+                <label htmlFor="group_image">
+                  <h1
+                    style={{
+                      cursor: "pointer",
+                      textTransform: "uppercase",
+                      color: "#1B596F",
+                      border: "1px solid #eee",
+                      padding: 15,
+                      borderRadius: 200,
+                    }}
+                  >
+                    Select A File
+                  </h1>
+                </label>
+                <input
+                  type="file"
+                  onChange={onImageChange}
+                  className="filetype custom-file-upload"
+                  id="group_image"
+                  accept="image/*"
+                />
+                <p style={{ marginTop: 20 }}> Chosen File:</p>
+                {imgPreview.length > 0 && (
+                  <img
+                    src={imgPreview}
+                    style={{
+                      width: 440,
+                      height: 440,
+                      marginTop: 20,
+                      border: "2px solid lightblue",
+                      borderRadius: 15,
+                    }}
+                    alt=""
+                  />
+                )}
+              </div>
+            </>
+          )}
+
+          <Snackbar
+            open={snackBar}
+            anchorOrigin={{ vertical: "top", horizontal: "left" }}
+            autoHideDuration={10000}
+            onClose={() => setSnackBar(false)}
+            message="Unrelated Search Detected. Please try again with a proper search..."
+          />
+          <button
+            className={"primary-effect"}
+            style={{
+              width: 400,
+              borderRadius: 200,
+              marginTop: 50,
+            }}
+            onClick={async () => {}}
+          >
+            <span
+              style={{
+                cursor: "pointer",
+              }}
+            >
+              Generate
+            </span>
+          </button>
+        </div>
       </NewModal>
     );
   }
