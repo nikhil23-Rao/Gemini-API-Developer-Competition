@@ -2,6 +2,9 @@
 
 import { AppSidebar } from "@/components/general/Sidebar";
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   Box,
   Button,
   FormControl,
@@ -26,6 +29,7 @@ import { Searching } from "@/components/general/Searching";
 import { getPercentMatch } from "@/api/getPercentMatch";
 import { getResourcesAPI } from "@/api/getResourcesAPI";
 import { NumberInput } from "@/components/general/NumberInput";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { ProcessingRequest } from "@/components/general/ProcessingRequest";
 import { getMCQ } from "@/api/getMCQ";
 
@@ -44,6 +48,7 @@ export default function QuestionGenerator() {
   const [searching, setSearching] = useState(false);
   const [snackBar, setSnackBar] = useState(false);
   const [resourcesListModal, setResourcesListModal] = useState(false);
+  const [quizModal, setQuizModal] = useState(true);
   const [searchedResources, setSearchedResources] = useState<any>([]);
   const [imported, setImported] = useState("");
   const [length, setLength] = useState<number | null>();
@@ -51,6 +56,8 @@ export default function QuestionGenerator() {
   const [style, setStyle] = useState<
     "Easy" | "Moderate" | "Difficult" | "AP Styled"
   >("Easy");
+  const [problemSetName, setProblemSetName] = useState("New Problem Set");
+  const [status, setStatus] = useState<"public" | "private">();
 
   const onImageChange = (event) => {
     if (event.target.files && event.target.files[0]) {
@@ -78,6 +85,114 @@ export default function QuestionGenerator() {
     console.log(searchedResources);
   }, [searchedResources]);
 
+  if (quizModal) {
+    return (
+      <NewModal modal={quizModal} setModal={setQuizModal}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexDirection: "column",
+          }}
+        >
+          <h1
+            className="text-gradient-black"
+            style={{ fontSize: "4vw", marginTop: 120 }}
+          >
+            {problemSetName}
+          </h1>
+          <TextField
+            style={{ width: "40%", marginTop: 80 }}
+            placeholder="Problem Set Name..."
+            InputProps={{ sx: { paddingLeft: 2 } }}
+            value={problemSetName}
+            onChange={(e) => setProblemSetName(e.target.value)}
+          ></TextField>
+          <Accordion style={{ width: "80%", marginTop: 40 }}>
+            <AccordionSummary
+              id="panel-header"
+              aria-controls="panel-content"
+              expandIcon={<i className="fa fa-angle-down fa-2x"></i>}
+            >
+              View Generated Questions
+            </AccordionSummary>
+            <AccordionDetails>
+              <h1 style={{ fontWeight: "bold", fontSize: 30 }}>Question #1</h1>
+              <h1 className="mt-5" style={{ fontWeight: "bold" }}>
+                Which of the following is NOT true?
+              </h1>
+              <ul>
+                <li>
+                  Option A
+                  <i
+                    className="fa fa-check ml-2"
+                    style={{ color: "green" }}
+                  ></i>
+                </li>
+                <p style={{ color: "gray" }}>Answer explanation</p>
+                <li>
+                  Option B
+                  <i className="fa fa-close ml-2" style={{ color: "red" }}></i>
+                </li>
+                <p style={{ color: "gray" }}>Answer explanation</p>
+              </ul>
+            </AccordionDetails>
+          </Accordion>
+          <div
+            style={{
+              marginTop: 40,
+              display: "flex",
+              flexDirection: "row",
+              marginLeft: 20,
+            }}
+          >
+            <div
+              style={{
+                padding: 20,
+                border:
+                  status === "public" ? "5px solid #1F1F58" : "1px solid #eee",
+                transition: "0.1s ease-in",
+                borderRadius: 20,
+                textAlign: "center",
+                cursor: "pointer",
+              }}
+              onClick={() => setStatus("public")}
+            >
+              <img src="/marketplace.png" alt="" />
+              <h1 style={{ fontSize: "1.3vw", fontWeight: "bold" }}>
+                Add to Marketplace
+              </h1>
+              <p style={{ marginTop: 20 }}>
+                Publish these questions to all users to access.
+              </p>
+            </div>
+            <div
+              style={{
+                padding: 20,
+                border:
+                  status === "private" ? "5px solid #1F1F58" : "1px solid #eee",
+                transition: "0.1s ease-in",
+                borderRadius: 20,
+                textAlign: "center",
+                cursor: "pointer",
+                marginLeft: 40,
+              }}
+              onClick={() => setStatus("private")}
+            >
+              <img src="/lock.png" alt="" />
+              <h1 style={{ fontSize: "1.3vw", fontWeight: "bold" }}>
+                Private Problem Set
+              </h1>
+              <p style={{ marginTop: 20 }}>
+                Only you will be able to see the questions generated.
+              </p>
+            </div>
+          </div>
+        </div>
+      </NewModal>
+    );
+  }
   if (resourcesListModal) {
     return (
       <NewModal modal={resourcesListModal} setModal={setResourcesListModal}>
