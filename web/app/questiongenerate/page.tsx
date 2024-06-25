@@ -26,6 +26,8 @@ import { Searching } from "@/components/general/Searching";
 import { getPercentMatch } from "@/api/getPercentMatch";
 import { getResourcesAPI } from "@/api/getResourcesAPI";
 import { NumberInput } from "@/components/general/NumberInput";
+import { ProcessingRequest } from "@/components/general/ProcessingRequest";
+import { getMCQ } from "@/api/getMCQ";
 
 export default function QuestionGenerator() {
   const [questionGenerateModal, setQuestionGenerateModal] = useState(false);
@@ -45,6 +47,10 @@ export default function QuestionGenerator() {
   const [searchedResources, setSearchedResources] = useState<any>([]);
   const [imported, setImported] = useState("");
   const [length, setLength] = useState<number | null>();
+  const [processing, setProcessing] = useState(false);
+  const [style, setStyle] = useState<
+    "Easy" | "Moderate" | "Difficult" | "AP Styled"
+  >("Easy");
 
   const onImageChange = (event) => {
     if (event.target.files && event.target.files[0]) {
@@ -138,6 +144,10 @@ export default function QuestionGenerator() {
     );
   }
 
+  if (processing) {
+    return <ProcessingRequest></ProcessingRequest>;
+  }
+
   if (searching) {
     return <Searching></Searching>;
   }
@@ -200,6 +210,35 @@ export default function QuestionGenerator() {
                   {c}
                 </MenuItem>
               ))}
+            </Select>
+          </FormControl>
+
+          <FormControl style={{ width: 400, marginTop: 10, marginBottom: 20 }}>
+            <InputLabel id="demo-simple-select-label">
+              Question Style
+            </InputLabel>
+            <Select
+              // color={chosenClass.length > 0 ? "primary" : "error"}
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={style}
+              onChange={(e) => {
+                setStyle(e.target.value as any);
+              }}
+            >
+              {[
+                "Easy",
+                "Moderate",
+                "Difficult",
+                chosenClass.includes("AP ") ? "AP Styled" : undefined,
+              ].map((c, idx) => {
+                if (c)
+                  return (
+                    <MenuItem value={c} key={idx}>
+                      {c}
+                    </MenuItem>
+                  );
+              })}
             </Select>
           </FormControl>
 
@@ -299,7 +338,22 @@ export default function QuestionGenerator() {
               borderRadius: 200,
               marginTop: 50,
             }}
-            onClick={async () => {}}
+            onClick={async () => {
+              setProcessing(true);
+              const res = await getPercentMatch(prompt, chosenClass);
+              if (parseInt(res.percentMatch) > 50) {
+                const mcq = await getMCQ(
+                  length as number,
+                  prompt,
+                  style,
+                  chosenClass,
+                );
+                console.log(mcq);
+              } else {
+                setSnackBar(true);
+              }
+              setProcessing(false);
+            }}
           >
             <span
               style={{

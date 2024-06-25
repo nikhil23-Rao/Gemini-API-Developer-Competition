@@ -289,7 +289,7 @@ export const generateMCQFromPrompt = async (req: Request, res: Response) => {
     });
 
     const result = await chat.sendMessageStream([
-      `Create a ${length} question MCQ set of ${style} questions on ${topic} in ${chosenClass}; Return answer in JSON in this form: [{question:"", options:[""], correctAnswerOption:"", correctAnswerExplanation:"", wrongChoiceExplanations:[""]}]; ONLY APPLY MARKDOWN TO MATH SYMBOLS, NOT JSON STRUCTURE.`,
+      `Create a ${length} question MCQ set of ${style} questions on ${topic} in ${chosenClass}; Return answer in JSON in this form: [{'question':"", 'options':[""], 'correctAnswerOption':"", 'correctAnswerExplanation':"", 'wrongChoiceExplanations':[""]}]; DO NOT USE MARKDOWN IN RESPONSE;`,
     ]);
 
     let data = "";
@@ -302,7 +302,7 @@ export const generateMCQFromPrompt = async (req: Request, res: Response) => {
     // const responseText = response;
 
     // Stores the conversation
-    res.send({ response: removeMd(data) });
+    res.send({ response: JSON.parse(data) });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Internal server error" });
