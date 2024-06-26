@@ -48,11 +48,12 @@ export default function QuestionGenerator() {
   const [searching, setSearching] = useState(false);
   const [snackBar, setSnackBar] = useState(false);
   const [resourcesListModal, setResourcesListModal] = useState(false);
-  const [quizModal, setQuizModal] = useState(true);
+  const [quizModal, setQuizModal] = useState(false);
   const [searchedResources, setSearchedResources] = useState<any>([]);
   const [imported, setImported] = useState("");
   const [length, setLength] = useState<number | null>();
   const [processing, setProcessing] = useState(false);
+  const [generatedQuestions, setGeneratedQuestions] = useState();
   const [style, setStyle] = useState<
     "Easy" | "Moderate" | "Difficult" | "AP Styled"
   >("Easy");
@@ -118,25 +119,55 @@ export default function QuestionGenerator() {
               View Generated Questions
             </AccordionSummary>
             <AccordionDetails>
-              <h1 style={{ fontWeight: "bold", fontSize: 30 }}>Question #1</h1>
-              <h1 className="mt-5" style={{ fontWeight: "bold" }}>
-                Which of the following is NOT true?
-              </h1>
-              <ul>
-                <li>
-                  Option A
-                  <i
-                    className="fa fa-check ml-2"
-                    style={{ color: "green" }}
-                  ></i>
-                </li>
-                <p style={{ color: "gray" }}>Answer explanation</p>
-                <li>
-                  Option B
-                  <i className="fa fa-close ml-2" style={{ color: "red" }}></i>
-                </li>
-                <p style={{ color: "gray" }}>Answer explanation</p>
-              </ul>
+              {(generatedQuestions as any).map((q) => (
+                <>
+                  <div style={{ marginBottom: 40 }}>
+                    <h1
+                      style={{
+                        fontWeight: "bold",
+                        fontSize: 30,
+                        marginTop: 20,
+                      }}
+                    >
+                      Question #{q.questionNumber}
+                    </h1>
+                    <h1 className="mt-5" style={{ fontWeight: "bold" }}>
+                      {q.question}
+                    </h1>
+                    <ul>
+                      {q.optionsWithoutLetter.map((o, idx) => {
+                        return (
+                          <>
+                            <li>
+                              {o}
+                              <i
+                                className={`fa fa-${
+                                  q.correctAnswerOption === o
+                                    ? "check"
+                                    : "close"
+                                } ml-2`}
+                                style={{
+                                  color:
+                                    q.correctAnswerOption === o
+                                      ? "green"
+                                      : "red",
+                                }}
+                              ></i>
+                            </li>
+                            <p style={{ color: "gray" }}>
+                              {
+                                Object.values(q.answerChoiceExplanations)[
+                                  idx
+                                ] as any
+                              }
+                            </p>
+                          </>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                </>
+              ))}
             </AccordionDetails>
           </Accordion>
           <div
@@ -145,6 +176,7 @@ export default function QuestionGenerator() {
               display: "flex",
               flexDirection: "row",
               marginLeft: 20,
+              marginBottom: 140,
             }}
           >
             <div
@@ -189,6 +221,27 @@ export default function QuestionGenerator() {
               </p>
             </div>
           </div>
+          <button
+            className={"primary-effect"}
+            style={{
+              width: 400,
+              borderRadius: 200,
+              bottom: 50,
+              cursor: "pointer",
+              position: "fixed",
+            }}
+            onClick={async () => {
+              // firebase save
+            }}
+          >
+            <span
+              style={{
+                cursor: "pointer",
+              }}
+            >
+              Save
+            </span>
+          </button>
         </div>
       </NewModal>
     );
@@ -463,7 +516,9 @@ export default function QuestionGenerator() {
                   style,
                   chosenClass,
                 );
-                console.log(mcq);
+                setGeneratedQuestions(mcq);
+                setQuestionGenerateModal(false);
+                setQuizModal(true);
               } else {
                 setSnackBar(true);
               }

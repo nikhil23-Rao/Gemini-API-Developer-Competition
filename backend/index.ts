@@ -289,7 +289,7 @@ export const generateMCQFromPrompt = async (req: Request, res: Response) => {
     });
 
     const result = await chat.sendMessageStream([
-      `Create a ${length} question MCQ set of ${style} questions on ${topic} in ${chosenClass}; Return answer in JSON in this form: [{'question':"", 'options':[""], 'correctAnswerOption':"", 'correctAnswerExplanation':"", 'wrongChoiceExplanations':[""]}]; DO NOT USE MARKDOWN IN RESPONSE;`,
+      `Create a ${length} question MCQ set of ${style} questions on ${topic} in ${chosenClass}; Return answer in JSON in this form: [{'question':"", 'questionNumber':"", 'optionsWithoutLetter':[""], 'correctAnswerOption':"", 'answerChoiceExplanations':{first:"", second:"", (continue rest)}}]; DO NOT USE MARKDOWN IN RESPONSE; MAKE IT POSSIBLE TO USE JSON.PARSE() ON THIS ARRAY;`,
     ]);
 
     let data = "";
