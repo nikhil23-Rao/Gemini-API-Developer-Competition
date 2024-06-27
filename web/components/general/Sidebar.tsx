@@ -18,6 +18,7 @@ import { Switch } from "../sidebar/Switch";
 import "font-awesome/css/font-awesome.min.css";
 import { NavLinks } from "@/data/navLinks";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 type Theme = "light" | "dark";
 
@@ -78,6 +79,7 @@ export const AppSidebar: React.FC = () => {
   const [rtl, setRtl] = React.useState(false);
   const [hasImage, setHasImage] = React.useState(false);
   const [theme, setTheme] = React.useState<Theme>("light");
+  const router = useRouter();
 
   // handle on RTL change event
   const handleRTLChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -238,7 +240,10 @@ export const AppSidebar: React.FC = () => {
               {NavLinks.slice(6, 8).map((l, idx) => (
                 <MenuItem
                   key={idx}
-                  href={l.link}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    router.push(l.link);
+                  }}
                   style={{
                     fontSize: 18,
                     color: "#000",
