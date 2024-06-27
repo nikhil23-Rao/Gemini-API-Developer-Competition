@@ -1438,3 +1438,8 @@ button.wide {
 .arrow-btn:before {
   content: "→";
 }
+
+
+.hoverunderline:hover {
+text-decoration: underline;
+}

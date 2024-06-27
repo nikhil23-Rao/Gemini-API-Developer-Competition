@@ -42,8 +42,10 @@ import {
   where,
 } from "@firebase/firestore";
 import db from "@/utils/initDB";
+import { useRouter } from "next/navigation";
 
 export default function QuestionGenerator() {
+  const router = useRouter();
   const [questionGenerateModal, setQuestionGenerateModal] = useState(false);
   const [resourceModal, setResourceModal] = useState(false);
   const [chosenClass, setChosenClass] = useState("");
@@ -825,10 +827,15 @@ export default function QuestionGenerator() {
                       <div className="flex flex-1 flex-col p-6">
                         <div className="flex-1">
                           <header className="mb-2">
-                            <h2 className="text-xl font-extrabold leading-snug">
+                            <h2 className="hoverunderline text-xl font-extrabold leading-snug">
                               <a
+                                style={{
+                                  cursor: "pointer",
+                                }}
                                 className="text-slate-900 focus-visible:outline-none focus-visible:ring focus-visible:ring-indigo-300"
-                                href="#0"
+                                onClick={() => {
+                                  router.push(`/ps/${pset.docid}`);
+                                }}
                               >
                                 {pset.problemSetName}
                               </a>
