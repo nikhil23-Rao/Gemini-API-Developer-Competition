@@ -834,6 +834,9 @@ export default function QuestionGenerator() {
                               </a>
                             </h2>
                           </header>
+                          <p className="mb-4">
+                            {pset.public ? "💬 Public" : "🔒   Private"}
+                          </p>
                           <div className="mb-8 text-sm text-slate-600">
                             <p>{pset.problemSetDescription}</p>
                           </div>
