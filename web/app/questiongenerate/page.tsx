@@ -61,7 +61,7 @@ export default function QuestionGenerator() {
   const [quizModal, setQuizModal] = useState(false);
   const [searchedResources, setSearchedResources] = useState<any>([]);
   const [imported, setImported] = useState("");
-  const [length, setLength] = useState<number | null>();
+  const [length, setLength] = useState<number | null>(1);
   const [processing, setProcessing] = useState(false);
   const [generatedQuestions, setGeneratedQuestions] = useState();
   const [style, setStyle] = useState<

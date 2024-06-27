@@ -190,7 +190,7 @@ export const AppSidebar: React.FC = () => {
               </Typography>
             </div>
             <Menu menuItemStyles={menuItemStyles} style={{ marginLeft: -7 }}>
-              {NavLinks.slice(0, 5).map((l, idx) => (
+              {NavLinks.slice(0, 6).map((l, idx) => (
                 <MenuItem
                   key={idx}
                   href={l.link}
@@ -235,7 +235,7 @@ export const AppSidebar: React.FC = () => {
             </div>
 
             <Menu menuItemStyles={menuItemStyles} style={{ marginLeft: -7 }}>
-              {NavLinks.slice(5, 7).map((l, idx) => (
+              {NavLinks.slice(6, 8).map((l, idx) => (
                 <MenuItem
                   key={idx}
                   href={l.link}
