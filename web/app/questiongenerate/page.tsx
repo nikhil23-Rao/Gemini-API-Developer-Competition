@@ -32,6 +32,16 @@ import { NumberInput } from "@/components/general/NumberInput";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { ProcessingRequest } from "@/components/general/ProcessingRequest";
 import { getMCQ } from "@/api/getMCQ";
+import {
+  addDoc,
+  collection,
+  doc,
+  onSnapshot,
+  query,
+  updateDoc,
+  where,
+} from "@firebase/firestore";
+import db from "@/utils/initDB";
 
 export default function QuestionGenerator() {
   const [questionGenerateModal, setQuestionGenerateModal] = useState(false);
@@ -58,7 +68,10 @@ export default function QuestionGenerator() {
     "Easy" | "Moderate" | "Difficult" | "AP Styled"
   >("Easy");
   const [problemSetName, setProblemSetName] = useState("New Problem Set");
+  const [problemSetDescription, setProblemSetDescription] = useState("");
   const [status, setStatus] = useState<"public" | "private">();
+
+  const [userProblemSets, setUserProblemSets] = useState<any>([]);
 
   const onImageChange = (event) => {
     if (event.target.files && event.target.files[0]) {
@@ -83,8 +96,31 @@ export default function QuestionGenerator() {
   }, []);
 
   useEffect(() => {
-    console.log(searchedResources);
-  }, [searchedResources]);
+    if (currentUser) {
+      const q = query(
+        collection(db, "problemsets"),
+        where("createdById", "==", currentUser?.id),
+      );
+
+      let duplicate = false;
+      const unsubscribe = onSnapshot(q, (snapshot) => {
+        let createdSets: any = [];
+        snapshot.docs.forEach((doc) => {
+          userProblemSets.map((set) => {
+            if (set.seed === doc.data().seed) duplicate = true;
+          });
+          if (duplicate) return;
+          // if (userFlashCardSets.includes(doc.data())) return;
+          else {
+            createdSets.push(doc.data());
+            setUserProblemSets(createdSets);
+            console.log(createdSets);
+            duplicate = false;
+          }
+        });
+      });
+    }
+  }, [currentUser]);
 
   if (quizModal) {
     return (
@@ -103,6 +139,7 @@ export default function QuestionGenerator() {
           >
             {problemSetName}
           </h1>
+          <p style={{ marginTop: 100 }}>{problemSetDescription}</p>
           <TextField
             style={{ width: "40%", marginTop: 80 }}
             placeholder="Problem Set Name..."
@@ -110,6 +147,24 @@ export default function QuestionGenerator() {
             value={problemSetName}
             onChange={(e) => setProblemSetName(e.target.value)}
           ></TextField>
+          <TextareaAutosize
+            id="outlined-basic"
+            placeholder="Description... (optional)"
+            value={problemSetDescription}
+            style={{
+              width: 400,
+              marginTop: 20,
+              height: 100,
+              border: "2px solid #CBCBCB",
+              borderRadius: 5,
+              resize: "none",
+              padding: 20,
+            }}
+            onChange={(e) => {
+              setProblemSetDescription(e.currentTarget.value);
+            }}
+            color={prompt.length > 0 ? "primary" : "error"}
+          />
           <Accordion style={{ width: "80%", marginTop: 40 }}>
             <AccordionSummary
               id="panel-header"
@@ -232,6 +287,26 @@ export default function QuestionGenerator() {
             }}
             onClick={async () => {
               // firebase save
+              const docid = await addDoc(collection(db, "problemsets"), {
+                createdById: currentUser?.id,
+                createdByDocId: currentUser?.docid,
+                questionSet: generatedQuestions,
+                chosenClass,
+                problemSetName,
+                seed: `https://api.dicebear.com/8.x/identicon/svg?seed=${Math.floor(
+                  Math.random() * 1000000,
+                ).toString()}`,
+                problemSetDescription,
+                public: status === "public" ? true : false,
+              });
+              await updateDoc(doc(db, "problemsets", docid.id), {
+                docid: docid.id,
+              });
+
+              setQuizModal(false);
+              setResourceModal(false);
+              setResourcesListModal(false);
+              setQuestionGenerateModal(false);
             }}
           >
             <span
@@ -721,17 +796,83 @@ export default function QuestionGenerator() {
           </Button>
 
           <TextField
-            style={{ borderRadius: 400, width: "40%", marginTop: 40 }}
+            style={{
+              borderRadius: 400,
+              width: "40%",
+              marginTop: 40,
+            }}
             placeholder="Search for my problem sets..."
             InputProps={{ sx: { borderRadius: 100, paddingLeft: 2 } }}
           ></TextField>
-          <Lottie
-            animationData={animationdata}
-            loop
-            style={{ width: "16vw", marginTop: 30 }}
-          />
-          <p>Start practicing with the buttons above...</p>
         </div>
+        <div className="relative font-inter antialiased">
+          <main
+            className="relative flex min-h-screen flex-col justify-center overflow-hidden"
+            style={{ height: 20 }}
+          >
+            <div className="mx-auto w-full max-w-5xl px-4 py-24 md:px-6">
+              <div className="mx-auto grid max-w-xs items-start gap-6 lg:max-w-none lg:grid-cols-3">
+                {userProblemSets.map((pset) => {
+                  return (
+                    <div className="flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow shadow-slate-950/5">
+                      <img
+                        className="h-48 w-full object-cover"
+                        src={pset.seed}
+                        width="304"
+                        height="192"
+                        alt="Course 01"
+                      />
+                      <div className="flex flex-1 flex-col p-6">
+                        <div className="flex-1">
+                          <header className="mb-2">
+                            <h2 className="text-xl font-extrabold leading-snug">
+                              <a
+                                className="text-slate-900 focus-visible:outline-none focus-visible:ring focus-visible:ring-indigo-300"
+                                href="#0"
+                              >
+                                {pset.problemSetName}
+                              </a>
+                            </h2>
+                          </header>
+                          <div className="mb-8 text-sm text-slate-600">
+                            <p>{pset.problemSetDescription}</p>
+                          </div>
+                        </div>
+                        <div className="flex justify-end space-x-2">
+                          <a
+                            className="inline-flex justify-center whitespace-nowrap rounded-lg bg-indigo-50 px-3 py-2 text-sm font-medium text-indigo-500 transition-colors hover:bg-indigo-100 focus-visible:outline-none focus-visible:ring focus-visible:ring-indigo-300"
+                            href="#0"
+                          >
+                            {pset.public
+                              ? "Make Private"
+                              : "Add to Marketplace"}
+                          </a>
+                          <a
+                            className="inline-flex justify-center whitespace-nowrap rounded-lg bg-indigo-500 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-indigo-600 focus-visible:outline-none focus-visible:ring focus-visible:ring-indigo-300"
+                            href="#0"
+                          >
+                            Edit
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </main>
+        </div>
+        {userProblemSets.length <= 0 && (
+          <>
+            {" "}
+            <Lottie
+              animationData={animationdata}
+              loop
+              style={{ width: "16vw", marginTop: 30 }}
+            />
+            <p>Start practicing with the buttons above...</p>
+          </>
+        )}
       </div>
     </>
   );

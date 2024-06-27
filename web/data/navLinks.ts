@@ -20,6 +20,11 @@ export const NavLinks = [
     icon: "fa fa-bookmark",
   },
   {
+    name: "Marketplace",
+    link: "/marketplace",
+    icon: "fa fa-bullhorn",
+  },
+  {
     name: "Community",
     link: "/community",
     icon: "fa fa-users",
