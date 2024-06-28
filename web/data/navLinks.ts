@@ -5,7 +5,7 @@ export const NavLinks = [
     icon: "fa fa-home",
   },
   {
-    name: "Question Maker",
+    name: "Problem Sets",
     link: "/questiongenerate",
     icon: "fa fa-question-circle",
   },
