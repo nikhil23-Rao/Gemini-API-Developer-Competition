@@ -807,11 +807,19 @@ export default function QuestionGenerator() {
             InputProps={{ sx: { borderRadius: 100, paddingLeft: 2 } }}
           ></TextField>
         </div>
+        {userProblemSets.length <= 0 && (
+          <>
+            {" "}
+            <Lottie
+              animationData={animationdata}
+              loop
+              style={{ width: "16vw", marginTop: 30 }}
+            />
+            <p>Start practicing with the buttons above...</p>
+          </>
+        )}
         <div className="relative font-inter antialiased">
-          <main
-            className="relative flex min-h-screen flex-col justify-center overflow-hidden"
-            style={{ height: 20 }}
-          >
+          <main className="" style={{ height: 20 }}>
             <div className="mx-auto w-full max-w-5xl px-4 py-24 md:px-6">
               <div className="mx-auto grid max-w-xs items-start gap-6 lg:max-w-none lg:grid-cols-3">
                 {userProblemSets.map((pset) => {
@@ -872,17 +880,6 @@ export default function QuestionGenerator() {
             </div>
           </main>
         </div>
-        {userProblemSets.length <= 0 && (
-          <>
-            {" "}
-            <Lottie
-              animationData={animationdata}
-              loop
-              style={{ width: "16vw", marginTop: 30 }}
-            />
-            <p>Start practicing with the buttons above...</p>
-          </>
-        )}
       </div>
     </>
   );
