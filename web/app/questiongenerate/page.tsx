@@ -905,9 +905,27 @@ export default function QuestionGenerator() {
                               </a>
                             </h2>
                           </header>
-                          <p className="mb-4">
-                            {pset.public ? "💬 Public" : "🔒   Private"}
-                          </p>
+                          <div
+                            style={{
+                              display: "flex",
+                              flexDirection: "row",
+                              marginBottom: 15,
+                            }}
+                          >
+                            <div
+                              className="badge"
+                              style={{ background: "#000", borderRadius: 5 }}
+                            >
+                              <p>
+                                {pset.public ? "💬 Public" : "🔒   Private"}
+                              </p>
+                            </div>
+                            <div className="badge">
+                              <h1 style={{ fontWeight: "bold", fontSize: 13 }}>
+                                {pset.type}
+                              </h1>
+                            </div>
+                          </div>
                           <div className="mb-8 text-sm text-slate-600">
                             <p>{pset.problemSetDescription}</p>
                           </div>

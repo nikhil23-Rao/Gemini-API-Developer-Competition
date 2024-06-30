@@ -1620,3 +1620,26 @@ input[type=radio]:checked ~ label{
 	padding: 10px 0;
 	width: 100%;
 }
+
+
+.badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 6px;
+  font-size: 12px;
+  font-weight: bold;
+  color: #fff;
+  background: #360033;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #0b8793, #360033);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #0b8793, #360033); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  
+  
+  
+  
+
+  border-radius: 102px;
+  margin-right:1em;
+  height:25px;
+  width: 80px;
+}
