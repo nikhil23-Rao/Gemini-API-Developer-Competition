@@ -43,6 +43,7 @@ import {
 } from "@firebase/firestore";
 import db from "@/utils/initDB";
 import { useRouter } from "next/navigation";
+import { getFRQ } from "@/api/getFRQ";
 
 export default function QuestionGenerator() {
   const router = useRouter();
@@ -52,6 +53,7 @@ export default function QuestionGenerator() {
   const [currentUser, setCurrentUser] = useState<User | null>();
   const [resourceContent] = useState(ResourceContent);
   const [quizTypes] = useState(["MCQ", "FRQ"]);
+  const [chosenQuestionType, setChosenQuestionType] = useState("");
   const [content, setContent] = useState("");
   const [resourceOptions] = useState(["User Input", "Import"]);
   const [tabValue, setTabValue] = useState(0);
@@ -176,55 +178,86 @@ export default function QuestionGenerator() {
               View Generated Questions
             </AccordionSummary>
             <AccordionDetails>
-              {(generatedQuestions as any).map((q) => (
-                <>
-                  <div style={{ marginBottom: 40 }}>
-                    <h1
-                      style={{
-                        fontWeight: "bold",
-                        fontSize: 30,
-                        marginTop: 20,
-                      }}
-                    >
-                      Question #{q.questionNumber}
-                    </h1>
-                    <h1 className="mt-5" style={{ fontWeight: "bold" }}>
-                      {q.question}
-                    </h1>
-                    <ul>
-                      {q.optionsWithoutLetter.map((o, idx) => {
-                        return (
-                          <>
-                            <li>
-                              {o}
-                              <i
-                                className={`fa fa-${
-                                  q.correctAnswerOption === o
-                                    ? "check"
-                                    : "close"
-                                } ml-2`}
-                                style={{
-                                  color:
-                                    q.correctAnswerOption === o
-                                      ? "green"
-                                      : "red",
-                                }}
-                              ></i>
-                            </li>
-                            <p style={{ color: "gray" }}>
-                              {
-                                Object.values(q.answerChoiceExplanations)[
-                                  idx
-                                ] as any
-                              }
-                            </p>
-                          </>
-                        );
-                      })}
-                    </ul>
-                  </div>
-                </>
-              ))}
+              {content === "FRQ"
+                ? (generatedQuestions as any).map((q) => (
+                    <>
+                      <div style={{ marginBottom: 40 }}>
+                        <h1
+                          style={{
+                            fontWeight: "bold",
+                            fontSize: 30,
+                            marginTop: 20,
+                          }}
+                        >
+                          Question #{q.questionNumber}
+                        </h1>
+                        <h1 className="mt-5" style={{ fontWeight: "bold" }}>
+                          {q.overallQuestion}
+                        </h1>
+                        <ul>
+                          {q.questionByPartWithLetter.map((o, idx) => {
+                            return (
+                              <>
+                                <li>{o}</li>
+                                <p style={{ color: "gray" }}>
+                                  {Object.values(q.solutionByPart)[idx] as any}
+                                </p>
+                              </>
+                            );
+                          })}
+                        </ul>
+                      </div>
+                    </>
+                  ))
+                : (generatedQuestions as any).map((q) => (
+                    <>
+                      <div style={{ marginBottom: 40 }}>
+                        <h1
+                          style={{
+                            fontWeight: "bold",
+                            fontSize: 30,
+                            marginTop: 20,
+                          }}
+                        >
+                          Question #{q.questionNumber}
+                        </h1>
+                        <h1 className="mt-5" style={{ fontWeight: "bold" }}>
+                          {q.question}
+                        </h1>
+                        <ul>
+                          {q.optionsWithoutLetter.map((o, idx) => {
+                            return (
+                              <>
+                                <li>
+                                  {o}
+                                  <i
+                                    className={`fa fa-${
+                                      q.correctAnswerOption === o
+                                        ? "check"
+                                        : "close"
+                                    } ml-2`}
+                                    style={{
+                                      color:
+                                        q.correctAnswerOption === o
+                                          ? "green"
+                                          : "red",
+                                    }}
+                                  ></i>
+                                </li>
+                                <p style={{ color: "gray" }}>
+                                  {
+                                    Object.values(q.answerChoiceExplanations)[
+                                      idx
+                                    ] as any
+                                  }
+                                </p>
+                              </>
+                            );
+                          })}
+                        </ul>
+                      </div>
+                    </>
+                  ))}
             </AccordionDetails>
           </Accordion>
           <div
@@ -300,6 +333,7 @@ export default function QuestionGenerator() {
                 ).toString()}`,
                 problemSetDescription,
                 public: status === "public" ? true : false,
+                type: content,
               });
               await updateDoc(doc(db, "problemsets", docid.id), {
                 docid: docid.id,
@@ -584,22 +618,44 @@ export default function QuestionGenerator() {
               marginTop: 50,
             }}
             onClick={async () => {
-              setProcessing(true);
-              const res = await getPercentMatch(prompt, chosenClass);
-              if (parseInt(res.percentMatch) > 50) {
-                const mcq = await getMCQ(
-                  length as number,
-                  prompt,
-                  style,
-                  chosenClass,
-                );
-                setGeneratedQuestions(mcq);
-                setQuestionGenerateModal(false);
-                setQuizModal(true);
+              if (content === "FRQ") {
+                console.log("FRQ CALLIONG");
+                setProcessing(true);
+                const res = await getPercentMatch(prompt, chosenClass);
+                if (parseInt(res.percentMatch) > 50) {
+                  const frq = await getFRQ(
+                    length as number,
+                    prompt,
+                    style,
+                    chosenClass,
+                  );
+                  setGeneratedQuestions(frq);
+                  setQuestionGenerateModal(false);
+                  setQuizModal(true);
+                } else {
+                  setSnackBar(true);
+                }
+                setProcessing(false);
+                return;
               } else {
-                setSnackBar(true);
+                console.log("MCQ CALLIONG");
+                setProcessing(true);
+                const res = await getPercentMatch(prompt, chosenClass);
+                if (parseInt(res.percentMatch) > 50) {
+                  const mcq = await getMCQ(
+                    length as number,
+                    prompt,
+                    style,
+                    chosenClass,
+                  );
+                  setGeneratedQuestions(mcq);
+                  setQuestionGenerateModal(false);
+                  setQuizModal(true);
+                } else {
+                  setSnackBar(true);
+                }
+                setProcessing(false);
               }
-              setProcessing(false);
             }}
           >
             <span

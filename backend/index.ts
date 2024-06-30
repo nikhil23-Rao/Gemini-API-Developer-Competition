@@ -312,6 +312,43 @@ export const generateMCQFromPrompt = async (req: Request, res: Response) => {
   }
 };
 
+export const generateFRQFromPrompt = async (req: Request, res: Response) => {
+  try {
+    const { length, chosenClass, style, topic } = req.body;
+
+    // Restore the previous context
+
+    const chat = model.startChat({
+      history: [],
+      safetySettings,
+      generationConfig: {
+        responseMimeType: "application/json",
+      },
+    });
+
+    const result = await chat.sendMessageStream([
+      `Generate ${length} ${style} FRQ${
+        length > 1 ? "s" : ""
+      } for the topic: "${topic}" for ${chosenClass}. Return answer in JSON like so: [{overallQuestion:"", questionByPartWithLetter:["a.) ", "b.) ", (continue pattern for rest)], solutionByPart:{a:"", b:"", (continue pattern for rest)}, questionNumber:""}]; DON'T REVOLVE THE PROBLEM AROUND AN IMAGE. DO NOT USE MARKDOWN.`,
+    ]);
+
+    let data = "";
+    for await (const chunk of result.stream) {
+      console.log(chunk.text());
+      data = data.concat(chunk.text()); // also prints "42"
+      console.log("DATA", data);
+    }
+
+    // const responseText = response;
+
+    // Stores the conversation
+    res.send({ response: JSON.parse(data) });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 app.post("/flashcards", async (req: Request, res: Response) => {
   await generateFlashcards(req, res);
 });
@@ -345,6 +382,10 @@ app.post("/validation", async (req: Request, res: Response) => {
 
 app.post("/mcqprompt", async (req: Request, res: Response) => {
   await generateMCQFromPrompt(req, res);
+});
+
+app.post("/frqprompt", async (req: Request, res: Response) => {
+  await generateFRQFromPrompt(req, res);
 });
 
 app.listen(port, () => {

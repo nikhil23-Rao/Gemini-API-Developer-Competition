@@ -47,6 +47,7 @@
     "react-pro-sidebar": "^1.1.0",
     "react-responsive-modal": "^6.4.2",
     "react-sketch-canvas": "^6.2.0",
+    "react-to-pdf": "^1.0.1",
     "react-typed": "^2.0.12",
     "smart-react-calculator": "^0.0.1",
     "styled-components": "^6.1.11",
