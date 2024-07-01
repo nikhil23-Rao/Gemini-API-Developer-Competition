@@ -1,15 +1,26 @@
 "use client";
 
-import { Button, TextareaAutosize } from "@mui/material";
+import { Button, IconButton, TextareaAutosize } from "@mui/material";
 import "../../globals.css";
 import { useEffect, useRef, useState } from "react";
-import { collection, getDocs, query, where } from "@firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDocs,
+  onSnapshot,
+  query,
+  updateDoc,
+  where,
+} from "@firebase/firestore";
 import db from "@/utils/initDB";
 import { Splash } from "@/components/general/Splash";
 import ProgressBar from "@ramonak/react-progress-bar";
 import { NewModal } from "@/components/general/newModal";
 
 import generatePDF from "react-to-pdf";
+import { User } from "@/types/auth/User";
+import { setUser } from "@/utils/getCurrentUser";
 
 export default function ProblemSetViewer({
   params,
@@ -22,6 +33,40 @@ export default function ProblemSetViewer({
   const [checkedQuestions, setCheckedQuestions] = useState<string[]>([]);
   const [showQuiz, setShowQuiz] = useState(false);
   const [generating, setGenerating] = useState(false);
+  const [commentText, setCommentText] = useState("");
+  const [currentUser, setCurrentUser] = useState<User | null>();
+  const [comments, setComments] = useState<any[]>([]);
+
+  useEffect(() => {
+    setUser(setCurrentUser);
+  }, []);
+
+  useEffect(() => {
+    if (params.id) {
+      const q = query(
+        collection(db, "discussions"),
+        where("id", "==", params.id),
+      );
+
+      let duplicate = false;
+      const unsubscribe = onSnapshot(q, (snapshot) => {
+        let createdSets: any = [];
+        snapshot.docs.forEach((doc) => {
+          comments.map((set) => {
+            if (set.seed === doc.data().seed) duplicate = true;
+          });
+          if (duplicate) return;
+          // if (userFlashCardSets.includes(doc.data())) return;
+          else {
+            createdSets.push(doc.data());
+            setComments(createdSets);
+            console.log(createdSets);
+            duplicate = false;
+          }
+        });
+      });
+    }
+  }, [params.id]);
 
   function test(n) {
     if (n < 0) return false;
@@ -112,6 +157,10 @@ export default function ProblemSetViewer({
     }
     console.log(test(2));
   }, [params.id]);
+
+  useEffect(() => {
+    console.log(currentUser);
+  }, [currentUser]);
 
   if (showQuiz) {
     if (ps.type === "FRQ") {
@@ -401,7 +450,7 @@ export default function ProblemSetViewer({
       );
   }
 
-  if (!ps) return <Splash></Splash>;
+  if (!ps || !currentUser) return <Splash></Splash>;
 
   return (
     <>
@@ -495,7 +544,16 @@ export default function ProblemSetViewer({
             </svg>
           </div>
         </div>
-
+      </div>
+      <div
+        style={{
+          alignItems: "center",
+          justifyContent: "center",
+          display: "flex",
+          flexDirection: "column",
+          marginBottom: 50,
+        }}
+      >
         <h1
           style={{
             marginTop: 40,
@@ -503,11 +561,157 @@ export default function ProblemSetViewer({
             fontSize: "2vw",
             color: "#000",
             textAlign: "center",
+            zIndex: 1000,
           }}
           className="text-gradient-black"
         >
           Discussion Thread
         </h1>
+        <div
+          style={{
+            width: "100%",
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            marginTop: 20,
+          }}
+        >
+          <img
+            src={currentUser.pfp}
+            style={{
+              borderRadius: 100,
+              width: 40,
+              border: "2px solid #48769D",
+            }}
+            alt=""
+            className="mr-3"
+          />
+          <TextareaAutosize
+            style={{
+              width: "40%",
+              border: "1px solid #eee",
+              paddingLeft: 25,
+              padding: 15,
+              resize: "none",
+              borderRadius: 10,
+            }}
+            value={commentText}
+            onChange={(e) => {
+              setCommentText(e.target.value);
+            }}
+            placeholder="Add to the discussion..."
+          ></TextareaAutosize>
+          <Button
+            variant="contained"
+            style={{ marginLeft: 20 }}
+            onClick={async () => {
+              if (commentText.replace(/\s/g, "").length > 0) {
+                const docid = await addDoc(collection(db, "discussions"), {
+                  createdById: currentUser?.id,
+                  createdByDocId: currentUser?.docid,
+                  userPfp: currentUser?.pfp,
+                  username: currentUser?.username,
+                  type: "ps",
+                  id: params.id,
+                  body: commentText,
+                });
+                await updateDoc(doc(db, "discussions", docid.id), {
+                  docid: docid.id,
+                });
+                setCommentText("");
+              }
+            }}
+          >
+            Send
+          </Button>
+        </div>
+        <div
+          style={{
+            marginTop: 40,
+            alignContent: "center",
+            justifyContent: "center",
+            alignItems: "center",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          {comments.map((c) => (
+            <>
+              <div
+                className="comment"
+                style={{
+                  border: "2px solid #eee",
+                  width: "60%",
+                  minWidth: 800,
+                  padding: 20,
+                  height: "70%",
+                  borderRadius: 15,
+                  marginBottom: 15,
+                }}
+              >
+                <div className="user-banner">
+                  <div className="user">
+                    <div
+                      className="avatar"
+                      style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        width: "100%",
+                      }}
+                    >
+                      <img
+                        src={c.userPfp}
+                        style={{
+                          borderRadius: 100,
+                          marginTop: 5,
+                          border: "2px solid #4A769D",
+                        }}
+                      />
+                      <div>
+                        <h5
+                          style={{
+                            marginLeft: 10,
+                            marginTop: 10,
+                            fontWeight: "bold",
+                            color: "#000",
+                          }}
+                        >
+                          {c.username}
+                        </h5>
+                        <p
+                          style={{
+                            marginLeft: 10,
+                            fontSize: 12,
+                            marginTop: -5,
+                            textTransform: "uppercase",
+                          }}
+                        >
+                          20 Minutes Ago
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <button className="btn dropdown">
+                    <i className="ri-more-line"></i>
+                  </button>
+                </div>
+                <div
+                  className="content"
+                  style={{
+                    marginTop: 20,
+                    maxWidth: "100%",
+                    height: "100%",
+                    textAlign: "left",
+                    paddingLeft: 5,
+                  }}
+                >
+                  <p>{c.body}</p>
+                </div>
+              </div>
+            </>
+          ))}
+        </div>
       </div>
     </>
   );

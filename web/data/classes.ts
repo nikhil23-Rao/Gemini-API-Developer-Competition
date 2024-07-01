@@ -152,4 +152,10 @@ export const classes = [
       "AP Seminar",
     ],
   },
+  {
+    Subject: "Test Prep",
+    Regular: ["ACT", "SAT"],
+    Honors: [],
+    AP: [],
+  },
 ];

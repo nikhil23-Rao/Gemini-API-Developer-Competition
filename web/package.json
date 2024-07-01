@@ -49,6 +49,8 @@
     "react-sketch-canvas": "^6.2.0",
     "react-to-pdf": "^1.0.1",
     "react-typed": "^2.0.12",
+    "semantic-ui-css": "^2.5.0",
+    "semantic-ui-react": "^2.1.5",
     "smart-react-calculator": "^0.0.1",
     "styled-components": "^6.1.11",
     "swiper": "^9.3.2",
