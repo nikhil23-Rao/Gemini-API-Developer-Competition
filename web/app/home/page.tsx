@@ -23,7 +23,13 @@ import { motion } from "framer-motion";
 import Draggable from "react-draggable";
 import { Calculator } from "@/components/focus/Calculator";
 import { Timer } from "@/components/focus/Timer";
+import "react-responsive-modal/styles.css";
+import { Modal } from "react-responsive-modal";
+import { SimpleTreeView } from "@mui/x-tree-view/SimpleTreeView";
+import { TreeItem } from "@mui/x-tree-view/TreeItem";
 import axios from "axios";
+import { collection, getDocs, query, where } from "@firebase/firestore";
+import db from "@/utils/initDB";
 
 export default function Dashboard() {
   const canvasRef = useRef<ReactSketchCanvasRef>(null);
@@ -35,6 +41,8 @@ export default function Dashboard() {
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [color, setColor] = useState("#000000");
   const [img, setImg] = useState("");
+  const [showFolders, setShowFolders] = useState(false);
+  const [folderData, setFolderData] = useState<any[]>([]);
 
   // google calendar stuff
 
@@ -103,6 +111,46 @@ export default function Dashboard() {
         });
     }
   }, []);
+
+  useEffect(() => {
+    if (currentUser) {
+      let flashcardFolder: any[] = [];
+      let problemSetFolder: any[] = [];
+      const q = query(
+        collection(db, "flashcards"),
+        where("savedToFolder", "array-contains", currentUser.docid),
+      );
+      const q1 = query(
+        collection(db, "problemsets"),
+        where("savedToFolder", "array-contains", currentUser.docid),
+      );
+      getDocs(q).then((res) => {
+        if (!res) return;
+        res.forEach((doc) => {
+          flashcardFolder.push({
+            type: "flashcard",
+            name: doc.data().cardsetName,
+            docid: doc.data().docid,
+            class: doc.data().class,
+          });
+        });
+        setFolderData([...folderData, ...flashcardFolder]);
+      });
+
+      getDocs(q1).then((res) => {
+        if (!res) return;
+        res.forEach((doc) => {
+          problemSetFolder.push({
+            type: "problemset",
+            name: doc.data().problemSetName,
+            docid: doc.data().docid,
+            class: doc.data().chosenClass,
+          });
+        });
+        setFolderData([...folderData, ...flashcardFolder, ...problemSetFolder]);
+      });
+    }
+  }, [currentUser]);
 
   function convertSecondsToTime(seconds) {
     const hours = Math.floor(seconds / 3600);
@@ -389,6 +437,87 @@ export default function Dashboard() {
   return (
     <>
       <AppSidebar />
+      <Modal
+        open={showFolders}
+        styles={{
+          modal: {
+            width: "50%",
+            height: "80%",
+          },
+        }}
+        onClose={() => {
+          setShowFolders(false);
+        }}
+      >
+        <div
+          style={{
+            alignItems: "center",
+            justifyContent: "center",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <h1
+            className="text-gradient-black"
+            style={{ fontSize: "2vw", marginTop: 15 }}
+          >
+            My Folders
+          </h1>
+          <p style={{ textAlign: "center", maxWidth: 600, marginTop: 20 }}>
+            Access all your generated and saved content through your folders.
+            One for every single one of your selected classes.
+          </p>
+          <SimpleTreeView style={{ fontSize: 20 }}>
+            {currentUser.selectedClasses.map((c, idx) => (
+              <TreeItem
+                itemId={`c-${idx.toString()}`}
+                label={c}
+                style={{
+                  width: "40vw",
+                  marginTop: 20,
+                  fontWeight: "bold",
+                  color: "#172B69",
+                  border: "1px solid #eee",
+                  borderRadius: 10,
+                  padding: 15,
+                  outline: "none",
+                }}
+              >
+                {folderData.map((d) => (
+                  <>
+                    {d.class !== c ? (
+                      <></>
+                    ) : (
+                      <TreeItem
+                        itemId={`c-${idx.toString()}-${
+                          Math.random() * 1000000000000
+                        }`}
+                        label={
+                          <>
+                            <div
+                              style={{ display: "flex", flexDirection: "row" }}
+                            >
+                              <i
+                                className={`${
+                                  d.type === "flashcard"
+                                    ? "fa fa-pencil-square"
+                                    : "fa fa-question-circle"
+                                } mt-1`}
+                              ></i>
+                              <p style={{ marginLeft: 10 }}>{d.name}</p>
+                            </div>
+                          </>
+                        }
+                        style={{ borderRadius: 0 }}
+                      />
+                    )}
+                  </>
+                ))}
+              </TreeItem>
+            ))}
+          </SimpleTreeView>
+        </div>
+      </Modal>
       <motion.div
         style={{
           alignItems: "center",
@@ -491,7 +620,7 @@ export default function Dashboard() {
               <i className="fa fa-pencil-square mt-4"></i>
             </li>
 
-            <li className="color-2">
+            <li className="color-2" onClick={() => setShowFolders(true)}>
               <i className="fa fa-folder"></i>
               <h5>My Folders</h5>
               <h6>See saved generation for classes.</h6>

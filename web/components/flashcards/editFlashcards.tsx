@@ -198,7 +198,9 @@ export const EditFlashcards = ({
                 seed: `https://api.dicebear.com/8.x/identicon/svg?seed=${Math.floor(
                   Math.random() * 1000000,
                 ).toString()}`,
+                savedToFolder: [currentUser?.docid],
               });
+
               await updateDoc(doc(db, "flashcards", docid.id), {
                 docid: docid.id,
               });

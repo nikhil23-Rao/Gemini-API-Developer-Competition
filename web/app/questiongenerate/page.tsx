@@ -334,6 +334,7 @@ export default function QuestionGenerator() {
                 problemSetDescription,
                 public: status === "public" ? true : false,
                 type: content,
+                savedToFolder: [currentUser?.docid],
               });
               await updateDoc(doc(db, "problemsets", docid.id), {
                 docid: docid.id,

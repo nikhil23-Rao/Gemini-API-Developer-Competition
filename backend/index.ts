@@ -146,17 +146,22 @@ export const generateUnit = async (req: Request, res: Response) => {
       },
     });
 
-    const { response } = await chat.sendMessage(
+    const result = await chat.sendMessageStream(
       `Provide a list of all the Unit content names in the class ${ap} ${
         ap.includes("AP")
           ? "according to the official Collegeboard's assigned units"
           : ""
       }; Follow JSON format of just [{name:}]`
     );
-    const responseText = response;
+    let data = "";
+    for await (const chunk of result.stream) {
+      console.log(chunk.text());
+      data = data.concat(chunk.text()); // also prints "42"
+      console.log("DATA", data);
+    }
 
     // Stores the conversation
-    res.send({ response: responseText });
+    res.send({ response: data });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Internal server error" });
