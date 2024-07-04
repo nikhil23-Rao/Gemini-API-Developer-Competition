@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, IconButton, TextareaAutosize } from "@mui/material";
+import { Box, Button, IconButton, Tabs, TextareaAutosize } from "@mui/material";
 import "../../globals.css";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -33,6 +33,7 @@ import MarkdownPreview from "@uiw/react-markdown-preview";
 
 import { setUser } from "@/utils/getCurrentUser";
 import React from "react";
+import ComponentTab from "@/components/general/Tabs";
 
 export default function ProblemSetViewer({
   params,
@@ -48,6 +49,7 @@ export default function ProblemSetViewer({
   const [commentText, setCommentText] = useState("");
   const [currentUser, setCurrentUser] = useState<User | null>();
   const [comments, setComments] = useState<any[]>([]);
+  const [tabValue, setTabValue] = useState(0);
 
   useEffect(() => {
     setUser(setCurrentUser);
@@ -224,6 +226,39 @@ export default function ProblemSetViewer({
                 >
                   Print Out As Worksheet
                 </Button>
+
+                <Box mt={5}>
+                  <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                    <Tabs
+                      value={tabValue}
+                      onChange={(e, value) => {
+                        setTabValue(value);
+                      }}
+                      aria-label="basic tabs example"
+                    >
+                      {["Write Out", "Drawing Board"].map((obj, idx) => (
+                        <ComponentTab t={obj} idx={idx} />
+                      ))}
+                    </Tabs>
+                  </Box>
+                </Box>
+                {tabValue === 0 ? (
+                  <>
+                    <TextareaAutosize
+                      style={{
+                        width: "80%",
+                        maxHeight: "900px",
+                        minHeight: 400,
+                        overflowY: "scroll",
+                        border: "2px solid #eee",
+                        resize: "none",
+                        marginTop: 20,
+                      }}
+                    ></TextareaAutosize>
+                  </>
+                ) : (
+                  <></>
+                )}
               </div>
               <div
                 style={{
