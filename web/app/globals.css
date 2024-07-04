@@ -1764,3 +1764,7 @@ input[type=radio]:checked ~ label{
 
 /* Font not working in <textarea> for this version of bs */
 
+
+table {
+  color:#fff !important;
+}

@@ -75,6 +75,7 @@ export default function QuestionGenerator() {
   const [problemSetName, setProblemSetName] = useState("New Problem Set");
   const [problemSetDescription, setProblemSetDescription] = useState("");
   const [status, setStatus] = useState<"public" | "private">();
+  const [markdown, setMarkdown] = useState<any>();
 
   const [userProblemSets, setUserProblemSets] = useState<any>([]);
 
@@ -179,7 +180,7 @@ export default function QuestionGenerator() {
               View Generated Questions
             </AccordionSummary>
             <AccordionDetails>
-              {content === "FRQ"
+              {/* {content === "FRQ"
                 ? (generatedQuestions as any).map((q) => (
                     <>
                       <div style={{ marginBottom: 40 }}>
@@ -258,7 +259,7 @@ export default function QuestionGenerator() {
                         </ul>
                       </div>
                     </>
-                  ))}
+                  ))} */}
             </AccordionDetails>
           </Accordion>
           <div
@@ -323,10 +324,11 @@ export default function QuestionGenerator() {
             }}
             onClick={async () => {
               // firebase save
+
               const docid = await addDoc(collection(db, "problemsets"), {
                 createdById: currentUser?.id,
                 createdByDocId: currentUser?.docid,
-                questionSet: generatedQuestions,
+                markdown,
                 chosenClass,
                 problemSetName,
                 seed: `https://api.dicebear.com/8.x/identicon/svg?seed=${Math.floor(
@@ -628,26 +630,10 @@ export default function QuestionGenerator() {
                   chosenClass,
                 );
                 console.log(res);
-                const docid = await addDoc(collection(db, "problemsets"), {
-                  createdById: currentUser?.id,
-                  createdByDocId: currentUser?.docid,
-                  markdown: res,
-                  chosenClass,
-                  problemSetName,
-                  seed: `https://api.dicebear.com/8.x/identicon/svg?seed=${Math.floor(
-                    Math.random() * 1000000,
-                  ).toString()}`,
-                  problemSetDescription,
-                  public: status === "public" ? true : false,
-                  type: content,
-                  savedToFolder: [currentUser?.docid],
-                });
-                await updateDoc(doc(db, "problemsets", docid.id), {
-                  docid: docid.id,
-                });
+                setMarkdown(res);
 
                 setProcessing(false);
-                setQuizModal(false);
+                setQuizModal(true);
               } else if (content === "FRQ") {
                 console.log("FRQ CALLIONG");
                 setProcessing(true);

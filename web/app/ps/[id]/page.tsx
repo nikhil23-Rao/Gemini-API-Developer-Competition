@@ -175,124 +175,15 @@ export default function ProblemSetViewer({
   }, [currentUser]);
 
   if (showQuiz) {
-    const el = `# Question 1\n\nA student studies the kinetics of the following reaction:\n\n$A \\longrightarrow$ Products\n\nThe student conducts 3 trials of the reaction, varying the initial concentration of reactant $A$ in each trial. The data is collected in the table below:\n\n| Trial | $[A]$ (M) | Initial Rate (M/s) |\n|---|---|---|\n| 1 | 0.10 | $1.0 \\times 10^{-3}$ |\n| 2 | 0.20 | $4.0 \\times 10^{-3}$ |\n| 3 | 0.30 | $9.0 \\times 10^{-3}$ |\n\n(a) Determine the order of the reaction with respect to $A$. Justify your answer.\n(b) Write the rate law for the reaction. \n(c) Calculate the value of the rate constant, $k$, for the reaction. Be sure to include units.\n\n## Answer Explanation\n\n(a) The reaction is second order with respect to $A$. When the concentration of $A$ is doubled from 0.10 M to 0.20 M, the rate quadruples. When the concentration of $A$ is tripled from 0.10 M to 0.30 M, the rate increases by a factor of 9. This indicates a second-order relationship between the concentration of $A$ and the rate of the reaction.\n(b) $rate = k[A]^2$\n(c) Using the data from any trial, plug in the values for the rate, the concentration of $A$, and the order of the reaction with respect to $A$ into the rate law. For example, using Trial 1:\n$1.0 \\times 10^{-3} \\text{ M/s} = k(0.10 \\text{ M})^2$\n$k = \\frac{1.0 \\times 10^{-3} \\text{ M/s}}{(0.10 \\text{ M})^2} = 0.10 \\text{ M}^{-1}\\text{s}^{-1}$\n`;
-
-    console.log();
-
     if (ps.type === "FRQ") {
       return (
         <>
-          <MarkdownPreview
-            source={`${JSON.parse(JSON.stringify(ps.markdown)).response}`}
-            style={{ padding: 16 }}
-            rehypePlugins={[rehypeKatex, remarkMath, remarkGfm]}
-            components={{
-              code: ({ children = [], className, ...props }) => {
-                if (
-                  typeof children === "string" &&
-                  /^\$\$(.*)\$\$/.test(children)
-                ) {
-                  const html = katex.renderToString(
-                    children.replace(/^\$\$(.*)\$\$/, "$1"),
-                    {
-                      throwOnError: false,
-                    },
-                  );
-                  return (
-                    <code
-                      dangerouslySetInnerHTML={{ __html: html }}
-                      style={{ background: "transparent" }}
-                    />
-                  );
-                }
-                const code =
-                  props.node && props.node.children
-                    ? getCodeString(props.node.children)
-                    : children;
-                if (
-                  typeof code === "string" &&
-                  typeof className === "string" &&
-                  /^language-katex/.test(className.toLocaleLowerCase())
-                ) {
-                  const html = katex.renderToString(code, {
-                    throwOnError: false,
-                  });
-                  return (
-                    <code
-                      style={{ fontSize: "150%" }}
-                      dangerouslySetInnerHTML={{ __html: html }}
-                    />
-                  );
-                }
-                return <code className={String(className)}>{children}</code>;
-              },
-            }}
-          />
-          {/* <NewModal modal={showQuiz} setModal={setShowQuiz}>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexDirection: "column",
-              }}
-            >
-              <h1
-                className="text-gradient-black"
-                style={{ fontSize: "4vw", marginTop: 120 }}
-              >
-                {ps.problemSetName}
-              </h1>
-
-              <div>
-                <Button
-                  variant="outlined"
-                  style={{ marginTop: 40, marginRight: 30 }}
-                  onClick={() => setShowQuiz(false)}
-                >
-                  Exit Quiz
-                </Button>
-                <Button
-                  variant="outlined"
-                  style={{ marginTop: 40 }}
-                  onClick={async () => {
-                    setGenerating(true);
-                    await generatePDF(targetRef, {
-                      filename: `${ps.problemSetName}.pdf`,
-                    });
-                    setGenerating(false);
-                  }}
-                >
-                  Print
-                </Button>
-              </div>
-            </div>
-            <div
-              style={{
-                width: "80%",
-                border: "2px solid #eee",
-                height: "100%",
-                marginTop: 50,
-                minHeight: "100vh",
-              }}
-              ref={targetRef as any}
-            >
-              <div style={{ display: "flex", flexDirection: "row" }}>
-                <img src="/logo.png" style={{ width: 40, margin: 30 }} alt="" />
-                <p
-                  style={{
-                    textAlign: "left",
-                    fontWeight: "bold",
-                    marginTop: 40,
-                    right: 240,
-                    position: "absolute",
-                  }}
-                >
-                  Generated By Vertex
-                </p>
-              </div>
+          <NewModal modal={showQuiz} setModal={setShowQuiz}>
+            <div style={{ display: "flex", flexDirection: "row" }}>
               <div
                 style={{
+                  width: "50%",
+                  height: "100%",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -300,73 +191,128 @@ export default function ProblemSetViewer({
                 }}
               >
                 <h1
-                  style={{
-                    marginTop: 100,
-                    fontFamily: "serif",
-                    textAlign: "left",
-                    fontWeight: "bold",
-                    fontSize: 40,
-                    color: "#000",
-                  }}
+                  className="text-gradient-black"
+                  style={{ fontSize: "4vw", marginTop: "3%" }}
                 >
                   {ps.problemSetName}
                 </h1>
-              </div>
-              {ps.questionSet.map((q) => {
-                return (
-                  <div style={{ margin: 50 }}>
-                    <h1
-                      style={{
-                        fontWeight: "bold",
-                        fontSize: 22,
-                        color: "#000",
-                        fontFamily: "serif",
-                      }}
-                    >
-                      {q.questionNumber}.) {q.overallQuestion}
-                    </h1>
-                    <ul style={{ marginTop: 30 }}>
-                      {q.questionByPartWithLetter.map((part) => (
-                        <>
-                          <li
-                            style={{
-                              fontSize: 22,
-                              fontFamily: "serif",
-                              marginBottom: 50,
-                              color: "#000",
-                            }}
-                          >
-                            {part}
-                          </li>
+                <p style={{ marginTop: 40, maxWidth: "65%" }}>
+                  {ps.problemSetDescription}
+                </p>
+                <Button
+                  variant="outlined"
+                  color="error"
+                  style={{ marginTop: 20 }}
+                  onClick={() => setShowQuiz(false)}
+                >
+                  Exit Quiz
+                </Button>
 
-                          <TextareaAutosize
-                            id="outlined-basic"
-                            placeholder="Type response..."
-                            // value={prompt}
-                            style={{
-                              width: "100%",
-                              border: "0px solid #CBCBCB",
-                              borderRadius: 5,
-                              resize: "none",
-                              padding: 20,
-                              outline: "none",
-                              marginTop: generating ? 100 : 0,
-                              fontFamily: "serif",
-                              marginBottom: 100,
-                            }}
-                            onChange={(e) => {
-                              // setPrompt(e.currentTarget.value);
-                            }}
-                            color={prompt.length > 0 ? "primary" : "error"}
+                <Button
+                  variant="outlined"
+                  color="success"
+                  style={{ marginTop: 20 }}
+                  onClick={() => setShowQuiz(false)}
+                >
+                  Show Answer Key
+                </Button>
+
+                <Button
+                  variant="outlined"
+                  style={{ marginTop: 20 }}
+                  onClick={() => generatePDF(targetRef, { filename: "ye.pdf" })}
+                >
+                  Print Out As Worksheet
+                </Button>
+              </div>
+              <div
+                style={{
+                  width: 20,
+                  borderRight: "2px solid #eee",
+                }}
+              ></div>
+
+              <div ref={targetRef as any} style={{ width: "50%" }}>
+                <h1
+                  style={{
+                    top: 20,
+                    right: 70,
+                    position: "absolute",
+                    color: "#182264",
+                    fontWeight: "bold",
+                  }}
+                >
+                  Generated by Vertex
+                </h1>
+                <img
+                  src="/logo.png"
+                  style={{
+                    position: "absolute",
+                    width: 40,
+                    top: 10,
+                    right: 20,
+                  }}
+                  alt=""
+                />
+                <MarkdownPreview
+                  className="markdowneditor"
+                  source={`${JSON.parse(JSON.stringify(ps.markdown)).response}`}
+                  style={{
+                    padding: 16,
+                    width: "100%",
+                    height: "100%",
+                    minHeight: "100vh",
+                    backgroundColor: "#fff",
+                    color: "#000",
+                  }}
+                  rehypePlugins={[rehypeKatex, remarkMath, remarkGfm]}
+                  components={{
+                    code: ({ children = [], className, ...props }) => {
+                      if (
+                        typeof children === "string" &&
+                        /^\$\$(.*)\$\$/.test(children)
+                      ) {
+                        const html = katex.renderToString(
+                          children.replace(/^\$\$(.*)\$\$/, "$1"),
+                          {
+                            throwOnError: false,
+                          },
+                        );
+                        return (
+                          <code
+                            dangerouslySetInnerHTML={{ __html: html }}
+                            style={{ background: "transparent" }}
                           />
-                        </>
-                      ))}
-                    </ul>
-                  </div>
-                );
-              })}
+                        );
+                      }
+                      const code =
+                        props.node && props.node.children
+                          ? getCodeString(props.node.children)
+                          : children;
+                      if (
+                        typeof code === "string" &&
+                        typeof className === "string" &&
+                        /^language-katex/.test(className.toLocaleLowerCase())
+                      ) {
+                        const html = katex.renderToString(code, {
+                          throwOnError: false,
+                        });
+                        return (
+                          <code
+                            style={{ fontSize: "150%" }}
+                            dangerouslySetInnerHTML={{ __html: html }}
+                          />
+                        );
+                      }
+                      return (
+                        <code className={String(className)}>{children}</code>
+                      );
+                    },
+                  }}
+                />
+              </div>
             </div>
-          </NewModal> */}
+          </NewModal>
         </>
       );
     } else
