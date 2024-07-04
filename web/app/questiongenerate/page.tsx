@@ -44,6 +44,7 @@ import {
 import db from "@/utils/initDB";
 import { useRouter } from "next/navigation";
 import { getFRQ } from "@/api/getFRQ";
+import { getFRQByImage } from "@/api/getFRQByImage";
 
 export default function QuestionGenerator() {
   const router = useRouter();
@@ -619,7 +620,35 @@ export default function QuestionGenerator() {
               marginTop: 50,
             }}
             onClick={async () => {
-              if (content === "FRQ") {
+              if (content === "FRQ" && imported.length > 0) {
+                setProcessing(true);
+                const res = await getFRQByImage(
+                  length as number,
+                  imported,
+                  chosenClass,
+                );
+                console.log(res);
+                const docid = await addDoc(collection(db, "problemsets"), {
+                  createdById: currentUser?.id,
+                  createdByDocId: currentUser?.docid,
+                  markdown: res,
+                  chosenClass,
+                  problemSetName,
+                  seed: `https://api.dicebear.com/8.x/identicon/svg?seed=${Math.floor(
+                    Math.random() * 1000000,
+                  ).toString()}`,
+                  problemSetDescription,
+                  public: status === "public" ? true : false,
+                  type: content,
+                  savedToFolder: [currentUser?.docid],
+                });
+                await updateDoc(doc(db, "problemsets", docid.id), {
+                  docid: docid.id,
+                });
+
+                setProcessing(false);
+                setQuizModal(false);
+              } else if (content === "FRQ") {
                 console.log("FRQ CALLIONG");
                 setProcessing(true);
                 const res = await getPercentMatch(prompt, chosenClass);

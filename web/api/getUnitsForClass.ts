@@ -17,10 +17,6 @@ export const getUnitsForClass = async (
 
   console.log(res);
 
-  console.log(
-    JSON.parse(res.data.response.candidates[0].content.parts[0].text),
-  );
-  setPossibleUnits(
-    JSON.parse(res.data.response.candidates[0].content.parts[0].text),
-  );
+  console.log(JSON.parse(res.data.response));
+  setPossibleUnits(JSON.parse(res.data.response));
 };

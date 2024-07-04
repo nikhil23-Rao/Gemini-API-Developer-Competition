@@ -20,7 +20,19 @@ import { NewModal } from "@/components/general/newModal";
 
 import generatePDF from "react-to-pdf";
 import { User } from "@/types/auth/User";
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import "katex/dist/katex.min.css";
+import rehypeKatex from "rehype-katex";
+import { getCodeString } from "rehype-rewrite";
+import katex from "katex";
+import "katex/dist/katex.css";
+import remarkMath from "remark-math";
+
+import MarkdownPreview from "@uiw/react-markdown-preview";
+
 import { setUser } from "@/utils/getCurrentUser";
+import React from "react";
 
 export default function ProblemSetViewer({
   params,
@@ -163,10 +175,60 @@ export default function ProblemSetViewer({
   }, [currentUser]);
 
   if (showQuiz) {
+    const el = `# Question 1\n\nA student studies the kinetics of the following reaction:\n\n$A \\longrightarrow$ Products\n\nThe student conducts 3 trials of the reaction, varying the initial concentration of reactant $A$ in each trial. The data is collected in the table below:\n\n| Trial | $[A]$ (M) | Initial Rate (M/s) |\n|---|---|---|\n| 1 | 0.10 | $1.0 \\times 10^{-3}$ |\n| 2 | 0.20 | $4.0 \\times 10^{-3}$ |\n| 3 | 0.30 | $9.0 \\times 10^{-3}$ |\n\n(a) Determine the order of the reaction with respect to $A$. Justify your answer.\n(b) Write the rate law for the reaction. \n(c) Calculate the value of the rate constant, $k$, for the reaction. Be sure to include units.\n\n## Answer Explanation\n\n(a) The reaction is second order with respect to $A$. When the concentration of $A$ is doubled from 0.10 M to 0.20 M, the rate quadruples. When the concentration of $A$ is tripled from 0.10 M to 0.30 M, the rate increases by a factor of 9. This indicates a second-order relationship between the concentration of $A$ and the rate of the reaction.\n(b) $rate = k[A]^2$\n(c) Using the data from any trial, plug in the values for the rate, the concentration of $A$, and the order of the reaction with respect to $A$ into the rate law. For example, using Trial 1:\n$1.0 \\times 10^{-3} \\text{ M/s} = k(0.10 \\text{ M})^2$\n$k = \\frac{1.0 \\times 10^{-3} \\text{ M/s}}{(0.10 \\text{ M})^2} = 0.10 \\text{ M}^{-1}\\text{s}^{-1}$\n`;
+
+    console.log();
+
     if (ps.type === "FRQ") {
       return (
         <>
-          <NewModal modal={showQuiz} setModal={setShowQuiz}>
+          <MarkdownPreview
+            source={`${JSON.parse(JSON.stringify(ps.markdown)).response}`}
+            style={{ padding: 16 }}
+            rehypePlugins={[rehypeKatex, remarkMath, remarkGfm]}
+            components={{
+              code: ({ children = [], className, ...props }) => {
+                if (
+                  typeof children === "string" &&
+                  /^\$\$(.*)\$\$/.test(children)
+                ) {
+                  const html = katex.renderToString(
+                    children.replace(/^\$\$(.*)\$\$/, "$1"),
+                    {
+                      throwOnError: false,
+                    },
+                  );
+                  return (
+                    <code
+                      dangerouslySetInnerHTML={{ __html: html }}
+                      style={{ background: "transparent" }}
+                    />
+                  );
+                }
+                const code =
+                  props.node && props.node.children
+                    ? getCodeString(props.node.children)
+                    : children;
+                if (
+                  typeof code === "string" &&
+                  typeof className === "string" &&
+                  /^language-katex/.test(className.toLocaleLowerCase())
+                ) {
+                  const html = katex.renderToString(code, {
+                    throwOnError: false,
+                  });
+                  return (
+                    <code
+                      style={{ fontSize: "150%" }}
+                      dangerouslySetInnerHTML={{ __html: html }}
+                    />
+                  );
+                }
+                return <code className={String(className)}>{children}</code>;
+              },
+            }}
+          />
+          {/* <NewModal modal={showQuiz} setModal={setShowQuiz}>
             <div
               style={{
                 display: "flex",
@@ -304,7 +366,7 @@ export default function ProblemSetViewer({
                 );
               })}
             </div>
-          </NewModal>
+          </NewModal> */}
         </>
       );
     } else

@@ -354,6 +354,74 @@ export const generateFRQFromPrompt = async (req: Request, res: Response) => {
   }
 };
 
+export const generateMCQFromImage = async (req: Request, res: Response) => {
+  try {
+    const { image, chosenClass, length, style } = req.body;
+
+    // Restore the previous context
+
+    const chat = model.startChat({
+      history: [],
+      safetySettings,
+    });
+
+    const result = await chat.sendMessageStream([
+      `Create a ${length} question MCQ set of ${style} questions similar to the question in the image for ${chosenClass}; Return answer in markdown format; FOR EACH QUESTION INCLUDE A HEADER SUCH AS: Question 1; Question 2; etc. for however many questions there are; AT THE VERY BOTTOM: provide an answer explanation header, and under it, fill it in for each choice in this format: Option A is the correct answer because... or Option A is the wrong answer because... (Use the real corect/wrong answers)`,
+      { inlineData: { data: image, mimeType: "image/png" } },
+    ]);
+
+    let data = "";
+    for await (const chunk of result.stream) {
+      console.log(chunk.text());
+      data = data.concat(chunk.text()); // also prints "42"
+      console.log("DATA", data);
+    }
+
+    // const responseText = response;
+
+    // Stores the conversation
+    res.send({ response: data });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const generateFRQFromImage = async (req: Request, res: Response) => {
+  try {
+    const { length, chosenClass, style, image } = req.body;
+
+    // Restore the previous context
+
+    const chat = model.startChat({
+      history: [],
+      safetySettings,
+    });
+
+    const result = await chat.sendMessageStream([
+      `Create a ${length} question FRQ set of questions similar to the "concepts/question tested in the image" for ${chosenClass}; DO NOT BASE THE QUESTION AROUND ANY IMAGES. Return answer in markdown format; SEPERATE ALL ANSWER OPTIONS WITH <br> FOR EACH QUESTION INCLUDE header BEFORE THE QUESTION SUCH AS: #Question 1; #Question 2; etc. for however many questions there are; AT THE VERY BOTTOM: provide an answer explanation header, and under it, fill in the correct answer for each frq part`,
+      { inlineData: { data: image, mimeType: "image/png" } },
+    ]);
+
+    let data = "";
+    for await (const chunk of result.stream) {
+      console.log(chunk.text());
+      data = data.concat(chunk.text()); // also prints "42"
+      console.log("DATA", data);
+    }
+
+    // const responseText = response;
+
+    // Stores the conversation
+    res.send({
+      response: data,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 app.post("/flashcards", async (req: Request, res: Response) => {
   await generateFlashcards(req, res);
 });
@@ -389,8 +457,16 @@ app.post("/mcqprompt", async (req: Request, res: Response) => {
   await generateMCQFromPrompt(req, res);
 });
 
+app.post("/mcqimage", async (req: Request, res: Response) => {
+  await generateMCQFromImage(req, res);
+});
+
 app.post("/frqprompt", async (req: Request, res: Response) => {
   await generateFRQFromPrompt(req, res);
+});
+
+app.post("/frqimage", async (req: Request, res: Response) => {
+  await generateFRQFromImage(req, res);
 });
 
 app.listen(port, () => {
