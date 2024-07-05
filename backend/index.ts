@@ -291,13 +291,10 @@ export const generateMCQFromPrompt = async (req: Request, res: Response) => {
     const chat = model.startChat({
       history: [],
       safetySettings,
-      generationConfig: {
-        responseMimeType: "application/json",
-      },
     });
 
     const result = await chat.sendMessageStream([
-      `Create a ${length} question MCQ set of ${style} questions on ${topic} in ${chosenClass}; Return answer in JSON in this form: [{'question':"", 'questionNumber':"", 'optionsWithoutLetter':[""], 'correctAnswerOption':"", 'answerChoiceExplanations':{choiceone:"", choicetwo:"", (continue rest)}}]; DO NOT USE MARKDOWN IN RESPONSE; MAKE IT POSSIBLE TO USE JSON.PARSE() ON THIS ARRAY;`,
+      `Create a ${length} question MCQ set of ${style} questions on ${topic} for ${chosenClass};  IF THERE IS ANY EXTERNAL PASSAGES OR EXCERPTS NEEDED GENERATE THEM (DO NOT MAKE THEM HEADERS); IF ANY TABLES ARE NEEDED GENERATE THEM WITH MARKDOWN; DO NOT BASE THE QUESTION AROUND ANY IMAGES. Return answer in markdown format; SEPERATE ALL ANSWER OPTIONS WITH <br> AND FOR EACH QUESTION INCLUDE header BEFORE THE QUESTION SUCH AS: # Question 1; # Question 2; etc. for however many questions there are; AT THE VERY BOTTOM: provide an answer explanation header, and under it, fill it in for each choice in this format: Option A is the correct answer because...; IF CHOICE IS WRONG SAY: Option A is the wrong answer because...(Use the real corect/wrong answers)`,
     ]);
 
     let data = "";
@@ -310,7 +307,7 @@ export const generateMCQFromPrompt = async (req: Request, res: Response) => {
     // const responseText = response;
 
     // Stores the conversation
-    res.send({ response: JSON.parse(data) });
+    res.send({ response: data });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Internal server error" });

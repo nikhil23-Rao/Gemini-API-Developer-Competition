@@ -109,6 +109,10 @@ export default function ProblemSetViewer({
     }
   }, [params.id]);
 
+  useEffect(() => {
+    console.log("PS", ps);
+  }, [ps]);
+
   function test(n) {
     if (n < 0) return false;
 
@@ -221,7 +225,7 @@ export default function ProblemSetViewer({
               >
                 <h1
                   className="text-gradient-black"
-                  style={{ fontSize: "4vw", marginTop: "3%" }}
+                  style={{ fontSize: "4vw", marginTop: "5%" }}
                 >
                   {ps.problemSetName}
                 </h1>
@@ -410,7 +414,7 @@ export default function ProblemSetViewer({
                   style={{
                     width: "100%",
                     height: "100%",
-                    marginTop: 45,
+                    marginTop: 75,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -574,7 +578,7 @@ export default function ProblemSetViewer({
                             0,
                             JSON.parse(
                               JSON.stringify(ps.markdown),
-                            ).response.indexOf("## Answer Explanations"),
+                            ).response.indexOf("## Answer Explanation"),
                           )
                         : JSON.parse(JSON.stringify(ps.markdown)).response
                     }`}
@@ -633,7 +637,7 @@ export default function ProblemSetViewer({
                   />
                   <div
                     style={{
-                      width: "70vw",
+                      width: "80vw",
                       backgroundColor: "#fff",
                       height: 1,
                     }}

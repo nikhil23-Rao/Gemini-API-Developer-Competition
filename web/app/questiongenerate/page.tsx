@@ -659,8 +659,9 @@ export default function QuestionGenerator() {
                     style,
                     chosenClass,
                   );
-                  setGeneratedQuestions(frq);
-                  setQuestionGenerateModal(false);
+                  setMarkdown(frq);
+
+                  setProcessing(false);
                   setQuizModal(true);
                 } else {
                   setSnackBar(true);
@@ -678,8 +679,9 @@ export default function QuestionGenerator() {
                     style,
                     chosenClass,
                   );
-                  setGeneratedQuestions(mcq);
-                  setQuestionGenerateModal(false);
+                  setMarkdown(mcq);
+
+                  setProcessing(false);
                   setQuizModal(true);
                 } else {
                   setSnackBar(true);
