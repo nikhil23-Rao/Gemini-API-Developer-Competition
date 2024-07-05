@@ -366,7 +366,7 @@ export const generateMCQFromImage = async (req: Request, res: Response) => {
     });
 
     const result = await chat.sendMessageStream([
-      `Create a ${length} question MCQ set of ${style} questions similar to the question in the image for ${chosenClass}; Return answer in markdown format; FOR EACH QUESTION INCLUDE A HEADER SUCH AS: Question 1; Question 2; etc. for however many questions there are; AT THE VERY BOTTOM: provide an answer explanation header, and under it, fill it in for each choice in this format: Option A is the correct answer because... or Option A is the wrong answer because... (Use the real corect/wrong answers)`,
+      `Create a ${length} question MCQ set of ${style} questions similar to the question in the image for ${chosenClass};  IF THERE IS ANY EXTERNAL PASSAGES OR EXCERPTS NEEDED GENERATE THEM; DO NOT BASE THE QUESTION AROUND ANY IMAGES. Return answer in markdown format; SEPERATE ALL ANSWER OPTIONS WITH <br> FOR EACH QUESTION INCLUDE header BEFORE THE QUESTION SUCH AS: #Question 1; #Question 2; etc. for however many questions there are; AT THE VERY BOTTOM: provide an answer explanation header, and under it, fill it in for each choice in this format: Option A is the correct answer because...; IF CHOICE IS WRONG SAY: Option A is the wrong answer because...(Use the real corect/wrong answers)`,
       { inlineData: { data: image, mimeType: "image/png" } },
     ]);
 
@@ -399,7 +399,7 @@ export const generateFRQFromImage = async (req: Request, res: Response) => {
     });
 
     const result = await chat.sendMessageStream([
-      `Create a ${length} question FRQ set of questions similar to the "concepts/question tested in the image" for ${chosenClass}; DO NOT BASE THE QUESTION AROUND ANY IMAGES. Return answer in markdown format; SEPERATE ALL ANSWER OPTIONS WITH <br> FOR EACH QUESTION INCLUDE header BEFORE THE QUESTION SUCH AS: #Question 1; #Question 2; etc. for however many questions there are; AT THE VERY BOTTOM: provide an answer explanation header, and under it, fill in the correct answer for each frq part`,
+      `Create a ${length} question FRQ set of questions similar to the "concepts/question tested in the image" for ${chosenClass}; IF THERE IS ANY EXTERNAL PASSAGES OR EXCERPTS NEEDED GENERATE THEM; DO NOT BASE THE QUESTION AROUND ANY IMAGES. Return answer in markdown format; SEPERATE ALL ANSWER OPTIONS WITH <br> FOR EACH QUESTION INCLUDE header BEFORE THE QUESTION SUCH AS: #Question 1; #Question 2; etc. for however many questions there are; AT THE VERY BOTTOM: provide an answer explanation header, and under it, fill in the correct answer for each frq part`,
       { inlineData: { data: image, mimeType: "image/png" } },
     ]);
 

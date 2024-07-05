@@ -1,6 +1,17 @@
 "use client";
 
-import { Box, Button, IconButton, Tabs, TextareaAutosize } from "@mui/material";
+import {
+  Box,
+  Button,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  IconButton,
+  Radio,
+  RadioGroup,
+  Tabs,
+  TextareaAutosize,
+} from "@mui/material";
 import "../../globals.css";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -49,11 +60,26 @@ export default function ProblemSetViewer({
   const [commentText, setCommentText] = useState("");
   const [currentUser, setCurrentUser] = useState<User | null>();
   const [comments, setComments] = useState<any[]>([]);
+  const [numQuestions, setNumQuestions] = useState<any[]>([]);
   const [tabValue, setTabValue] = useState(0);
+  const [height, setHeight] = useState(false);
 
   useEffect(() => {
     setUser(setCurrentUser);
   }, []);
+
+  useEffect(() => {
+    if (showQuiz) {
+      let arr: any = [];
+      (JSON.parse(JSON.stringify(ps.markdown)).response as string)
+        .match(/# Question/g)
+        ?.forEach((v, idx) => {
+          console.log(v);
+          arr.push(`Question# ${idx + 1}`);
+        });
+      setNumQuestions(arr);
+    }
+  }, [ps, showQuiz]);
 
   useEffect(() => {
     if (params.id) {
@@ -353,139 +379,217 @@ export default function ProblemSetViewer({
     } else
       return (
         <>
-          <NewModal modal={showQuiz} setModal={setShowQuiz}>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexDirection: "column",
-              }}
-            >
-              <h1
-                className="text-gradient-black"
-                style={{ fontSize: "4vw", marginTop: 120 }}
-              >
-                {ps.problemSetName}
-              </h1>
-              <Button
-                variant="outlined"
-                style={{ marginTop: 40 }}
-                onClick={() => setShowQuiz(false)}
-              >
-                Exit Quiz
-              </Button>
-
+          <NewModal modal={showQuiz} setModal={setShowQuiz} overflow={"hidden"}>
+            <div style={{ display: "flex", flexDirection: "row" }}>
               <div
                 style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
+                  width: "50%",
+                  height: "100%",
+                  maxHeight: "100vh",
+                  overflowY: "scroll",
+                  position: "relative",
                 }}
               >
-                {ps.questionSet.map((q) => {
-                  return (
-                    <div
-                      className="quizcontainer"
-                      style={{ width: "40%", marginBottom: 50 }}
-                    >
-                      <h2
-                        className="text-gradient-black"
-                        style={{ fontSize: 30 }}
-                      >
-                        Question #{q.questionNumber}:
-                      </h2>
-                      <h2 style={{ fontSize: 22, marginTop: 30 }}>
-                        {q.question}
-                      </h2>
-
-                      <ul>
-                        {q.optionsWithoutLetter.map((o, idx) => (
-                          <li
-                            style={{
-                              minHeight: 100,
-                              height: "100%",
-                              marginBottom: 10,
-                            }}
-                          >
-                            <input
-                              type="radio"
-                              id={`${o}-option`}
-                              name="selector"
-                            />
-                            <label
-                              htmlFor={`${o}-option`}
-                              style={{
-                                color: checkedQuestions.includes(q.question)
-                                  ? q.correctAnswerOption == o
-                                    ? "green"
-                                    : "red"
-                                  : "",
-                                height: "100%",
-                                marginBottom: -20,
-                                fontWeight: "bold",
-                              }}
-                            >
-                              {o}
-                            </label>
-
-                            <div className="check"></div>
-                            {checkedQuestions.includes(q.question) && (
-                              <p
-                                style={{
-                                  color:
-                                    q.correctAnswerOption == o
-                                      ? "green"
-                                      : "red",
-                                  padding: `5px 5px 5px 80px`,
-                                  fontStyle: "italic",
-                                }}
-                              >
-                                {
-                                  q.answerChoiceExplanations[
-                                    `choice${test(idx + 1)}`
-                                  ]
-                                }
-                              </p>
-                            )}
-                          </li>
-                        ))}
-                      </ul>
-                      <Button
-                        style={{ marginTop: 40 }}
-                        variant="outlined"
-                        color="success"
-                        onClick={() =>
-                          setCheckedQuestions([...checkedQuestions, q.question])
-                        }
-                      >
-                        Check Answer
-                      </Button>
-                    </div>
-                  );
-                })}
-                {/* <button
-                className={"primary-effect"}
-                style={{
-                  width: 400,
-                  borderRadius: 200,
-                  bottom: 50,
-                  cursor: "pointer",
-                  position: "fixed",
-                }}
-                onClick={async () => {
-                  // firebase save
-                }}
-              >
-                <span
+                <div
                   style={{
-                    cursor: "pointer",
+                    width: "100%",
+                    height: "100%",
+                    marginTop: 45,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexDirection: "column",
                   }}
                 >
-                  Submit
-                </span>
-              </button> */}
+                  <h1
+                    className="text-gradient-black"
+                    style={{ fontSize: "4vw" }}
+                  >
+                    {ps.problemSetName}
+                  </h1>
+                  <p style={{ marginTop: 40, maxWidth: "65%" }}>
+                    {ps.problemSetDescription}
+                  </p>
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    style={{ marginTop: 20 }}
+                    onClick={() => setShowQuiz(false)}
+                  >
+                    Exit Quiz
+                  </Button>
+
+                  <Button
+                    variant="outlined"
+                    color="success"
+                    style={{ marginTop: 20 }}
+                    onClick={() => setShowQuiz(false)}
+                  >
+                    Show Answer Key
+                  </Button>
+
+                  <Button
+                    variant="outlined"
+                    style={{ marginTop: 20 }}
+                    onClick={async () => {
+                      setHeight(true);
+                      setTimeout(async () => {
+                        generatePDF(targetRef, { filename: "ye.pdf" });
+                        setHeight(false);
+                      }, 500);
+                    }}
+                  >
+                    Print Out As Worksheet
+                  </Button>
+                </div>
+
+                <div
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                    padding: 45,
+                  }}
+                >
+                  <p
+                    className="text-gradient-black"
+                    style={{ fontWeight: "bold", textTransform: "uppercase" }}
+                  >
+                    Answer Sheet (NOT ALL MAY BE USED)
+                  </p>
+                  {numQuestions.map((q) => (
+                    <FormControl style={{ marginTop: 20 }}>
+                      <FormLabel
+                        id="demo-radio-buttons-group-label"
+                        style={{ fontWeight: "bold", fontSize: 22 }}
+                      >
+                        {q}
+                      </FormLabel>
+                      <RadioGroup
+                        aria-labelledby="demo-radio-buttons-group-label"
+                        defaultValue="female"
+                        name="radio-buttons-group"
+                        style={{ marginTop: 20 }}
+                      >
+                        {[
+                          "Option A",
+                          "Option B",
+                          "Option C",
+                          "Option D",
+                          "Option E",
+                        ].map((o) => (
+                          <FormControlLabel
+                            value={o}
+                            control={<Radio />}
+                            label={o}
+                            style={{
+                              border: "2px solid #eee",
+                              borderRadius: 100,
+                            }}
+                          />
+                        ))}
+                      </RadioGroup>
+                    </FormControl>
+                  ))}
+                </div>
+              </div>
+              <div
+                style={{
+                  width: 20,
+                  borderRight: "2px solid #eee",
+                }}
+              ></div>
+
+              <div
+                ref={targetRef as any}
+                style={{
+                  width: "50%",
+                  overflowY: "scroll",
+                  height: "100%",
+                  maxHeight: !height ? "100vh" : "",
+                }}
+              >
+                <div>
+                  <h1
+                    style={{
+                      top: 20,
+                      right: 70,
+                      position: "absolute",
+                      color: "#182264",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Generated by Vertex
+                  </h1>
+                  <img
+                    src="/logo.png"
+                    style={{
+                      position: "absolute",
+                      width: 40,
+                      top: 10,
+                      right: 20,
+                    }}
+                    alt=""
+                  />
+                  <MarkdownPreview
+                    className="markdowneditor"
+                    source={`${
+                      JSON.parse(JSON.stringify(ps.markdown)).response
+                    }`}
+                    style={{
+                      padding: 16,
+                      width: "100%",
+                      height: "100%",
+                      minHeight: "100vh",
+                      backgroundColor: "#fff",
+                      color: "#000",
+                    }}
+                    rehypePlugins={[rehypeKatex, remarkMath, remarkGfm]}
+                    components={{
+                      code: ({ children = [], className, ...props }) => {
+                        if (
+                          typeof children === "string" &&
+                          /^\$\$(.*)\$\$/.test(children)
+                        ) {
+                          const html = katex.renderToString(
+                            children.replace(/^\$\$(.*)\$\$/, "$1"),
+                            {
+                              throwOnError: false,
+                            },
+                          );
+                          return (
+                            <code
+                              dangerouslySetInnerHTML={{ __html: html }}
+                              style={{ background: "transparent" }}
+                            />
+                          );
+                        }
+                        const code =
+                          props.node && props.node.children
+                            ? getCodeString(props.node.children)
+                            : children;
+                        if (
+                          typeof code === "string" &&
+                          typeof className === "string" &&
+                          /^language-katex/.test(className.toLocaleLowerCase())
+                        ) {
+                          const html = katex.renderToString(code, {
+                            throwOnError: false,
+                          });
+                          return (
+                            <code
+                              style={{ fontSize: "150%" }}
+                              dangerouslySetInnerHTML={{ __html: html }}
+                            />
+                          );
+                        }
+                        return (
+                          <code className={String(className)}>{children}</code>
+                        );
+                      },
+                    }}
+                  />
+                </div>
               </div>
             </div>
           </NewModal>

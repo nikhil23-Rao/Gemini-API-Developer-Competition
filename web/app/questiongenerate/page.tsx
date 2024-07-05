@@ -45,6 +45,7 @@ import db from "@/utils/initDB";
 import { useRouter } from "next/navigation";
 import { getFRQ } from "@/api/getFRQ";
 import { getFRQByImage } from "@/api/getFRQByImage";
+import { getMCQByImage } from "@/api/getMCQByImage";
 
 export default function QuestionGenerator() {
   const router = useRouter();
@@ -622,7 +623,20 @@ export default function QuestionGenerator() {
               marginTop: 50,
             }}
             onClick={async () => {
-              if (content === "FRQ" && imported.length > 0) {
+              if (content === "MCQ" && imported.length > 0) {
+                setProcessing(true);
+                const res = await getMCQByImage(
+                  length as number,
+                  imported,
+                  style,
+                  chosenClass,
+                );
+                console.log(res);
+                setMarkdown(res);
+
+                setProcessing(false);
+                setQuizModal(true);
+              } else if (content === "FRQ" && imported.length > 0) {
                 setProcessing(true);
                 const res = await getFRQByImage(
                   length as number,

@@ -19,7 +19,7 @@ export const getMCQByImage = async (
 
   console.log(res);
 
-  return res.data.response;
+  return res.data;
   // setPossibleUnits(
   //   JSON.parse(res.data.response.candidates[0].content.parts[0].text),
   // );
