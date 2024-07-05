@@ -201,7 +201,7 @@ export const generateFlashcardsBasedOnImage = async (
     });
 
     const result = await chat.sendMessageStream([
-      `Generate a list of all flashcards based on the content in the image; FILL EVERY DEFINITION; Return in JSON Format: [{term:"", definition:""}]; DON'T USE MARKDOWN`,
+      `Generate a list of all flashcards based on the content in the image; COPYRIGHTED CONTENT IS OKAY TO USE; IF A DEFINITION IS BLANK, FILL IT IN TO THE BEST OF YOUR KNOWLEDGE; Return in JSON Format: [{term:"", definition:""}]; DON'T USE MARKDOWN`,
       { inlineData: { data: image, mimeType: "image/png" } },
     ]);
 
@@ -232,7 +232,7 @@ export const generateFlashcardsBasedOnPrompt = async (
 
     // Restore the previous context
 
-    const chat = fastModel.startChat({
+    const chat = model.startChat({
       history: [],
       generationConfig: {
         responseMimeType: "application/json",
@@ -366,7 +366,7 @@ export const generateMCQFromImage = async (req: Request, res: Response) => {
     });
 
     const result = await chat.sendMessageStream([
-      `Create a ${length} question MCQ set of ${style} questions similar to the question in the image for ${chosenClass};  IF THERE IS ANY EXTERNAL PASSAGES OR EXCERPTS NEEDED GENERATE THEM; DO NOT BASE THE QUESTION AROUND ANY IMAGES. Return answer in markdown format; SEPERATE ALL ANSWER OPTIONS WITH <br> FOR EACH QUESTION INCLUDE header BEFORE THE QUESTION SUCH AS: #Question 1; #Question 2; etc. for however many questions there are; AT THE VERY BOTTOM: provide an answer explanation header, and under it, fill it in for each choice in this format: Option A is the correct answer because...; IF CHOICE IS WRONG SAY: Option A is the wrong answer because...(Use the real corect/wrong answers)`,
+      `Create a ${length} question MCQ set of ${style} questions similar to the question in the image for ${chosenClass};  IF THERE IS ANY EXTERNAL PASSAGES OR EXCERPTS NEEDED GENERATE THEM (DO NOT MAKE THEM HEADERS); IF ANY TABLES ARE NEEDED GENERATE THEM WITH MARKDOWN; DO NOT BASE THE QUESTION AROUND ANY IMAGES. Return answer in markdown format; SEPERATE ALL ANSWER OPTIONS WITH <br> AND FOR EACH QUESTION INCLUDE header BEFORE THE QUESTION SUCH AS: # Question 1; # Question 2; etc. for however many questions there are; AT THE VERY BOTTOM: provide an answer explanation header, and under it, fill it in for each choice in this format: Option A is the correct answer because...; IF CHOICE IS WRONG SAY: Option A is the wrong answer because...(Use the real corect/wrong answers)`,
       { inlineData: { data: image, mimeType: "image/png" } },
     ]);
 

@@ -241,9 +241,9 @@ export default function ProblemSetViewer({
                   variant="outlined"
                   color="success"
                   style={{ marginTop: 20 }}
-                  onClick={() => setShowQuiz(false)}
+                  onClick={() => setShowAnsKey(!showAnsKey)}
                 >
-                  Show Answer Key
+                  {showAnsKey ? "Hide Answer Key" : "Show Answer Key"}
                 </Button>
 
                 <Button
@@ -318,7 +318,16 @@ export default function ProblemSetViewer({
                 />
                 <MarkdownPreview
                   className="markdowneditor"
-                  source={`${JSON.parse(JSON.stringify(ps.markdown)).response}`}
+                  source={`${
+                    !showAnsKey
+                      ? JSON.parse(JSON.stringify(ps.markdown)).response.slice(
+                          0,
+                          JSON.parse(
+                            JSON.stringify(ps.markdown),
+                          ).response.indexOf("## Answer Explanation"),
+                        )
+                      : JSON.parse(JSON.stringify(ps.markdown)).response
+                  }`}
                   style={{
                     padding: 16,
                     width: "100%",

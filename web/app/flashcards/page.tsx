@@ -90,7 +90,7 @@ export default function Flashcards() {
   }, [imported]);
 
   useEffect(() => {
-    if (chosenClass.length > 0) {
+    if (chosenClass.length > 0 && tabValue == 0) {
       // Call getUnits API
       setSelectedUnits([]);
       getUnitsForClass(chosenClass, setPossibleUnits);
