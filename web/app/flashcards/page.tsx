@@ -497,15 +497,15 @@ export default function Flashcards() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                height: "100vh",
                 width: "100%",
+                marginTop: 40,
+                position: "relative",
               }}
             >
               <main
                 className="main"
                 style={{
                   height: "100%",
-                  marginTop: 200,
                 }}
               >
                 {userFlashCardSets

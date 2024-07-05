@@ -494,7 +494,9 @@ export default function Dashboard() {
                         }`}
                         label={
                           <>
-                            <div
+                            <a
+                              href={`/ps/${d.docid}`}
+                              target="_blank"
                               style={{ display: "flex", flexDirection: "row" }}
                             >
                               <i
@@ -505,7 +507,7 @@ export default function Dashboard() {
                                 } mt-1`}
                               ></i>
                               <p style={{ marginLeft: 10 }}>{d.name}</p>
-                            </div>
+                            </a>
                           </>
                         }
                         style={{ borderRadius: 0 }}

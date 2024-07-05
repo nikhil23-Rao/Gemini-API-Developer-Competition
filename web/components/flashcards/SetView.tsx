@@ -33,7 +33,7 @@ export const SetView = ({
         padding: 20,
         cursor: "pointer",
         zoom: 0.8,
-        marginTop: 360,
+        marginTop: 10,
       }}
     >
       <figure

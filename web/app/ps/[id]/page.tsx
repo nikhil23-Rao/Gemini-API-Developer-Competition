@@ -637,7 +637,7 @@ export default function ProblemSetViewer({
                   />
                   <div
                     style={{
-                      width: "80vw",
+                      width: "100%",
                       backgroundColor: "#fff",
                       height: 1,
                     }}
