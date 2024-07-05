@@ -63,6 +63,7 @@ export default function ProblemSetViewer({
   const [numQuestions, setNumQuestions] = useState<any[]>([]);
   const [tabValue, setTabValue] = useState(0);
   const [height, setHeight] = useState(false);
+  const [showAnsKey, setShowAnsKey] = useState(false);
 
   useEffect(() => {
     setUser(setCurrentUser);
@@ -380,7 +381,13 @@ export default function ProblemSetViewer({
       return (
         <>
           <NewModal modal={showQuiz} setModal={setShowQuiz} overflow={"hidden"}>
-            <div style={{ display: "flex", flexDirection: "row" }}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                overflow: "hidden",
+              }}
+            >
               <div
                 style={{
                   width: "50%",
@@ -423,9 +430,9 @@ export default function ProblemSetViewer({
                     variant="outlined"
                     color="success"
                     style={{ marginTop: 20 }}
-                    onClick={() => setShowQuiz(false)}
+                    onClick={() => setShowAnsKey(!showAnsKey)}
                   >
-                    Show Answer Key
+                    {showAnsKey ? "Hide Answer Key" : "Show Answer Key"}
                   </Button>
 
                   <Button
@@ -485,12 +492,27 @@ export default function ProblemSetViewer({
                             style={{
                               border: "2px solid #eee",
                               borderRadius: 100,
+                              marginBottom: 20,
                             }}
                           />
                         ))}
                       </RadioGroup>
                     </FormControl>
                   ))}
+                  <Button
+                    variant="contained"
+                    color="success"
+                    style={{
+                      marginTop: 20,
+                      marginBottom: 40,
+                      borderRadius: 100,
+                    }}
+                    onClick={async () => {
+                      setShowAnsKey(true);
+                    }}
+                  >
+                    See Answers
+                  </Button>
                 </div>
               </div>
               <div
@@ -507,6 +529,8 @@ export default function ProblemSetViewer({
                   overflowY: "scroll",
                   height: "100%",
                   maxHeight: !height ? "100vh" : "",
+                  minWidth: "50vw",
+                  overflowX: "hidden",
                 }}
               >
                 <div>
@@ -534,7 +558,16 @@ export default function ProblemSetViewer({
                   <MarkdownPreview
                     className="markdowneditor"
                     source={`${
-                      JSON.parse(JSON.stringify(ps.markdown)).response
+                      !showAnsKey
+                        ? JSON.parse(
+                            JSON.stringify(ps.markdown),
+                          ).response.slice(
+                            0,
+                            JSON.parse(
+                              JSON.stringify(ps.markdown),
+                            ).response.indexOf("## Answer Explanations"),
+                          )
+                        : JSON.parse(JSON.stringify(ps.markdown)).response
                     }`}
                     style={{
                       padding: 16,
@@ -589,6 +622,13 @@ export default function ProblemSetViewer({
                       },
                     }}
                   />
+                  <div
+                    style={{
+                      width: "70vw",
+                      backgroundColor: "#fff",
+                      height: 1,
+                    }}
+                  ></div>
                 </div>
               </div>
             </div>

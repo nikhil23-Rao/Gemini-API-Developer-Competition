@@ -42,7 +42,7 @@ export const NewModal = ({
             justifyContent: "center",
             flexDirection: "column",
             marginBottom: 40,
-            overflow: overflow ? "hidden" : "auto",
+            overflowY: overflow === "hidden" ? "hidden" : "auto",
           }}
         >
           {children}
