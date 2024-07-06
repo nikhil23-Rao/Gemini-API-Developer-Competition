@@ -45,6 +45,7 @@ import db from "@/utils/initDB";
 import { useRouter } from "next/navigation";
 import { getFRQ } from "@/api/getFRQ";
 import { getFRQByImage } from "@/api/getFRQByImage";
+import loadingdata from "../../public/loader.json";
 import { getMCQByImage } from "@/api/getMCQByImage";
 
 export default function QuestionGenerator() {
@@ -78,6 +79,8 @@ export default function QuestionGenerator() {
   const [status, setStatus] = useState<"public" | "private">();
   const [markdown, setMarkdown] = useState<any>();
 
+  const [loading, setLoading] = useState(true);
+
   const [userProblemSets, setUserProblemSets] = useState<any>([]);
 
   const onImageChange = (event) => {
@@ -104,6 +107,7 @@ export default function QuestionGenerator() {
 
   useEffect(() => {
     if (currentUser) {
+      setLoading(true);
       const q = query(
         collection(db, "problemsets"),
         where("createdById", "==", currentUser?.id),
@@ -123,6 +127,7 @@ export default function QuestionGenerator() {
             setUserProblemSets(createdSets);
             console.log(createdSets);
             duplicate = false;
+            setLoading(false);
           }
         });
       });
@@ -180,88 +185,7 @@ export default function QuestionGenerator() {
             >
               View Generated Questions
             </AccordionSummary>
-            <AccordionDetails>
-              {/* {content === "FRQ"
-                ? (generatedQuestions as any).map((q) => (
-                    <>
-                      <div style={{ marginBottom: 40 }}>
-                        <h1
-                          style={{
-                            fontWeight: "bold",
-                            fontSize: 30,
-                            marginTop: 20,
-                          }}
-                        >
-                          Question #{q.questionNumber}
-                        </h1>
-                        <h1 className="mt-5" style={{ fontWeight: "bold" }}>
-                          {q.overallQuestion}
-                        </h1>
-                        <ul>
-                          {q.questionByPartWithLetter.map((o, idx) => {
-                            return (
-                              <>
-                                <li>{o}</li>
-                                <p style={{ color: "gray" }}>
-                                  {Object.values(q.solutionByPart)[idx] as any}
-                                </p>
-                              </>
-                            );
-                          })}
-                        </ul>
-                      </div>
-                    </>
-                  ))
-                : (generatedQuestions as any).map((q) => (
-                    <>
-                      <div style={{ marginBottom: 40 }}>
-                        <h1
-                          style={{
-                            fontWeight: "bold",
-                            fontSize: 30,
-                            marginTop: 20,
-                          }}
-                        >
-                          Question #{q.questionNumber}
-                        </h1>
-                        <h1 className="mt-5" style={{ fontWeight: "bold" }}>
-                          {q.question}
-                        </h1>
-                        <ul>
-                          {q.optionsWithoutLetter.map((o, idx) => {
-                            return (
-                              <>
-                                <li>
-                                  {o}
-                                  <i
-                                    className={`fa fa-${
-                                      q.correctAnswerOption === o
-                                        ? "check"
-                                        : "close"
-                                    } ml-2`}
-                                    style={{
-                                      color:
-                                        q.correctAnswerOption === o
-                                          ? "green"
-                                          : "red",
-                                    }}
-                                  ></i>
-                                </li>
-                                <p style={{ color: "gray" }}>
-                                  {
-                                    Object.values(q.answerChoiceExplanations)[
-                                      idx
-                                    ] as any
-                                  }
-                                </p>
-                              </>
-                            );
-                          })}
-                        </ul>
-                      </div>
-                    </>
-                  ))} */}
-            </AccordionDetails>
+            <AccordionDetails></AccordionDetails>
           </Accordion>
           <div
             style={{
@@ -895,16 +819,27 @@ export default function QuestionGenerator() {
             InputProps={{ sx: { borderRadius: 100, paddingLeft: 2 } }}
           ></TextField>
         </div>
-        {userProblemSets.length <= 0 && (
+        {loading && userProblemSets.length === 0 ? (
           <>
-            {" "}
             <Lottie
-              animationData={animationdata}
+              animationData={loadingdata}
               loop
               style={{ width: "16vw", marginTop: 30 }}
             />
-            <p>Start practicing with the buttons above...</p>
+            <p>Fetching data...</p>
           </>
+        ) : (
+          userProblemSets.length == 0 && (
+            <>
+              {" "}
+              <Lottie
+                animationData={animationdata}
+                loop
+                style={{ width: "16vw", marginTop: 30 }}
+              />
+              <p>Start practicing with the buttons above...</p>
+            </>
+          )
         )}
         <div className="relative font-inter antialiased">
           <main className="" style={{ height: 20 }}>
@@ -923,7 +858,10 @@ export default function QuestionGenerator() {
                       <div className="flex flex-1 flex-col p-6">
                         <div className="flex-1">
                           <header className="mb-2">
-                            <h2 className="hoverunderline text-xl font-extrabold leading-snug">
+                            <h2
+                              className="hoverunderline text-xl font-bold leading-snug"
+                              style={{ fontWeight: "bold" }}
+                            >
                               <a
                                 style={{
                                   cursor: "pointer",

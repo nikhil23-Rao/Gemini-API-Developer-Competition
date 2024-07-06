@@ -37,6 +37,8 @@ import { NewModal } from "@/components/general/newModal";
 import { Flipper } from "@/components/flashcards/Flipper";
 import { SetView } from "@/components/flashcards/SetView";
 import { Splash } from "@/components/general/Splash";
+import loader from "../../public/loader.json";
+import Lottie from "lottie-react";
 
 export default function Flashcards() {
   const [modal, setModal] = useState(false);
@@ -62,6 +64,7 @@ export default function Flashcards() {
     [{ name: string }] | null
   >();
   const [flashcards, setFlashcards] = useState<Array<Flashcard> | []>([]);
+  const [loadingSets, setLoadingSets] = useState(true);
 
   const onImageChange = (event) => {
     if (event.target.files && event.target.files[0]) {
@@ -118,6 +121,7 @@ export default function Flashcards() {
             setUserFlashCardSets(createdSets);
             console.log(createdSets);
             duplicate = false;
+            setLoadingSets(false);
           }
         });
       });
@@ -535,8 +539,17 @@ export default function Flashcards() {
               </main>
             </div>
           </>
+        ) : loadingSets ? (
+          <>
+            <Lottie
+              animationData={loader}
+              loop
+              style={{ width: "16vw", marginTop: 30 }}
+            />
+            <p>Fetching data...</p>
+          </>
         ) : (
-          <None setModal={setModal} />
+          !loadingSets && <None setModal={setModal} />
         )}
       </div>
     </>

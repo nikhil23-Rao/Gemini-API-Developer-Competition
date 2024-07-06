@@ -1,8 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap');
+
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 /* third-party libraries CSS */
+
+* {
+  font-family: "Lexend", sans-serif;
+}
 
 .testimonial-01 .swiper-pagination {
   @apply relative pt-[50px];
