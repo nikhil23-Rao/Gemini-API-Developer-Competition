@@ -201,7 +201,10 @@ export const AppSidebar: React.FC = () => {
                     color: "#000",
                     fontWeight: "bold",
                     backgroundColor:
-                      window.location.pathname === l.link ? "#F1F0F0" : "",
+                      typeof window !== "undefined" &&
+                      window.location.pathname === l.link
+                        ? "#F1F0F0"
+                        : "",
                   }}
                   icon={
                     <i

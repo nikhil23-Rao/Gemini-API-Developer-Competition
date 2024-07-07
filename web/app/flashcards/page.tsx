@@ -136,9 +136,6 @@ export default function Flashcards() {
     console.log(flashcards);
   }, [flashcards]);
 
-  if (typeof window === "undefined") {
-    return <Splash />;
-  }
   if (loading) return <ProcessingRequest />;
   if (editModal)
     return (

@@ -267,7 +267,7 @@ export default function Dashboard() {
                 <div className="glass" style={{ padding: 50 }}>
                   <h1
                     className="text-gradient-clock"
-                    style={{ fontSize: "6vw", fontFamily: "serif" }}
+                    style={{ fontSize: "6vw", fontFamily: "" }}
                   >
                     {formatAMPM(new Date())}
                   </h1>
@@ -433,353 +433,381 @@ export default function Dashboard() {
         </NewModal>
       </>
     );
-  if (!currentUser) return <Splash />;
   return (
     <>
       <AppSidebar />
-      <Modal
-        open={showFolders}
-        styles={{
-          modal: {
-            width: "50%",
-            height: "80%",
-          },
-        }}
-        onClose={() => {
-          setShowFolders(false);
-        }}
-      >
-        <div
-          style={{
-            alignItems: "center",
-            justifyContent: "center",
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          <h1
-            className="text-gradient-black"
-            style={{ fontSize: "2vw", marginTop: 15 }}
-          >
-            My Folders
-          </h1>
-          <p style={{ textAlign: "center", maxWidth: 600, marginTop: 20 }}>
-            Access all your generated and saved content through your folders.
-            One for every single one of your selected classes.
-          </p>
-          <SimpleTreeView style={{ fontSize: 20 }}>
-            {currentUser.selectedClasses.map((c, idx) => (
-              <TreeItem
-                itemId={`c-${idx.toString()}`}
-                label={c}
-                style={{
-                  width: "40vw",
-                  marginTop: 20,
-                  fontWeight: "bold",
-                  color: "#172B69",
-                  border: "1px solid #eee",
-                  borderRadius: 10,
-                  padding: 15,
-                  outline: "none",
-                }}
-              >
-                {folderData.map((d) => (
-                  <>
-                    {d.class !== c ? (
-                      <></>
-                    ) : (
-                      <TreeItem
-                        itemId={`c-${idx.toString()}-${
-                          Math.random() * 1000000000000
-                        }`}
-                        label={
-                          <>
-                            <a
-                              href={`/ps/${d.docid}`}
-                              target="_blank"
-                              style={{ display: "flex", flexDirection: "row" }}
-                            >
-                              <i
-                                className={`${
-                                  d.type === "flashcard"
-                                    ? "fa fa-pencil-square"
-                                    : "fa fa-question-circle"
-                                } mt-1`}
-                              ></i>
-                              <p style={{ marginLeft: 10 }}>{d.name}</p>
-                            </a>
-                          </>
-                        }
-                        style={{ borderRadius: 0 }}
-                      />
-                    )}
-                  </>
-                ))}
-              </TreeItem>
-            ))}
-          </SimpleTreeView>
-        </div>
-      </Modal>
-      <motion.div
-        style={{
-          alignItems: "center",
-          justifyContent: "center",
-          display: "flex",
-          flexDirection: "column",
-        }}
-        initial={{ opacity: 0.9 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
-        animate={{ scale: [0.85, 1] }}
-      >
-        <div
-          className="large-banner"
-          style={{ alignItems: "flex-start", width: "75%", marginLeft: "16%" }}
-        >
-          <p style={{ fontWeight: "bold", color: "#fff" }}>
-            <i className="fa fa-calendar mb-5 mr-2"></i>{" "}
-            {new Date().toLocaleString("default", { month: "long" }) +
-              "\n" +
-              ordinal_suffix_of(new Date().getDate().toLocaleString()) +
-              ", \n" +
-              new Date().getFullYear()}
-          </p>
-          <h2 style={{ fontWeight: "bold" }}>
-            Welcome back,{" "}
-            {currentUser?.username.split(" ").slice(0, -1).join(" ")}.
-          </h2>
-          <img
-            src="/intro.png"
-            style={{
-              position: "absolute",
-              zIndex: -1,
-              width: 240,
-              top: 20,
-              right: 40,
-              opacity: 0.5,
-            }}
-            alt=""
-          />
-          <p
-            style={{
-              color: "#fff",
-              fontSize: 12,
-              fontStyle: "italic",
-              fontWeight: "bold",
-            }}
-          >
-            "Education is the most powerful weapon which you can use to change
-            the world."
-          </p>
-          <p
-            style={{
-              color: "#fff",
-              fontSize: 12,
-              fontStyle: "italic",
-              fontWeight: "bold",
-            }}
-          >
-            ~ Nelson Mandela
-          </p>
+      {!currentUser ? (
+        <>
           <div
+            style={{
+              marginLeft: "10%",
+              alignItems: "center",
+              justifyContent: "center",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <Splash></Splash>
+          </div>
+        </>
+      ) : (
+        <>
+          <Modal
+            open={showFolders}
+            styles={{
+              modal: {
+                width: "50%",
+                height: "80%",
+              },
+            }}
+            onClose={() => {
+              setShowFolders(false);
+            }}
+          >
+            <div
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              <h1
+                className="text-gradient-black"
+                style={{ fontSize: "2vw", marginTop: 15 }}
+              >
+                My Folders
+              </h1>
+              <p style={{ textAlign: "center", maxWidth: 600, marginTop: 20 }}>
+                Access all your generated and saved content through your
+                folders. One for every single one of your selected classes.
+              </p>
+              <SimpleTreeView style={{ fontSize: 20 }}>
+                {currentUser.selectedClasses.map((c, idx) => (
+                  <TreeItem
+                    itemId={`c-${idx.toString()}`}
+                    label={c}
+                    style={{
+                      width: "40vw",
+                      marginTop: 20,
+                      fontWeight: "bold",
+                      color: "#172B69",
+                      border: "1px solid #eee",
+                      borderRadius: 10,
+                      padding: 15,
+                      outline: "none",
+                    }}
+                  >
+                    {folderData.map((d) => (
+                      <>
+                        {d.class !== c ? (
+                          <></>
+                        ) : (
+                          <TreeItem
+                            itemId={`c-${idx.toString()}-${
+                              Math.random() * 1000000000000
+                            }`}
+                            label={
+                              <>
+                                <a
+                                  href={`/ps/${d.docid}`}
+                                  target="_blank"
+                                  style={{
+                                    display: "flex",
+                                    flexDirection: "row",
+                                  }}
+                                >
+                                  <i
+                                    className={`${
+                                      d.type === "flashcard"
+                                        ? "fa fa-pencil-square"
+                                        : "fa fa-question-circle"
+                                    } mt-1`}
+                                  ></i>
+                                  <p style={{ marginLeft: 10 }}>{d.name}</p>
+                                </a>
+                              </>
+                            }
+                            style={{ borderRadius: 0 }}
+                          />
+                        )}
+                      </>
+                    ))}
+                  </TreeItem>
+                ))}
+              </SimpleTreeView>
+            </div>
+          </Modal>
+          <motion.div
             style={{
               alignItems: "center",
               justifyContent: "center",
               display: "flex",
-              width: "100%",
+              flexDirection: "column",
             }}
+            initial={{ opacity: 0.9 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            animate={{ scale: [0.85, 1] }}
           >
-            <Button
+            <div
+              className="large-banner"
               style={{
-                color: "#fff",
-                backgroundColor: "#2B5061",
-                top: 20,
-                borderRadius: 200,
+                alignItems: "flex-start",
+                width: "75%",
+                marginLeft: "16%",
               }}
-              variant="contained"
-              onClick={() => setFocusMode(true)}
             >
-              Enter Focus Mode
-            </Button>
-          </div>
-        </div>
-        <div
-          className="main-dash"
-          style={{ marginLeft: "16%", marginBottom: 0, width: "75%" }}
-        >
-          <ul className="infographic-cards" style={{ marginTop: 50 }}>
-            <li className="color-1" onClick={() => setDrawingModal(true)}>
-              <i className="fa fa-paint-brush"></i>
-              <h5>New Whiteboard</h5>
-              <h6>Need a quick drawing? Open up a canvas.</h6>
-              <i className="fa fa-plus-circle mt-4"></i>
-            </li>
-
-            <li className="color-4" style={{ borderRadius: 10 }}>
-              <i className="fa fa-bullseye"></i>
-              <h5>New Target</h5>
-              <h6>What do you want to accomplish right now?</h6>
-              <i className="fa fa-pencil-square mt-4"></i>
-            </li>
-
-            <li className="color-2" onClick={() => setShowFolders(true)}>
-              <i className="fa fa-folder"></i>
-              <h5>My Folders</h5>
-              <h6>See saved generation for classes.</h6>
-              <i className="fa fa-arrow-circle-right mt-4"></i>
-            </li>
-          </ul>
-        </div>
-
-        <div
-          style={{
-            marginLeft: "16%",
-            marginTop: 40,
-          }}
-        >
-          <div className="main-dash container">
-            <ul className="infographic-cards" style={{ width: "100%" }}>
-              <li className="color-3" style={{ width: "100%" }}>
-                <i className="fa fa-check-square"></i>
-                <h5>My Tasks</h5>
-                <h6>Keep track of upcoming tasks</h6>
-                <div
+              <p style={{ fontWeight: "bold", color: "#fff" }}>
+                <i className="fa fa-calendar mb-5 mr-2"></i>{" "}
+                {new Date().toLocaleString("default", { month: "long" }) +
+                  "\n" +
+                  ordinal_suffix_of(new Date().getDate().toLocaleString()) +
+                  ", \n" +
+                  new Date().getFullYear()}
+              </p>
+              <h2 style={{ fontWeight: "bold" }}>
+                Welcome back,{" "}
+                {currentUser?.username.split(" ").slice(0, -1).join(" ")}.
+              </h2>
+              <img
+                src="/intro.png"
+                style={{
+                  position: "absolute",
+                  zIndex: -1,
+                  width: 240,
+                  top: 20,
+                  right: 40,
+                  opacity: 0.5,
+                }}
+                alt=""
+              />
+              <p
+                style={{
+                  color: "#fff",
+                  fontSize: 12,
+                  fontStyle: "italic",
+                  fontWeight: "bold",
+                }}
+              >
+                "Education is the most powerful weapon which you can use to
+                change the world."
+              </p>
+              <p
+                style={{
+                  color: "#fff",
+                  fontSize: 12,
+                  fontStyle: "italic",
+                  fontWeight: "bold",
+                }}
+              >
+                ~ Nelson Mandela
+              </p>
+              <div
+                style={{
+                  alignItems: "center",
+                  justifyContent: "center",
+                  display: "flex",
+                  width: "100%",
+                }}
+              >
+                <Button
                   style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
+                    color: "#fff",
+                    backgroundColor: "#2B5061",
+                    top: 20,
+                    borderRadius: 200,
                   }}
+                  variant="contained"
+                  onClick={() => setFocusMode(true)}
                 >
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      padding: 15,
-                      alignItems: "center",
-                    }}
-                  >
-                    {todos.length == 0 && <p>No todos yet. Add one below.</p>}
-                    {todos.map((t, idx) => (
-                      <>
-                        <div
-                          style={{
-                            display: "flex",
-                            flexDirection: "row",
-                            padding: 15,
-                            alignItems: "center",
-                          }}
-                        >
-                          <ListItemText>
-                            <TextareaAutosize
-                              className="card-title"
-                              value={t.todo}
+                  Enter Focus Mode
+                </Button>
+              </div>
+            </div>
+            <div
+              className="main-dash"
+              style={{ marginLeft: "16%", marginBottom: 0, width: "75%" }}
+            >
+              <ul className="infographic-cards" style={{ marginTop: 50 }}>
+                <li className="color-1" onClick={() => setDrawingModal(true)}>
+                  <i className="fa fa-paint-brush"></i>
+                  <h5>New Whiteboard</h5>
+                  <h6>Need a quick drawing? Open up a canvas.</h6>
+                  <i className="fa fa-plus-circle mt-4"></i>
+                </li>
+
+                <li className="color-4" style={{ borderRadius: 10 }}>
+                  <i className="fa fa-bullseye"></i>
+                  <h5>New Target</h5>
+                  <h6>What do you want to accomplish right now?</h6>
+                  <i className="fa fa-pencil-square mt-4"></i>
+                </li>
+
+                <li className="color-2" onClick={() => setShowFolders(true)}>
+                  <i className="fa fa-folder"></i>
+                  <h5>My Folders</h5>
+                  <h6>See saved generation for classes.</h6>
+                  <i className="fa fa-arrow-circle-right mt-4"></i>
+                </li>
+              </ul>
+            </div>
+
+            <div
+              style={{
+                marginLeft: "16%",
+                marginTop: 40,
+              }}
+            >
+              <div className="main-dash container">
+                <ul className="infographic-cards" style={{ width: "100%" }}>
+                  <li className="color-3" style={{ width: "100%" }}>
+                    <i className="fa fa-check-square"></i>
+                    <h5>My Tasks</h5>
+                    <h6>Keep track of upcoming tasks</h6>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          padding: 15,
+                          alignItems: "center",
+                        }}
+                      >
+                        {todos.length == 0 && (
+                          <p>No todos yet. Add one below.</p>
+                        )}
+                        {todos.map((t, idx) => (
+                          <>
+                            <div
                               style={{
-                                backgroundColor: "transparent",
-                                outline: "none",
-                                resize: "none",
-                                overflow: "hidden",
-                                textDecoration: t.checked ? "line-through" : "",
+                                display: "flex",
+                                flexDirection: "row",
+                                padding: 15,
+                                alignItems: "center",
                               }}
-                              maxRows={1}
-                              onChange={(e) => {
-                                let oldTodos = [...todos];
-                                const target: any = todos.find(
-                                  (c) => c.idx === idx,
-                                );
+                            >
+                              <ListItemText>
+                                <TextareaAutosize
+                                  className="card-title"
+                                  value={t.todo}
+                                  style={{
+                                    backgroundColor: "transparent",
+                                    outline: "none",
+                                    resize: "none",
+                                    overflow: "hidden",
+                                    textDecoration: t.checked
+                                      ? "line-through"
+                                      : "",
+                                  }}
+                                  maxRows={1}
+                                  onChange={(e) => {
+                                    let oldTodos = [...todos];
+                                    const target: any = todos.find(
+                                      (c) => c.idx === idx,
+                                    );
 
-                                const newTodo = {
-                                  todo: e.target.value,
-                                  checked: t.checked,
-                                  idx,
-                                };
+                                    const newTodo = {
+                                      todo: e.target.value,
+                                      checked: t.checked,
+                                      idx,
+                                    };
 
-                                Object.assign(target, newTodo);
+                                    Object.assign(target, newTodo);
 
-                                setTodos([...todos]);
-                              }}
-                            ></TextareaAutosize>
-                          </ListItemText>
-                          <Checkbox
-                            checked={t.checked}
-                            color="success"
-                            onClick={() => {
-                              let oldTodos = [...todos];
-                              const target: any = todos.find(
-                                (c) => c.idx === idx,
-                              );
+                                    setTodos([...todos]);
+                                  }}
+                                ></TextareaAutosize>
+                              </ListItemText>
+                              <Checkbox
+                                checked={t.checked}
+                                color="success"
+                                onClick={() => {
+                                  let oldTodos = [...todos];
+                                  const target: any = todos.find(
+                                    (c) => c.idx === idx,
+                                  );
 
-                              const newTodo = {
-                                todo: t.todo,
-                                checked: !t.checked,
-                                idx,
-                              };
+                                  const newTodo = {
+                                    todo: t.todo,
+                                    checked: !t.checked,
+                                    idx,
+                                  };
 
-                              Object.assign(target, newTodo);
+                                  Object.assign(target, newTodo);
 
-                              setTodos([...todos]);
-                            }}
-                            style={{ color: "#fff", marginTop: -20 }}
-                          />
-                        </div>
-                      </>
-                    ))}
-                  </div>
-                </div>
-                <i
-                  className="fa fa-plus-circle mt-4"
-                  style={{ cursor: "pointer" }}
-                  onClick={() => {
-                    let oldTodos = [...todos];
-                    oldTodos.push({
-                      todo: "New todo",
-                      checked: false,
-                      idx: oldTodos.length,
-                    });
-                    setTodos(oldTodos);
-                  }}
-                ></i>
-              </li>
+                                  setTodos([...todos]);
+                                }}
+                                style={{ color: "#fff", marginTop: -20 }}
+                              />
+                            </div>
+                          </>
+                        ))}
+                      </div>
+                    </div>
+                    <i
+                      className="fa fa-plus-circle mt-4"
+                      style={{ cursor: "pointer" }}
+                      onClick={() => {
+                        let oldTodos = [...todos];
+                        oldTodos.push({
+                          todo: "New todo",
+                          checked: false,
+                          idx: oldTodos.length,
+                        });
+                        setTodos(oldTodos);
+                      }}
+                    ></i>
+                  </li>
 
-              <li className="color-3" style={{ width: "100%" }}>
-                <i className="fa fa-calendar mb-5"></i>
-                <h5>My Calendar</h5>
-                <h6>Keep track of upcoming tasks</h6>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      padding: 15,
-                      alignItems: "center",
-                    }}
-                  >
-                    <h1>hey</h1>
-                  </div>
-                </div>
-                <i
-                  className="fa fa-plus-circle mt-4"
-                  style={{ cursor: "pointer" }}
-                  onClick={() => {
-                    let oldTodos = [...todos];
-                    oldTodos.push({
-                      todo: "New todo",
-                      checked: false,
-                      idx: oldTodos.length,
-                    });
-                    setTodos(oldTodos);
-                  }}
-                ></i>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </motion.div>
+                  <li className="color-3" style={{ width: "100%" }}>
+                    <i className="fa fa-calendar mb-5"></i>
+                    <h5>My Calendar</h5>
+                    <h6>Keep track of upcoming tasks</h6>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          padding: 15,
+                          alignItems: "center",
+                        }}
+                      >
+                        <h1>hey</h1>
+                      </div>
+                    </div>
+                    <i
+                      className="fa fa-plus-circle mt-4"
+                      style={{ cursor: "pointer" }}
+                      onClick={() => {
+                        let oldTodos = [...todos];
+                        oldTodos.push({
+                          todo: "New todo",
+                          checked: false,
+                          idx: oldTodos.length,
+                        });
+                        setTodos(oldTodos);
+                      }}
+                    ></i>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </motion.div>
+        </>
+      )}
     </>
   );
 }

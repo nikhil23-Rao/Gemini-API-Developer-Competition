@@ -225,7 +225,12 @@ export default function ProblemSetViewer({
               >
                 <h1
                   className="text-gradient-black"
-                  style={{ fontSize: "4vw", marginTop: "5%" }}
+                  style={{
+                    fontSize: "4vw",
+                    marginTop: "5%",
+
+                    textAlign: "center",
+                  }}
                 >
                   {ps.problemSetName}
                 </h1>
@@ -423,7 +428,10 @@ export default function ProblemSetViewer({
                 >
                   <h1
                     className="text-gradient-black"
-                    style={{ fontSize: "4vw" }}
+                    style={{
+                      textAlign: "center",
+                      fontSize: "3vw",
+                    }}
                   >
                     {ps.problemSetName}
                   </h1>
@@ -689,6 +697,7 @@ export default function ProblemSetViewer({
                 fontSize: "4vw",
                 fontWeight: "bold",
                 maxWidth: "80%",
+                textAlign: "center",
               }}
             >
               {ps.problemSetName}
