@@ -74,6 +74,9 @@ const model = configuration.getGenerativeModel({ model: "gemini-1.5-pro" });
 const fastModel = configuration.getGenerativeModel({
   model: "gemini-1.5-flash",
 });
+const search = configuration.getGenerativeModel({
+  model: "gemini-1.0-pro",
+});
 
 export const generateFlashcards = async (req: Request, res: Response) => {
   try {
@@ -414,6 +417,41 @@ export const generateFRQFromImage = async (req: Request, res: Response) => {
   }
 };
 
+export const marketPlaceSearch = async (req: Request, res: Response) => {
+  try {
+    const { query, array } = req.body;
+    console.log(array);
+
+    // Restore the previous context
+
+    const chat = search.startChat({
+      history: [],
+      generationConfig: {
+        // responseMimeType: "application/json",
+        // temperature: 1,
+        // topP: 0.95,
+      },
+    });
+
+    const { response } = await chat.sendMessage(
+      `Use AI To sort the following array based on a query, and return the array back to me with the filtered results. The array is as follows: ${JSON.stringify(
+        array
+      )}; The Query to filter by is as follows:${query}; IF THE QUERY DOES NOT TO RELATE TO AN ELEMENT OF THE ARRAY, REMOVE IT FROM THE FILTERED RESULTS. (RETURN THE BEST MATCH AT THE START OF THE ARRAY AND THE WORST MATCH AT THE END OF THE ARRAY). IF THE array HAS A TOPIC RELATED TO THE IDEA OF THE QUERY RETURN THE RESULT.  JUST RETURN THE ARRAY BACK TO ME; DO NOT GIVE ME CODE;`
+    );
+    const responseText = response;
+
+    // Stores the conversation
+    res.send({
+      response: JSON.stringify(
+        (responseText as any).candidates[0].content.parts[0].text as any
+      ),
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 app.post("/flashcards", async (req: Request, res: Response) => {
   await generateFlashcards(req, res);
 });
@@ -459,6 +497,10 @@ app.post("/frqprompt", async (req: Request, res: Response) => {
 
 app.post("/frqimage", async (req: Request, res: Response) => {
   await generateFRQFromImage(req, res);
+});
+
+app.post("/marketplace", async (req: Request, res: Response) => {
+  await marketPlaceSearch(req, res);
 });
 
 app.listen(port, () => {

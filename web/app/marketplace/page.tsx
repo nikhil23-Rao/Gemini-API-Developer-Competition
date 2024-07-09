@@ -1,9 +1,47 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import { AppSidebar } from "../../components/general/Sidebar";
 import { Button, TextField } from "@mui/material";
 import "../globals.css";
+import { setUser } from "@/utils/getCurrentUser";
+import { User } from "@/types/auth/User";
+import { collection, getDocs, query, where } from "@firebase/firestore";
+import db from "@/utils/initDB";
+import { getMarketplaceSearchResults } from "@/api/getMarketplaceSearchResults";
+import { useRouter } from "next/navigation";
 
 export default function Marketplace() {
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [items, setCurrentItems] = useState<any[]>();
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [search, setSearch] = useState<string>("");
+  const router = useRouter();
+  useEffect(() => {
+    setUser(setCurrentUser);
+  }, []);
+
+  useEffect(() => {
+    if (currentUser) {
+      let getItems: any[] = [];
+      const getFlashcardsQuery = query(collection(db, "flashcards"));
+      const getProblemSetsQuery = query(collection(db, "problemsets"));
+      let terms: string[] = [];
+      getDocs(getFlashcardsQuery).then((res) => {
+        if (!res) return;
+        res.forEach((doc) => {
+          getItems.push({
+            title: doc.data().cardsetName,
+            classRelatedTo: doc.data().class,
+            id: doc.data().docid,
+            type: "flashcard",
+          });
+        });
+        console.log(getItems);
+        setCurrentItems(getItems);
+      });
+    }
+  }, [currentUser]);
+
   return (
     <>
       <AppSidebar />
@@ -63,186 +101,87 @@ export default function Marketplace() {
                 justifyContent: "center",
               }}
             >
-              <TextField
-                style={{
-                  borderRadius: 400,
-                  width: "90%",
-                  marginTop: 40,
-                }}
-                placeholder="Search by title, concept, class, etc..."
-                InputProps={{ sx: { borderRadius: 100, paddingLeft: 2 } }}
-              ></TextField>
               <div
-                style={{
-                  position: "absolute",
-                  display: "flex",
-                  flexDirection: "column",
-                  marginTop: "18%",
-                  alignItems: "flex-start",
-                  justifyContent: "flex-start",
-                  textAlign: "left",
-                  width: "38%",
-                  border: "2px solid #eee",
-                  borderRadius: 15,
-                  padding: 25,
-                  overflowY: "scroll",
-                  maxHeight: 250,
-                }}
+                style={{ display: "flex", flexDirection: "row", width: "100%" }}
               >
-                <li
+                <TextField
                   style={{
-                    width: "100%",
-                    marginBottom: 15,
-                    padding: 15,
-                    borderRadius: 10,
+                    borderRadius: 400,
+                    width: "90%",
+                    marginTop: 40,
+                  }}
+                  value={search}
+                  onChange={(e) => {
+                    console.log(e.currentTarget.value);
+                    setSearch(e.currentTarget.value);
+                    setSearchResults([]);
+                  }}
+                  onKeyDown={async (e) => {
+                    if (e.key === "Enter") {
+                      const results = await getMarketplaceSearchResults(
+                        items as any,
+                        search,
+                      );
+                      console.log("RES", JSON.parse(results));
+                      setSearchResults(JSON.parse(results));
+                    }
+                  }}
+                  placeholder="Search by title, concept, class, etc..."
+                  InputProps={{ sx: { borderRadius: 100, paddingLeft: 2 } }}
+                ></TextField>
+                <Button
+                  variant="outlined"
+                  startIcon={<i className="fa fa-sort"></i>}
+                  style={{
+                    borderRadius: 100,
+                    width: 120,
+                    height: 50,
+                    marginTop: 42,
+                    marginLeft: 20,
                   }}
                 >
-                  <i className="fa fa-pencil-square mr-3"></i> option 1
-                </li>
-                <li
-                  style={{
-                    width: "100%",
-                    marginBottom: 15,
-                    padding: 15,
-                    borderRadius: 10,
-                  }}
-                >
-                  <i className="fa fa-pencil-square mr-3"></i> option 1
-                </li>
-                <li
-                  style={{
-                    width: "100%",
-                    marginBottom: 15,
-                    padding: 15,
-                    borderRadius: 10,
-                  }}
-                >
-                  <i className="fa fa-pencil-square mr-3"></i> option 1
-                </li>
-                <li
-                  style={{
-                    width: "100%",
-                    marginBottom: 15,
-                    padding: 15,
-                    borderRadius: 10,
-                  }}
-                >
-                  <i className="fa fa-pencil-square mr-3"></i> option 1
-                </li>
-                <li
-                  style={{
-                    width: "100%",
-                    marginBottom: 15,
-                    padding: 15,
-                    borderRadius: 10,
-                  }}
-                >
-                  <i className="fa fa-pencil-square mr-3"></i> option 1
-                </li>
-                <li
-                  style={{
-                    width: "100%",
-                    marginBottom: 15,
-                    padding: 15,
-                    borderRadius: 10,
-                  }}
-                >
-                  <i className="fa fa-pencil-square mr-3"></i> option 1
-                </li>
-                <li
-                  style={{
-                    width: "100%",
-                    marginBottom: 15,
-                    padding: 15,
-                    borderRadius: 10,
-                  }}
-                >
-                  <i className="fa fa-pencil-square mr-3"></i> option 1
-                </li>
-                <li
-                  style={{
-                    width: "100%",
-                    marginBottom: 15,
-                    padding: 15,
-                    borderRadius: 10,
-                  }}
-                >
-                  <i className="fa fa-pencil-square mr-3"></i> option 1
-                </li>
-                <li
-                  style={{
-                    width: "100%",
-                    marginBottom: 15,
-                    padding: 15,
-                    borderRadius: 10,
-                  }}
-                >
-                  <i className="fa fa-pencil-square mr-3"></i> option 1
-                </li>
-                <li
-                  style={{
-                    width: "100%",
-                    marginBottom: 15,
-                    padding: 15,
-                    borderRadius: 10,
-                  }}
-                >
-                  <i className="fa fa-pencil-square mr-3"></i> option 1
-                </li>
-                <li
-                  style={{
-                    width: "100%",
-                    marginBottom: 15,
-                    padding: 15,
-                    borderRadius: 10,
-                  }}
-                >
-                  <i className="fa fa-pencil-square mr-3"></i> option 1
-                </li>
-                <li
-                  style={{
-                    width: "100%",
-                    marginBottom: 15,
-                    padding: 15,
-                    borderRadius: 10,
-                  }}
-                >
-                  <i className="fa fa-pencil-square mr-3"></i> option 1
-                </li>
-                <li
-                  style={{
-                    width: "100%",
-                    marginBottom: 15,
-                    padding: 15,
-                    borderRadius: 10,
-                  }}
-                >
-                  <i className="fa fa-pencil-square mr-3"></i> option 1
-                </li>
-                <li
-                  style={{
-                    width: "100%",
-                    marginBottom: 15,
-                    padding: 15,
-                    borderRadius: 10,
-                  }}
-                >
-                  <i className="fa fa-pencil-square mr-3"></i> option 1
-                </li>
+                  Filters
+                </Button>
               </div>
+              {search.length > 0 && (
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "flex-start",
+                    justifyContent: "flex-start",
+                    textAlign: "left",
+                    width: "80%",
+                    border: "2px solid #eee",
+                    borderRadius: 15,
+                    padding: 25,
+                    overflowY: "scroll",
+                    maxHeight: 250,
+                    marginLeft: -150,
+                  }}
+                >
+                  {search.length > 0 && searchResults.length <= 0 ? (
+                    <p>Click enter to find results...</p>
+                  ) : (
+                    searchResults.map((r) => (
+                      <li
+                        style={{
+                          width: "100%",
+                          marginBottom: 15,
+                          padding: 15,
+                          borderRadius: 10,
+                        }}
+                        onClick={() => {
+                          router.push(`/ps/${r.id}`);
+                        }}
+                      >
+                        <i className="fa fa-pencil-square mr-3"></i> {r.title}
+                      </li>
+                    ))
+                  )}
+                </div>
+              )}
             </div>
-            <Button
-              variant="outlined"
-              startIcon={<i className="fa fa-sort"></i>}
-              style={{
-                marginTop: 40,
-                borderRadius: 100,
-                left: -25,
-                position: "relative",
-              }}
-            >
-              Filters
-            </Button>
           </div>
         </div>
       </div>
