@@ -9,11 +9,15 @@ import { collection, getDocs, query, where } from "@firebase/firestore";
 import db from "@/utils/initDB";
 import { getMarketplaceSearchResults } from "@/api/getMarketplaceSearchResults";
 import { useRouter } from "next/navigation";
+import loader from "../../public/searchLoader.json";
+import Lottie from "lottie-react";
 
 export default function Marketplace() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [items, setCurrentItems] = useState<any[]>();
   const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [noResults, setNoResults] = useState(false);
   const [search, setSearch] = useState<string>("");
   const router = useRouter();
   useEffect(() => {
@@ -114,16 +118,22 @@ export default function Marketplace() {
                   onChange={(e) => {
                     console.log(e.currentTarget.value);
                     setSearch(e.currentTarget.value);
+                    setNoResults(false);
                     setSearchResults([]);
                   }}
                   onKeyDown={async (e) => {
                     if (e.key === "Enter") {
+                      setLoading(true);
                       const results = await getMarketplaceSearchResults(
                         items as any,
                         search,
                       );
                       console.log("RES", JSON.parse(results));
+                      if (JSON.parse(results).length == 0) {
+                        setNoResults(true);
+                      }
                       setSearchResults(JSON.parse(results));
+                      setLoading(false);
                     }
                   }}
                   placeholder="Search by title, concept, class, etc..."
@@ -157,13 +167,32 @@ export default function Marketplace() {
                     padding: 25,
                     overflowY: "scroll",
                     maxHeight: 250,
-                    marginLeft: -150,
+                    marginLeft: -130,
                   }}
                 >
-                  {search.length > 0 && searchResults.length <= 0 ? (
+                  {loading ? (
+                    <>
+                      <div
+                        style={{
+                          alignItems: "center",
+                          justifyContent: "center",
+                          display: "flex",
+                          flexDirection: "column",
+                          width: "100%",
+                        }}
+                      >
+                        <Lottie animationData={loader}></Lottie>
+                        <p>Querying results...</p>
+                      </div>
+                    </>
+                  ) : search.length > 0 &&
+                    searchResults.length <= 0 &&
+                    noResults === false ? (
                     <p>Click enter to find results...</p>
+                  ) : noResults ? (
+                    <>no results found.</>
                   ) : (
-                    searchResults.map((r) => (
+                    searchResults.slice(0, 8).map((r) => (
                       <li
                         style={{
                           width: "100%",
@@ -179,6 +208,7 @@ export default function Marketplace() {
                       </li>
                     ))
                   )}
+                  {searchResults.length > 8 ? <p>View All</p> : <></>}
                 </div>
               )}
             </div>

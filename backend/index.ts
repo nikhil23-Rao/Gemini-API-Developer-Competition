@@ -436,7 +436,7 @@ export const marketPlaceSearch = async (req: Request, res: Response) => {
     const { response } = await chat.sendMessage(
       `Use AI To sort the following array based on a query, and return the array back to me with the filtered results. The array is as follows: ${JSON.stringify(
         array
-      )}; The Query to filter by is as follows:${query}; IF THE QUERY DOES NOT TO RELATE TO AN ELEMENT OF THE ARRAY, REMOVE IT FROM THE FILTERED RESULTS. (RETURN THE BEST MATCH AT THE START OF THE ARRAY AND THE WORST MATCH AT THE END OF THE ARRAY). IF THE array HAS A TOPIC RELATED TO THE IDEA OF THE QUERY RETURN THE RESULT.  JUST RETURN THE ARRAY BACK TO ME; DO NOT GIVE ME CODE;`
+      )}; The Query to filter by is as follows:${query}; IF THE QUERY DOES NOT TO RELATE TO AN ELEMENT OF THE ARRAY, REMOVE IT FROM THE FILTERED RESULTS. (RETURN THE BEST MATCH AT THE START OF THE ARRAY AND THE WORST MATCH AT THE END OF THE ARRAY). IF THE array HAS A TOPIC RELATED TO THE IDEA OF THE QUERY RETURN THE RESULT.  IF NO RESULTS IN THE ARRAY MATCH THE QUERY: RETURN AN EMPTY ARRAY. JUST RETURN THE ARRAY BACK TO ME; DO NOT GIVE ME CODE;`
     );
     const responseText = response;
 
