@@ -9,4 +9,5 @@ export interface User {
   gradDate: string;
   grade: number;
   selectedClasses: string[];
+  target?: { text: string; chosenClass: string };
 }

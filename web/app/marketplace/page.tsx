@@ -18,6 +18,26 @@ export default function Marketplace() {
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [noResults, setNoResults] = useState(false);
+  const [forYou, setForYou] = useState([
+    {
+      title: "statstabke",
+      classRelatedTo: "AP Statistics",
+      id: "edPGxNHDGFFhe12Zo6e5",
+      type: "problemset",
+    },
+    {
+      title: "statstabke",
+      classRelatedTo: "AP Statistics",
+      id: "edPGxNHDGFFhe12Zo6e5",
+      type: "problemset",
+    },
+    {
+      title: "statstabke",
+      classRelatedTo: "AP Statistics",
+      id: "edPGxNHDGFFhe12Zo6e5",
+      type: "problemset",
+    },
+  ]);
   const [search, setSearch] = useState<string>("");
   const router = useRouter();
   useEffect(() => {
@@ -41,10 +61,39 @@ export default function Marketplace() {
           });
         });
         console.log(getItems);
+      });
+
+      getDocs(getProblemSetsQuery).then((res) => {
+        if (!res) return;
+        res.forEach((doc) => {
+          getItems.push({
+            title: doc.data().problemSetName,
+            classRelatedTo: doc.data().chosenClass,
+            id: doc.data().docid,
+            type: "problemset",
+          });
+        });
+        console.log(getItems);
         setCurrentItems(getItems);
       });
     }
   }, [currentUser]);
+
+  useEffect(() => {
+    if (items && items.length > 0 && currentUser) {
+      // getMarketplaceSearchResults(
+      //   items as any,
+      //   `${currentUser?.target?.chosenClass}: ${currentUser?.target?.text}`,
+      // ).then((results) => {
+      //   console.log("JFWEIOJIOFEWJIOWEF", results);
+      //   setForYou(JSON.parse(results).slice(0, 3));
+      // });
+    }
+  }, [items]);
+
+  useEffect(() => {
+    console.log(forYou);
+  }, [forYou]);
 
   return (
     <>
@@ -195,16 +244,48 @@ export default function Marketplace() {
                     searchResults.slice(0, 8).map((r) => (
                       <li
                         style={{
+                          display: "flex",
+                          flexDirection: "row",
                           width: "100%",
-                          marginBottom: 15,
-                          padding: 15,
                           borderRadius: 10,
                         }}
-                        onClick={() => {
-                          router.push(`/ps/${r.id}`);
-                        }}
                       >
-                        <i className="fa fa-pencil-square mr-3"></i> {r.title}
+                        <li
+                          style={{
+                            width: "100%",
+                            marginBottom: 15,
+                            padding: 15,
+                            borderRadius: 10,
+                          }}
+                          onClick={() => {
+                            router.push(`/ps/${r.id}`);
+                          }}
+                        >
+                          <i
+                            className={
+                              r.type === "problemset"
+                                ? "fa fa-question-circle mr-3"
+                                : "fa fa-pencil-square mr-3"
+                            }
+                          ></i>{" "}
+                          {r.title}
+                          <p
+                            style={{
+                              marginLeft: 30,
+                              textTransform: "uppercase",
+                              fontSize: 12,
+                            }}
+                          >
+                            {" "}
+                            {r.classRelatedTo}
+                          </p>
+                        </li>
+                        <div style={{ marginTop: 32, marginRight: 20 }}>
+                          <i
+                            className="fa fa-arrow-right"
+                            style={{ zoom: 1.5 }}
+                          ></i>
+                        </div>
                       </li>
                     ))
                   )}
@@ -214,6 +295,60 @@ export default function Marketplace() {
             </div>
           </div>
         </div>
+      </div>
+      <div style={{ marginLeft: "20%", marginTop: 100 }}>
+        <h1 className="text-gradient-black" style={{ fontSize: "3vw" }}>
+          For You
+        </h1>
+        <p className="mt-8">
+          Based on your current target, and recently created/viewed sets...
+        </p>
+
+        <main className="" style={{ maxWidth: "60%", marginTop: -50 }}>
+          <div className="mx-auto w-full max-w-5xl px-4 py-24 md:px-6">
+            <div className="mx-auto grid max-w-xs items-start gap-6 lg:max-w-none lg:grid-cols-3">
+              {forYou.map((c, idx) => (
+                <article
+                  className="card__article"
+                  style={{
+                    cursor: "pointer",
+                    border: "2px solid #1C1357",
+                    borderRadius: 10,
+                  }}
+                >
+                  <img
+                    src={`https://api.dicebear.com/8.x/identicon/svg?seed=${
+                      idx * 2
+                    }`}
+                    alt="image"
+                    className="card__img"
+                    style={{ width: "100%", borderRadius: 0 }}
+                  />
+                  <div
+                    className="card__data"
+                    style={{ color: "#000", backgroundColor: "#fff" }}
+                  >
+                    <span
+                      className="card__description"
+                      style={{ textTransform: "uppercase", color: "gray" }}
+                    >
+                      {c.classRelatedTo}
+                    </span>
+
+                    <h2 className="card__title">{c.title}</h2>
+                    <a href={`/ps/${c.id}`} className="card__button">
+                      Visit Set
+                    </a>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </main>
+        <h1 className="text-gradient-black" style={{ fontSize: "3vw" }}>
+          Trending
+        </h1>
+        <p className="mt-8">Based on number of folder saves...</p>
       </div>
     </>
   );

@@ -6,7 +6,12 @@ import "../globals.css";
 import {
   Button,
   Checkbox,
+  FormControl,
+  InputLabel,
   ListItemText,
+  MenuItem,
+  Select,
+  TextField,
   TextareaAutosize,
 } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
@@ -28,17 +33,27 @@ import { Modal } from "react-responsive-modal";
 import { SimpleTreeView } from "@mui/x-tree-view/SimpleTreeView";
 import { TreeItem } from "@mui/x-tree-view/TreeItem";
 import axios from "axios";
-import { collection, getDocs, query, where } from "@firebase/firestore";
+import {
+  collection,
+  doc,
+  getDocs,
+  query,
+  updateDoc,
+  where,
+} from "@firebase/firestore";
 import db from "@/utils/initDB";
 
 export default function Dashboard() {
   const canvasRef = useRef<ReactSketchCanvasRef>(null);
   const [eraseMode, setEraseMode] = useState(false);
+  const [chosenClass, setChosenClass] = useState("");
+  const [target, setTarget] = useState("");
   const [focusMode, setFocusMode] = useState(false);
   const [drawingModal, setDrawingModal] = useState(false);
   const [showDesmos, setShowDesmos] = useState(false);
   const [showCalculator, setShowCalculator] = useState(false);
   const [showColorPicker, setShowColorPicker] = useState(false);
+  const [showTarget, setShowTarget] = useState(false);
   const [color, setColor] = useState("#000000");
   const [img, setImg] = useState("");
   const [showFolders, setShowFolders] = useState(false);
@@ -453,6 +468,92 @@ export default function Dashboard() {
       ) : (
         <>
           <Modal
+            open={showTarget}
+            styles={{
+              modal: {
+                width: "50%",
+                height: "70%",
+              },
+            }}
+            onClose={() => {
+              setShowTarget(false);
+            }}
+          >
+            <div
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              <h1
+                className="text-gradient-black"
+                style={{ fontSize: "2vw", marginTop: 15 }}
+              >
+                Target
+              </h1>
+              <p style={{ textAlign: "center", maxWidth: 600, marginTop: 20 }}>
+                Set a focus for yourself for the next education session. Enter
+                any types of problems u want to tackle, or any classes you want
+                to focus on.
+              </p>
+              <FormControl
+                style={{ width: 400, marginTop: 60, marginBottom: 20 }}
+              >
+                <InputLabel id="demo-simple-select-label">
+                  Class Related To
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={chosenClass}
+                  onChange={(e) => {
+                    setChosenClass(e.target.value);
+                  }}
+                >
+                  {currentUser?.selectedClasses.map((c, idx) => (
+                    <MenuItem value={c} key={idx}>
+                      {c}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <TextareaAutosize
+                id="outlined-basic"
+                placeholder="What do you want to focus on?"
+                value={target}
+                style={{
+                  width: 400,
+                  marginTop: 20,
+                  height: 100,
+                  border: "2px solid #CBCBCB",
+                  borderRadius: 5,
+                  resize: "none",
+                  padding: 20,
+                }}
+                onChange={(e) => {
+                  setTarget(e.currentTarget.value);
+                }}
+              />
+              <Button
+                variant="outlined"
+                className="mt-10"
+                color="success"
+                onClick={() => {
+                  updateDoc(doc(db, "users", currentUser.docid), {
+                    target: {
+                      text: target,
+                      chosenClass,
+                    },
+                  });
+                }}
+              >
+                Update Target
+              </Button>
+            </div>
+          </Modal>
+          <Modal
             open={showFolders}
             styles={{
               modal: {
@@ -637,7 +738,11 @@ export default function Dashboard() {
                   <i className="fa fa-plus-circle mt-4"></i>
                 </li>
 
-                <li className="color-4" style={{ borderRadius: 10 }}>
+                <li
+                  className="color-4"
+                  style={{ borderRadius: 10 }}
+                  onClick={() => setShowTarget(true)}
+                >
                   <i className="fa fa-bullseye"></i>
                   <h5>New Target</h5>
                   <h6>What do you want to accomplish right now?</h6>
