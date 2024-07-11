@@ -18,26 +18,8 @@ export default function Marketplace() {
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [noResults, setNoResults] = useState(false);
-  const [forYou, setForYou] = useState([
-    {
-      title: "statstabke",
-      classRelatedTo: "AP Statistics",
-      id: "edPGxNHDGFFhe12Zo6e5",
-      type: "problemset",
-    },
-    {
-      title: "statstabke",
-      classRelatedTo: "AP Statistics",
-      id: "edPGxNHDGFFhe12Zo6e5",
-      type: "problemset",
-    },
-    {
-      title: "statstabke",
-      classRelatedTo: "AP Statistics",
-      id: "edPGxNHDGFFhe12Zo6e5",
-      type: "problemset",
-    },
-  ]);
+  const [trending, setTrending] = useState([]);
+  const [forYou, setForYou] = useState([]);
   const [search, setSearch] = useState<string>("");
   const router = useRouter();
   useEffect(() => {
@@ -46,6 +28,7 @@ export default function Marketplace() {
 
   useEffect(() => {
     if (currentUser) {
+      let allData: any[] = [];
       let getItems: any[] = [];
       const getFlashcardsQuery = query(collection(db, "flashcards"));
       const getProblemSetsQuery = query(collection(db, "problemsets"));
@@ -53,6 +36,13 @@ export default function Marketplace() {
       getDocs(getFlashcardsQuery).then((res) => {
         if (!res) return;
         res.forEach((doc) => {
+          allData.push({
+            title: doc.data().cardsetName,
+            classRelatedTo: doc.data().class,
+            id: doc.data().docid,
+            type: "flashcard",
+            savedToFolder: doc.data().savedToFolder,
+          });
           getItems.push({
             title: doc.data().cardsetName,
             classRelatedTo: doc.data().class,
@@ -66,6 +56,13 @@ export default function Marketplace() {
       getDocs(getProblemSetsQuery).then((res) => {
         if (!res) return;
         res.forEach((doc) => {
+          allData.push({
+            title: doc.data().problemSetName,
+            classRelatedTo: doc.data().chosenClass,
+            id: doc.data().docid,
+            type: "problemset",
+            savedToFolder: doc.data().savedToFolder,
+          });
           getItems.push({
             title: doc.data().problemSetName,
             classRelatedTo: doc.data().chosenClass,
@@ -75,21 +72,36 @@ export default function Marketplace() {
         });
         console.log(getItems);
         setCurrentItems(getItems);
+
+        allData.sort((a, b) => {
+          if (a.savedToFolder.length < b.savedToFolder.length) {
+            return -1;
+          }
+          if (a.savedToFolder.length > b.savedToFolder.length) {
+            return 1;
+          }
+          return 0;
+        });
+        setTrending(allData.slice(0, 3) as any);
       });
     }
   }, [currentUser]);
 
   useEffect(() => {
     if (items && items.length > 0 && currentUser) {
-      // getMarketplaceSearchResults(
-      //   items as any,
-      //   `${currentUser?.target?.chosenClass}: ${currentUser?.target?.text}`,
-      // ).then((results) => {
-      //   console.log("JFWEIOJIOFEWJIOWEF", results);
-      //   setForYou(JSON.parse(results).slice(0, 3));
-      // });
+      getMarketplaceSearchResults(
+        items as any,
+        `${currentUser?.target?.chosenClass}: ${currentUser?.target?.text}`,
+      ).then((results) => {
+        console.log("JFWEIOJIOFEWJIOWEF", results);
+        setForYou(JSON.parse(results).slice(0, 3));
+      });
     }
   }, [items]);
+
+  useEffect(() => {
+    console.log("TRENDING", trending);
+  }, [trending]);
 
   useEffect(() => {
     console.log(forYou);
@@ -303,16 +315,20 @@ export default function Marketplace() {
         <p className="mt-8">
           Based on your current target, and recently created/viewed sets...
         </p>
+        <p style={{ textTransform: "uppercase", letterSpacing: 2 }}>
+          Current Target: {currentUser?.target?.chosenClass} -{" "}
+          {currentUser?.target?.text}
+        </p>
 
         <main className="" style={{ maxWidth: "60%", marginTop: -50 }}>
           <div className="mx-auto w-full max-w-5xl px-4 py-24 md:px-6">
             <div className="mx-auto grid max-w-xs items-start gap-6 lg:max-w-none lg:grid-cols-3">
-              {forYou.map((c, idx) => (
+              {forYou.map((c: any, idx) => (
                 <article
                   className="card__article"
                   style={{
                     cursor: "pointer",
-                    border: "2px solid #1C1357",
+                    border: "2px solid #eee",
                     borderRadius: 10,
                   }}
                 >
@@ -349,6 +365,47 @@ export default function Marketplace() {
           Trending
         </h1>
         <p className="mt-8">Based on number of folder saves...</p>
+        <main className="" style={{ maxWidth: "60%", marginTop: -50 }}>
+          <div className="mx-auto w-full max-w-5xl px-4 py-24 md:px-6">
+            <div className="mx-auto grid max-w-xs items-start gap-6 lg:max-w-none lg:grid-cols-3">
+              {trending.map((c: any, idx) => (
+                <article
+                  className="card__article"
+                  style={{
+                    cursor: "pointer",
+                    border: "2px solid #eee",
+                    borderRadius: 10,
+                  }}
+                >
+                  <img
+                    src={`https://api.dicebear.com/8.x/identicon/svg?seed=${
+                      idx * 2
+                    }`}
+                    alt="image"
+                    className="card__img"
+                    style={{ width: "100%", borderRadius: 0 }}
+                  />
+                  <div
+                    className="card__data"
+                    style={{ color: "#000", backgroundColor: "#fff" }}
+                  >
+                    <span
+                      className="card__description"
+                      style={{ textTransform: "uppercase", color: "gray" }}
+                    >
+                      {c.classRelatedTo}
+                    </span>
+
+                    <h2 className="card__title">{c.title}</h2>
+                    <a href={`/ps/${c.id}`} className="card__button">
+                      Visit Set
+                    </a>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </main>
       </div>
     </>
   );
