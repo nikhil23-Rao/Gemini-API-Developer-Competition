@@ -405,7 +405,8 @@ export default function Flashcards() {
 
   return (
     <>
-      <AppSidebar />
+      <AppSidebar modals={openSet || modal} />
+
       <Modal
         open={openSet}
         onClose={() => setOpenSet(false)}

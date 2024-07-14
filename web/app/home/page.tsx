@@ -450,7 +450,7 @@ export default function Dashboard() {
     );
   return (
     <>
-      <AppSidebar />
+      <AppSidebar modals={showFolders || showTarget} />
       {!currentUser ? (
         <>
           <div

@@ -109,7 +109,7 @@ export default function Marketplace() {
 
   return (
     <>
-      <AppSidebar />
+      <AppSidebar modals={false} />
       <div
         style={{
           display: "flex",

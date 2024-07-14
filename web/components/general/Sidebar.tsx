@@ -72,7 +72,7 @@ const hexToRgba = (hex: string, alpha: number) => {
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 };
 
-export const AppSidebar: React.FC = () => {
+export const AppSidebar: React.FC<{ modals }> = ({ modals }) => {
   const [collapsed, setCollapsed] = React.useState(false);
   const [toggled, setToggled] = React.useState(false);
   const [broken, setBroken] = React.useState(false);
@@ -143,11 +143,12 @@ export const AppSidebar: React.FC = () => {
         direction: rtl ? "rtl" : "ltr",
         position: "fixed",
         fontFamily: "-apple-system, BlinkMacSystemFont, sans-serif",
+        zIndex: modals ? "" : 100000000000,
       }}
     >
       {broken && (
         <button className="sb-button" onClick={() => setToggled(!toggled)}>
-          Toggle
+          <i className="fa fa-menu"></i> Show Sidebar
         </button>
       )}
       <Sidebar

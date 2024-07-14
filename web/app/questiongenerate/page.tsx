@@ -752,7 +752,7 @@ export default function QuestionGenerator() {
 
   return (
     <>
-      <AppSidebar />
+      <AppSidebar modals={false} />
       <div
         style={{
           display: "flex",
