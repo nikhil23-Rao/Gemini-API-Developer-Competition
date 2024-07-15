@@ -39,6 +39,7 @@ export default function Assist() {
       message:
         "Hey there! Welcome to the study assist tab? Do you need help on a problem that you just took a screenshot of? Or maybe there was a problem in a problem set you found confusing? Feel free to ask for a step by step guide here!",
       id: 1,
+      date: new Date(),
     },
   ]);
 
@@ -50,6 +51,16 @@ export default function Assist() {
     setUser(setCurrentUser);
   }, []);
 
+  function formatAMPM(date) {
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    var ampm = hours >= 12 ? "PM" : "AM";
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    minutes = minutes < 10 ? "0" + minutes : minutes;
+    var strTime = hours + ":" + minutes + " " + ampm;
+    return strTime;
+  }
   useEffect(() => {
     console.log(messageList);
     if (typeof document !== "undefined") {
@@ -178,7 +189,9 @@ export default function Assist() {
                                 ? currentUser.username
                                 : "Vertex"}
                             </p>
-                            <p style={{ marginLeft: 10 }}>11:23 AM</p>
+                            <p style={{ marginLeft: 10 }}>
+                              {formatAMPM(m.date)}
+                            </p>
                           </div>
                         </div>
                         {m.user === "me" ? (
@@ -318,11 +331,13 @@ export default function Assist() {
                             user: "me",
                             id: messageList.length + 1,
                             message: latex,
+                            date: new Date(),
                           },
                           {
                             user: "bot",
                             id: messageList.length + 2,
                             message: "",
+                            date: new Date(),
                           },
                         ];
                         setMessageList([
@@ -331,11 +346,13 @@ export default function Assist() {
                             user: "me",
                             id: messageList.length + 1,
                             message: latex,
+                            date: new Date(),
                           },
                           {
                             user: "bot",
                             id: messageList.length + 2,
                             message: "",
+                            date: new Date(),
                           },
                         ]);
 
@@ -405,11 +422,13 @@ export default function Assist() {
                                 id: messageList.length + 1,
                                 message: message,
                                 image: imported.length > 0 ? imgPreview : null,
+                                date: new Date(),
                               },
                               {
                                 user: "bot",
                                 id: messageList.length + 2,
                                 message: "",
+                                date: new Date(),
                               },
                             ];
                             setMessageList([
@@ -419,11 +438,13 @@ export default function Assist() {
                                 id: messageList.length + 1,
                                 message: message,
                                 image: imported.length > 0 ? imgPreview : null,
+                                date: new Date(),
                               },
                               {
                                 user: "bot",
                                 id: messageList.length + 2,
                                 message: "",
+                                date: new Date(),
                               },
                             ]);
 
