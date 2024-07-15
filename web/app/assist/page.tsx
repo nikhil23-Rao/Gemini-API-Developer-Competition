@@ -186,6 +186,7 @@ export default function Assist() {
                   display: "flex",
                   flexDirection: "column",
                   overflowY: "scroll",
+                  maxWidth: "80%",
                 }}
                 id="messageview"
               >
@@ -194,7 +195,6 @@ export default function Assist() {
                     <li>
                       <div
                         style={{
-                          width: "80vw",
                           padding: 20,
                           marginBottom: 0,
                         }}
@@ -333,7 +333,7 @@ export default function Assist() {
               </div>
               <div
                 style={{
-                  width: "100%",
+                  width: "80%",
                   display: "flex",
                   flexDirection: "row",
                 }}
@@ -527,227 +527,234 @@ export default function Assist() {
                     </div>
                   </>
                 )}
-                <label htmlFor="group_image">
+                <div style={{ marginLeft: "-7%" }}>
+                  <label htmlFor="group_image">
+                    <i
+                      className="fa fa-plus-circle fa-2x"
+                      style={{
+                        color: "#201C57",
+                        cursor: "pointer",
+                        top: showMath ? 20 : 10,
+                        position: "relative",
+                        marginRight: 10,
+                      }}
+                    ></i>
+                  </label>
+                  <input
+                    type="file"
+                    onChange={onImageChange}
+                    className="filetype custom-file-upload"
+                    id="group_image"
+                    accept="image/*"
+                  />
+
                   <i
-                    className="fa fa-plus-circle fa-2x"
+                    className="fa fa-calculator fa-2x"
+                    style={{
+                      color: showMath ? "orange" : "#201C57",
+                      cursor: "pointer",
+                      top: showMath ? 20 : 10,
+                      position: "relative",
+                    }}
+                    onClick={() => setShowMath(!showMath)}
+                  ></i>
+                  {openDropdown && (
+                    <div
+                      style={{
+                        position: "absolute",
+                        height: 400,
+                        width: 400,
+                        border: "2px solid #eee",
+                        bottom: 50,
+                        right: 50,
+                        backgroundColor: "#fff",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexDirection: "column",
+                      }}
+                    >
+                      {!selected ? (
+                        <>
+                          <h1
+                            className="text-gradient-black mt-5"
+                            style={{ fontSize: "1.3vw" }}
+                          >
+                            My Problem Sets
+                          </h1>
+                          <TextField
+                            className="mb-5 mt-5"
+                            style={{ borderRadius: 400, width: "70%" }}
+                            placeholder="search through your sets..."
+                          ></TextField>
+                          <div
+                            style={{
+                              height: "60%",
+                              overflowY: "scroll",
+                              width: "80%",
+                            }}
+                          >
+                            {userProblemSets.map((ps) => (
+                              <li
+                                onClick={() => {
+                                  setSelected(ps);
+                                }}
+                              >
+                                {ps.problemSetName}
+                              </li>
+                            ))}
+                          </div>{" "}
+                        </>
+                      ) : (
+                        <>
+                          <i
+                            className="fa fa-arrow-left fa-2x"
+                            style={{
+                              position: "absolute",
+                              top: 20,
+                              left: 20,
+                              cursor: "pointer",
+                            }}
+                            onClick={() => setSelected(undefined)}
+                          ></i>
+                          <h1
+                            className="text-gradient-black mt-5"
+                            style={{
+                              fontSize: "1.3vw",
+                              position: "absolute",
+                              top: 50,
+                            }}
+                          >
+                            {(selected as any).problemSetName}
+                          </h1>
+                          <div
+                            style={{
+                              position: "absolute",
+                              top: 100,
+                              width: "80%",
+                            }}
+                          >
+                            <p
+                              style={{
+                                textTransform: "uppercase",
+                                letterSpacing: 1.3,
+                              }}
+                            >
+                              Questions in set
+                            </p>
+                            {(
+                              JSON.parse(
+                                JSON.stringify((selected as any).markdown),
+                              ).response as string
+                            )
+                              .match(/# Question/g)
+                              ?.map((q, idx) => (
+                                <li
+                                  onClick={async () => {
+                                    setLoading(true);
+                                    setSelected(undefined);
+                                    setOpenDropdown(false);
+                                    let oldMessages = [
+                                      ...messageList,
+                                      {
+                                        user: "me",
+                                        id: messageList.length + 1,
+                                        message: `Help me on the ${
+                                          (selected as any).problemSetName
+                                        } problem set; Specifically question ${
+                                          idx + 1
+                                        }`,
+                                        image:
+                                          imported.length > 0
+                                            ? imgPreview
+                                            : null,
+                                        date: new Date(),
+                                      },
+                                      {
+                                        user: "bot",
+                                        id: messageList.length + 2,
+                                        message: "",
+                                        date: new Date(),
+                                      },
+                                    ];
+                                    setMessageList([
+                                      ...messageList,
+                                      {
+                                        user: "me",
+                                        id: messageList.length + 1,
+                                        message: `Help me on the ${
+                                          (selected as any).problemSetName
+                                        } problem set; Specifically question ${
+                                          idx + 1
+                                        }`,
+                                        image:
+                                          imported.length > 0
+                                            ? imgPreview
+                                            : null,
+                                        date: new Date(),
+                                      },
+                                      {
+                                        user: "bot",
+                                        id: messageList.length + 2,
+                                        message: "",
+                                        date: new Date(),
+                                      },
+                                    ]);
+
+                                    setMessage("");
+                                    setImported("");
+                                    let botMessage = "";
+
+                                    botMessage = await assistUserResponse(
+                                      [],
+                                      `HELP ME ON ONLY QUESTION ${
+                                        idx + 1
+                                      } OF THE FOLLOWING PROBLEM (WRITTEN IN MARKDOWN): ${
+                                        JSON.parse(
+                                          JSON.stringify(
+                                            (selected as any).markdown,
+                                          ),
+                                        ).response
+                                      }; IN YOUR RESPONSE PROVIDE THE QUESTION ASKED FOR BEFORE YOU EXPLAIN IT`,
+                                    );
+
+                                    if (botMessage.length > 0) {
+                                      let objIndex = oldMessages.findIndex(
+                                        (obj) =>
+                                          obj.message == "" &&
+                                          obj.user !== "me",
+                                      );
+                                      console.log(objIndex);
+                                      oldMessages[objIndex].message =
+                                        botMessage;
+
+                                      setMessageList(oldMessages);
+                                    }
+                                    setLoading(false);
+                                  }}
+                                >
+                                  Help on - Question# {idx + 1}
+                                </li>
+                              ))}
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  )}
+                  <i
+                    className="fa fa-search fa-2x"
                     style={{
                       color: "#201C57",
                       cursor: "pointer",
                       top: showMath ? 20 : 10,
                       position: "relative",
-                      marginLeft: -120,
+                      marginLeft: 10,
+                    }}
+                    onClick={() => {
+                      setOpenDropdown(!openDropdown);
                     }}
                   ></i>
-                </label>
-                <input
-                  type="file"
-                  onChange={onImageChange}
-                  className="filetype custom-file-upload"
-                  id="group_image"
-                  accept="image/*"
-                />
-
-                <i
-                  className="fa fa-calculator fa-2x"
-                  style={{
-                    color: showMath ? "orange" : "#201C57",
-                    cursor: "pointer",
-                    top: showMath ? 20 : 10,
-                    position: "relative",
-                    marginLeft: -80,
-                  }}
-                  onClick={() => setShowMath(!showMath)}
-                ></i>
-                {openDropdown && (
-                  <div
-                    style={{
-                      position: "absolute",
-                      height: 400,
-                      width: 400,
-                      border: "2px solid #eee",
-                      bottom: 50,
-                      right: 50,
-                      backgroundColor: "#fff",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      flexDirection: "column",
-                    }}
-                  >
-                    {!selected ? (
-                      <>
-                        <h1
-                          className="text-gradient-black mt-5"
-                          style={{ fontSize: "1.3vw" }}
-                        >
-                          My Problem Sets
-                        </h1>
-                        <TextField
-                          className="mb-5 mt-5"
-                          style={{ borderRadius: 400, width: "70%" }}
-                          placeholder="search through your sets..."
-                        ></TextField>
-                        <div
-                          style={{
-                            height: "60%",
-                            overflowY: "scroll",
-                            width: "80%",
-                          }}
-                        >
-                          {userProblemSets.map((ps) => (
-                            <li
-                              onClick={() => {
-                                setSelected(ps);
-                              }}
-                            >
-                              {ps.problemSetName}
-                            </li>
-                          ))}
-                        </div>{" "}
-                      </>
-                    ) : (
-                      <>
-                        <i
-                          className="fa fa-arrow-left fa-2x"
-                          style={{
-                            position: "absolute",
-                            top: 20,
-                            left: 20,
-                            cursor: "pointer",
-                          }}
-                          onClick={() => setSelected(undefined)}
-                        ></i>
-                        <h1
-                          className="text-gradient-black mt-5"
-                          style={{
-                            fontSize: "1.3vw",
-                            position: "absolute",
-                            top: 50,
-                          }}
-                        >
-                          {(selected as any).problemSetName}
-                        </h1>
-                        <div
-                          style={{
-                            position: "absolute",
-                            top: 100,
-                            width: "80%",
-                          }}
-                        >
-                          <p
-                            style={{
-                              textTransform: "uppercase",
-                              letterSpacing: 1.3,
-                            }}
-                          >
-                            Questions in set
-                          </p>
-                          {(
-                            JSON.parse(
-                              JSON.stringify((selected as any).markdown),
-                            ).response as string
-                          )
-                            .match(/# Question/g)
-                            ?.map((q, idx) => (
-                              <li
-                                onClick={async () => {
-                                  setLoading(true);
-                                  setSelected(undefined);
-                                  setOpenDropdown(false);
-                                  let oldMessages = [
-                                    ...messageList,
-                                    {
-                                      user: "me",
-                                      id: messageList.length + 1,
-                                      message: `Help me on the ${
-                                        (selected as any).problemSetName
-                                      } problem set; Specifically question ${
-                                        idx + 1
-                                      }`,
-                                      image:
-                                        imported.length > 0 ? imgPreview : null,
-                                      date: new Date(),
-                                    },
-                                    {
-                                      user: "bot",
-                                      id: messageList.length + 2,
-                                      message: "",
-                                      date: new Date(),
-                                    },
-                                  ];
-                                  setMessageList([
-                                    ...messageList,
-                                    {
-                                      user: "me",
-                                      id: messageList.length + 1,
-                                      message: `Help me on the ${
-                                        (selected as any).problemSetName
-                                      } problem set; Specifically question ${
-                                        idx + 1
-                                      }`,
-                                      image:
-                                        imported.length > 0 ? imgPreview : null,
-                                      date: new Date(),
-                                    },
-                                    {
-                                      user: "bot",
-                                      id: messageList.length + 2,
-                                      message: "",
-                                      date: new Date(),
-                                    },
-                                  ]);
-
-                                  setMessage("");
-                                  setImported("");
-                                  let botMessage = "";
-
-                                  botMessage = await assistUserResponse(
-                                    [],
-                                    `HELP ME ON ONLY QUESTION ${
-                                      idx + 1
-                                    } OF THE FOLLOWING PROBLEM (WRITTEN IN MARKDOWN): ${
-                                      JSON.parse(
-                                        JSON.stringify(
-                                          (selected as any).markdown,
-                                        ),
-                                      ).response
-                                    }; IN YOUR RESPONSE PROVIDE THE QUESTION ASKED FOR BEFORE YOU EXPLAIN IT`,
-                                  );
-
-                                  if (botMessage.length > 0) {
-                                    let objIndex = oldMessages.findIndex(
-                                      (obj) =>
-                                        obj.message == "" && obj.user !== "me",
-                                    );
-                                    console.log(objIndex);
-                                    oldMessages[objIndex].message = botMessage;
-
-                                    setMessageList(oldMessages);
-                                  }
-                                  setLoading(false);
-                                }}
-                              >
-                                Help on - Question# {idx + 1}
-                              </li>
-                            ))}
-                        </div>
-                      </>
-                    )}
-                  </div>
-                )}
-                <i
-                  className="fa fa-search fa-2x"
-                  style={{
-                    color: "#201C57",
-                    cursor: "pointer",
-                    marginLeft: 15,
-                    top: showMath ? 20 : 10,
-                    position: "relative",
-                  }}
-                  onClick={() => {
-                    setOpenDropdown(!openDropdown);
-                  }}
-                ></i>
+                </div>
               </div>
             </div>
           </div>
