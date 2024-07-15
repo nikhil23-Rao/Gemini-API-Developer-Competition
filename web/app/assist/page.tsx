@@ -15,7 +15,10 @@ import "katex/dist/katex.min.css";
 import Latex from "react-latex-next";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import { assistUserResponse } from "@/api/assistUserResponse";
+import {
+  assistUserResponse,
+  assistUserResponseImg,
+} from "@/api/assistUserResponse";
 import remarkGfm from "remark-gfm";
 import "katex/dist/katex.min.css";
 import rehypeKatex from "rehype-katex";
@@ -25,10 +28,12 @@ import "katex/dist/katex.css";
 import remarkMath from "remark-math";
 
 export default function Assist() {
+  const [imported, setImported] = useState("");
   const [message, setMessage] = useState("");
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [showMath, setShowMath] = useState(false);
-  const [messageList, setMessageList] = useState([
+  const [imgPreview, setImgPreview] = useState("");
+  const [messageList, setMessageList] = useState<any>([
     {
       user: "bot",
       message:
@@ -38,6 +43,8 @@ export default function Assist() {
   ]);
 
   const [latex, setLatex] = useState("");
+  const [name, setName] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setUser(setCurrentUser);
@@ -50,6 +57,29 @@ export default function Assist() {
       if (objDiv) objDiv.scrollTop = objDiv.scrollHeight;
     }
   }, [messageList]);
+
+  const onImageChange = (event) => {
+    if (event.target.files && event.target.files[0]) {
+      setName(event.target.files[0].name);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        console.log("res", reader.result);
+        setImgPreview(reader.result as any);
+        const base64String = (reader.result as string)
+          .replace("data:", "")
+          .replace(/^.+,/, "");
+
+        // console.log(base64String);
+        setImported(base64String);
+        // Logs data:<type>;base64,wL2dvYWwgbW9yZ...
+      };
+      reader.readAsDataURL(event.target.files[0]);
+    }
+  };
+
+  useEffect(() => {
+    console.log(imported);
+  }, [imported]);
 
   return (
     <>
@@ -154,6 +184,7 @@ export default function Assist() {
                         {m.user === "me" ? (
                           <li style={{ marginTop: 10, paddingLeft: 10 }}>
                             {m.message}
+                            {m.image && <img src={m.image}></img>}
                           </li>
                         ) : m.message.length === 0 ? (
                           <div style={{ marginTop: 20 }}>
@@ -280,35 +311,13 @@ export default function Assist() {
                         color: "#1B1E60",
                         cursor: "pointer",
                       }}
-                    >
-                      Send
-                    </h1>
-                  </>
-                ) : (
-                  <TextareaAutosize
-                    value={message}
-                    onChange={(e) => setMessage(e.currentTarget.value)}
-                    style={{
-                      width: "90%",
-                      borderRadius: 20,
-                      resize: "none",
-                      maxHeight: 200,
-                      border: "2px solid #eee",
-                      padding: 4,
-                      paddingLeft: 10,
-                      paddingTop: 7,
-                      paddingBottom: 7,
-                      overflowY: "scroll",
-                      marginTop: 5,
-                    }}
-                    onKeyDown={async (e) => {
-                      if (e.key === "Enter" && !e.shiftKey) {
+                      onClick={async (e) => {
                         let oldMessages = [
                           ...messageList,
                           {
                             user: "me",
                             id: messageList.length + 1,
-                            message: message,
+                            message: latex,
                           },
                           {
                             user: "bot",
@@ -321,7 +330,7 @@ export default function Assist() {
                           {
                             user: "me",
                             id: messageList.length + 1,
-                            message: message,
+                            message: latex,
                           },
                           {
                             user: "bot",
@@ -331,42 +340,159 @@ export default function Assist() {
                         ]);
 
                         setMessage("");
+                        setImported("");
+                        setLatex("");
+                        setShowMath(false);
                         e.preventDefault();
-                        const botMessage = await assistUserResponse(
-                          [],
-                          message,
-                        );
+                        const botMessage = await assistUserResponse([], latex);
                         let objIndex = oldMessages.findIndex(
-                          (obj) => obj.message == "",
+                          (obj) => obj.message == "" && obj.image.length === 0,
                         );
                         console.log(objIndex);
                         oldMessages[objIndex].message = botMessage;
 
                         setMessageList(oldMessages);
-                      }
-                    }}
-                    placeholder="What do you need help with?"
-                  />
-                )}
+                      }}
+                    >
+                      Send
+                    </h1>
+                  </>
+                ) : (
+                  <>
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        width: "90%",
+                      }}
+                    >
+                      {imported.length > 0 && (
+                        <p>
+                          File Attached: {name}
+                          <i
+                            className="fa fa-close ml-5"
+                            style={{ color: "red", cursor: "pointer" }}
+                            onClick={() => {
+                              setImported("");
+                            }}
+                          ></i>
+                        </p>
+                      )}
+                      <TextareaAutosize
+                        value={message}
+                        onChange={(e) => setMessage(e.currentTarget.value)}
+                        style={{
+                          width: "90%",
+                          borderRadius: 20,
+                          resize: "none",
+                          maxHeight: 200,
+                          border: "2px solid #eee",
+                          padding: 4,
+                          paddingLeft: 10,
+                          paddingTop: 7,
+                          paddingBottom: 7,
+                          overflowY: "scroll",
+                          marginTop: 5,
+                          cursor: loading ? "not-allowed" : "",
+                        }}
+                        onKeyDown={async (e) => {
+                          if (e.key === "Enter" && !e.shiftKey) {
+                            setLoading(true);
+                            let oldMessages = [
+                              ...messageList,
+                              {
+                                user: "me",
+                                id: messageList.length + 1,
+                                message: message,
+                                image: imported.length > 0 ? imgPreview : null,
+                              },
+                              {
+                                user: "bot",
+                                id: messageList.length + 2,
+                                message: "",
+                              },
+                            ];
+                            setMessageList([
+                              ...messageList,
+                              {
+                                user: "me",
+                                id: messageList.length + 1,
+                                message: message,
+                                image: imported.length > 0 ? imgPreview : null,
+                              },
+                              {
+                                user: "bot",
+                                id: messageList.length + 2,
+                                message: "",
+                              },
+                            ]);
 
-                <i
-                  className="fa fa-plus-circle fa-2x"
-                  style={{
-                    color: "#201C57",
-                    cursor: "pointer",
-                    marginLeft: 10,
-                    top: showMath ? 20 : 10,
-                    position: "relative",
-                  }}
-                ></i>
+                            setMessage("");
+                            setImported("");
+                            e.preventDefault();
+                            let botMessage = "";
+                            if (imported.length > 0) {
+                              botMessage = await assistUserResponseImg(
+                                imported,
+                                message,
+                              );
+                            } else {
+                              botMessage = await assistUserResponse(
+                                [],
+                                message,
+                              );
+                            }
+
+                            if (botMessage.length > 0) {
+                              let objIndex = oldMessages.findIndex(
+                                (obj) => obj.message == "" && obj.user !== "me",
+                              );
+                              console.log(objIndex);
+                              oldMessages[objIndex].message = botMessage;
+
+                              setMessageList(oldMessages);
+                            }
+                            setLoading(false);
+                          }
+                        }}
+                        placeholder={
+                          loading
+                            ? "Generating response..."
+                            : "What do you need help with?"
+                        }
+                        disabled={loading}
+                      />
+                    </div>
+                  </>
+                )}
+                <label htmlFor="group_image">
+                  <i
+                    className="fa fa-plus-circle fa-2x"
+                    style={{
+                      color: "#201C57",
+                      cursor: "pointer",
+                      top: showMath ? 20 : 10,
+                      position: "relative",
+                      marginLeft: -120,
+                    }}
+                  ></i>
+                </label>
+                <input
+                  type="file"
+                  onChange={onImageChange}
+                  className="filetype custom-file-upload"
+                  id="group_image"
+                  accept="image/*"
+                />
+
                 <i
                   className="fa fa-calculator fa-2x"
                   style={{
                     color: showMath ? "orange" : "#201C57",
                     cursor: "pointer",
-                    marginLeft: 10,
                     top: showMath ? 20 : 10,
                     position: "relative",
+                    marginLeft: -80,
                   }}
                   onClick={() => setShowMath(!showMath)}
                 ></i>
@@ -375,7 +501,7 @@ export default function Assist() {
                   style={{
                     color: "#201C57",
                     cursor: "pointer",
-                    marginLeft: 10,
+                    marginLeft: 15,
                     top: showMath ? 20 : 10,
                     position: "relative",
                   }}

@@ -258,6 +258,41 @@ export const assistUser = async (req: Request, res: Response) => {
   }
 };
 
+export const assistUserImg = async (req: Request, res: Response) => {
+  try {
+    const { img, details } = req.body;
+
+    // Restore the previous context
+
+    const chat = model.startChat({
+      history: [],
+      safetySettings,
+    });
+
+    const result = await chat.sendMessageStream([
+      `You are a chatbot assisting a student with solving worksheet problems; Give a step by step explanation for the question in the image. If the image you are about to recieve is not related to solving questions for an educational class, please do not answer; For additonal details: ${details} RETURN YOUR ANSWER IN MARKDOWN AND PROVIDE STEP BY STEP EXPLANATIONS. `,
+      {
+        inlineData: { data: img, mimeType: "image/png" },
+      },
+    ]);
+
+    let data = "";
+    for await (const chunk of result.stream) {
+      console.log(chunk.text());
+      data = data.concat(chunk.text()); // also prints "42"
+      console.log("DATA", data);
+    }
+
+    // const responseText = response;
+
+    // Stores the conversation
+    res.send({ response: data });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 export const generateFlashcardsBasedOnPrompt = async (
   req: Request,
   res: Response
@@ -538,6 +573,10 @@ app.post("/marketplace", async (req: Request, res: Response) => {
 
 app.post("/assist", async (req: Request, res: Response) => {
   await assistUser(req, res);
+});
+
+app.post("/assistimg", async (req: Request, res: Response) => {
+  await assistUserImg(req, res);
 });
 
 app.listen(port, () => {
