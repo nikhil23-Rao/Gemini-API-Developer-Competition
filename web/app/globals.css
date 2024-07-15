@@ -1861,3 +1861,12 @@ cursor: pointer;
     padding: 1rem;
   }
 }
+
+
+code {
+  color:#fff
+}
+
+.markdowneditorassist:hover {
+background-color: #F1F0F0 
+}

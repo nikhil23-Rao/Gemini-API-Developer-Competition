@@ -225,6 +225,39 @@ export const generateFlashcardsBasedOnImage = async (
   }
 };
 
+export const assistUser = async (req: Request, res: Response) => {
+  try {
+    const { message, old } = req.body;
+    let history: [{ role: string; parts: [{ text: string }] }] = old;
+
+    // Restore the previous context
+
+    const chat = fastModel.startChat({
+      history,
+      safetySettings,
+    });
+
+    const result = await chat.sendMessageStream([
+      `You are a chatbot assisting a student with solving worksheet problems; If the query you are about to recieve is not related to solving questions for an educational class, please do not answer; Here is what you are to answer:${message}; RETURN YOUR ANSWER IN MARKDOWN AND PROVIDE STEP BY STEP EXPLANATIONS. `,
+    ]);
+
+    let data = "";
+    for await (const chunk of result.stream) {
+      console.log(chunk.text());
+      data = data.concat(chunk.text()); // also prints "42"
+      console.log("DATA", data);
+    }
+
+    // const responseText = response;
+
+    // Stores the conversation
+    res.send({ response: data });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 export const generateFlashcardsBasedOnPrompt = async (
   req: Request,
   res: Response
@@ -501,6 +534,10 @@ app.post("/frqimage", async (req: Request, res: Response) => {
 
 app.post("/marketplace", async (req: Request, res: Response) => {
   await marketPlaceSearch(req, res);
+});
+
+app.post("/assist", async (req: Request, res: Response) => {
+  await assistUser(req, res);
 });
 
 app.listen(port, () => {
