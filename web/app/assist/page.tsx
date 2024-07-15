@@ -3,7 +3,12 @@ import React, { useEffect, useState } from "react";
 import "../globals.css";
 import MarkdownPreview from "@uiw/react-markdown-preview";
 import { AppSidebar } from "@/components/general/Sidebar";
-import { Button, CircularProgress, TextareaAutosize } from "@mui/material";
+import {
+  Button,
+  CircularProgress,
+  TextField,
+  TextareaAutosize,
+} from "@mui/material";
 import { User } from "@/types/auth/User";
 import { setUser } from "@/utils/getCurrentUser";
 import MathInput from "react-math-keyboard";
@@ -26,6 +31,8 @@ import { getCodeString } from "rehype-rewrite";
 import katex from "katex";
 import "katex/dist/katex.css";
 import remarkMath from "remark-math";
+import { collection, onSnapshot, query, where } from "@firebase/firestore";
+import db from "@/utils/initDB";
 
 export default function Assist() {
   const [imported, setImported] = useState("");
@@ -33,6 +40,7 @@ export default function Assist() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [showMath, setShowMath] = useState(false);
   const [imgPreview, setImgPreview] = useState("");
+  const [selected, setSelected] = useState();
   const [messageList, setMessageList] = useState<any>([
     {
       user: "bot",
@@ -46,6 +54,8 @@ export default function Assist() {
   const [latex, setLatex] = useState("");
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState(false);
+  const [userProblemSets, setUserProblemSets] = useState<any[]>([]);
 
   useEffect(() => {
     setUser(setCurrentUser);
@@ -69,6 +79,10 @@ export default function Assist() {
     }
   }, [messageList]);
 
+  useEffect(() => {
+    console.log(selected);
+  }, [selected]);
+
   const onImageChange = (event) => {
     if (event.target.files && event.target.files[0]) {
       setName(event.target.files[0].name);
@@ -87,6 +101,33 @@ export default function Assist() {
       reader.readAsDataURL(event.target.files[0]);
     }
   };
+
+  useEffect(() => {
+    if (currentUser) {
+      const q = query(
+        collection(db, "problemsets"),
+        where("createdById", "==", currentUser?.id),
+      );
+
+      let duplicate = false;
+      const unsubscribe = onSnapshot(q, (snapshot) => {
+        let createdSets: any = [];
+        snapshot.docs.forEach((doc) => {
+          userProblemSets.map((set) => {
+            if (set.seed === doc.data().seed) duplicate = true;
+          });
+          if (duplicate) return;
+          // if (userFlashCardSets.includes(doc.data())) return;
+          else {
+            createdSets.push(doc.data());
+            setUserProblemSets(createdSets);
+            console.log(createdSets);
+            duplicate = false;
+          }
+        });
+      });
+    }
+  }, [currentUser]);
 
   useEffect(() => {
     console.log(imported);
@@ -517,6 +558,183 @@ export default function Assist() {
                   }}
                   onClick={() => setShowMath(!showMath)}
                 ></i>
+                {openDropdown && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      height: 400,
+                      width: 400,
+                      border: "2px solid #eee",
+                      bottom: 50,
+                      right: 50,
+                      backgroundColor: "#fff",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexDirection: "column",
+                    }}
+                  >
+                    {!selected ? (
+                      <>
+                        <h1
+                          className="text-gradient-black mt-5"
+                          style={{ fontSize: "1.3vw" }}
+                        >
+                          My Problem Sets
+                        </h1>
+                        <TextField
+                          className="mb-5 mt-5"
+                          style={{ borderRadius: 400, width: "70%" }}
+                          placeholder="search through your sets..."
+                        ></TextField>
+                        <div
+                          style={{
+                            height: "60%",
+                            overflowY: "scroll",
+                            width: "80%",
+                          }}
+                        >
+                          {userProblemSets.map((ps) => (
+                            <li
+                              onClick={() => {
+                                setSelected(ps);
+                              }}
+                            >
+                              {ps.problemSetName}
+                            </li>
+                          ))}
+                        </div>{" "}
+                      </>
+                    ) : (
+                      <>
+                        <i
+                          className="fa fa-arrow-left fa-2x"
+                          style={{
+                            position: "absolute",
+                            top: 20,
+                            left: 20,
+                            cursor: "pointer",
+                          }}
+                          onClick={() => setSelected(undefined)}
+                        ></i>
+                        <h1
+                          className="text-gradient-black mt-5"
+                          style={{
+                            fontSize: "1.3vw",
+                            position: "absolute",
+                            top: 50,
+                          }}
+                        >
+                          {(selected as any).problemSetName}
+                        </h1>
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: 100,
+                            width: "80%",
+                          }}
+                        >
+                          <p
+                            style={{
+                              textTransform: "uppercase",
+                              letterSpacing: 1.3,
+                            }}
+                          >
+                            Questions in set
+                          </p>
+                          {(
+                            JSON.parse(
+                              JSON.stringify((selected as any).markdown),
+                            ).response as string
+                          )
+                            .match(/# Question/g)
+                            ?.map((q, idx) => (
+                              <li
+                                onClick={async () => {
+                                  setLoading(true);
+                                  setSelected(undefined);
+                                  setOpenDropdown(false);
+                                  let oldMessages = [
+                                    ...messageList,
+                                    {
+                                      user: "me",
+                                      id: messageList.length + 1,
+                                      message: `Help me on the ${
+                                        (selected as any).problemSetName
+                                      } problem set; Specifically question ${
+                                        idx + 1
+                                      }`,
+                                      image:
+                                        imported.length > 0 ? imgPreview : null,
+                                      date: new Date(),
+                                    },
+                                    {
+                                      user: "bot",
+                                      id: messageList.length + 2,
+                                      message: "",
+                                      date: new Date(),
+                                    },
+                                  ];
+                                  setMessageList([
+                                    ...messageList,
+                                    {
+                                      user: "me",
+                                      id: messageList.length + 1,
+                                      message: `Help me on the ${
+                                        (selected as any).problemSetName
+                                      } problem set; Specifically question ${
+                                        idx + 1
+                                      }`,
+                                      image:
+                                        imported.length > 0 ? imgPreview : null,
+                                      date: new Date(),
+                                    },
+                                    {
+                                      user: "bot",
+                                      id: messageList.length + 2,
+                                      message: "",
+                                      date: new Date(),
+                                    },
+                                  ]);
+
+                                  setMessage("");
+                                  setImported("");
+                                  let botMessage = "";
+
+                                  botMessage = await assistUserResponse(
+                                    [],
+                                    `HELP ME ON ONLY QUESTION ${
+                                      idx + 1
+                                    } OF THE FOLLOWING PROBLEM (WRITTEN IN MARKDOWN): ${
+                                      JSON.parse(
+                                        JSON.stringify(
+                                          (selected as any).markdown,
+                                        ),
+                                      ).response
+                                    }; IN YOUR RESPONSE PROVIDE THE QUESTION ASKED FOR BEFORE YOU EXPLAIN IT`,
+                                  );
+
+                                  if (botMessage.length > 0) {
+                                    let objIndex = oldMessages.findIndex(
+                                      (obj) =>
+                                        obj.message == "" && obj.user !== "me",
+                                    );
+                                    console.log(objIndex);
+                                    oldMessages[objIndex].message = botMessage;
+
+                                    setMessageList(oldMessages);
+                                  }
+                                  setLoading(false);
+                                }}
+                              >
+                                Help on - Question# {idx + 1}
+                              </li>
+                            ))}
+                        </div>
+                      </>
+                    )}
+                  </div>
+                )}
                 <i
                   className="fa fa-search fa-2x"
                   style={{
@@ -525,6 +743,9 @@ export default function Assist() {
                     marginLeft: 15,
                     top: showMath ? 20 : 10,
                     position: "relative",
+                  }}
+                  onClick={() => {
+                    setOpenDropdown(!openDropdown);
                   }}
                 ></i>
               </div>
