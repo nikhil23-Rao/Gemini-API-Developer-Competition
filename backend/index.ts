@@ -270,7 +270,7 @@ export const assistUserImg = async (req: Request, res: Response) => {
     });
 
     const result = await chat.sendMessageStream([
-      `You are a chatbot assisting a student with solving worksheet problems; Give a step by step explanation for the question in the image. If the image you are about to recieve is not related to solving questions for an educational class, please do not answer; For additonal details: ${details} RETURN YOUR ANSWER IN MARKDOWN AND PROVIDE STEP BY STEP EXPLANATIONS. `,
+      `You are a chatbot assisting a student with solving worksheet problems; Give a step by step explanation for the question in the image. If the image you are about to recieve is not related to solving questions for an educational class, please do not answer; For additonal details: ${details} RETURN YOUR ANSWER IN MARKDOWN AND PROVIDE STEP BY STEP EXPLANATIONS. ENSURE TO RETURN ANY TABLES OR MATH SYMBOLS IN MARKDOWN. `,
       {
         inlineData: { data: img, mimeType: "image/png" },
       },

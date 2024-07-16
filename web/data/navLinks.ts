@@ -25,9 +25,9 @@ export const NavLinks = [
     icon: "fa fa-bullhorn",
   },
   {
-    name: "Community",
-    link: "/community",
-    icon: "fa fa-users",
+    name: "Preferences",
+    link: "/preferences",
+    icon: "fa fa-cogs",
   },
   {
     name: "Sign Out",
