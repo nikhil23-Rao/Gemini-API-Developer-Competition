@@ -221,7 +221,8 @@ export const AppSidebar: React.FC<{ modals; bg; color }> = ({
                   opacity: collapsed ? 0 : 0.7,
                   letterSpacing: "0.5px",
                   textTransform: "uppercase",
-                  color: "red",
+                  color: "#F9444A",
+                  fontWeight: "bold",
                 }}
               >
                 Danger Zone

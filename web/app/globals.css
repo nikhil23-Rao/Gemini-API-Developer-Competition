@@ -1981,3 +1981,7 @@ background: linear-gradient(to right, #4B1248, #F0C27B); /* W3C, IE 10+/ Edge, F
 .black {
   background-color: black;
 }
+
+*::-webkit-scrollbar { 
+  display: none;  /* Safari and Chrome */
+}

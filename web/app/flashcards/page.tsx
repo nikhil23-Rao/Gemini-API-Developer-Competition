@@ -418,7 +418,7 @@ export default function Flashcards() {
     <>
       <div
         style={{
-          height: "100%",
+          height: !loadingSets ? "100%" : "100vh",
           width: "100%",
           backgroundColor:
             theme.backgroundColor.length > 0
@@ -576,7 +576,7 @@ export default function Flashcards() {
               <Lottie
                 animationData={loader}
                 loop
-                style={{ width: "16vw", marginTop: 30 }}
+                style={{ width: "16vw", marginTop: 30, height: "100%" }}
               />
               <p>Fetching data...</p>
             </>

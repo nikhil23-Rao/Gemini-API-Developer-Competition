@@ -676,7 +676,9 @@ export default function Dashboard() {
               animate={{ scale: [0.85, 1] }}
             >
               <div
-                className={`large-banner ${color}`}
+                className={`large-banner ${
+                  color !== "white" ? color : "default"
+                }`}
                 style={{
                   alignItems: "flex-start",
                   width: "75%",
