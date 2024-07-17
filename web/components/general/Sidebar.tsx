@@ -134,6 +134,7 @@ export const AppSidebar: React.FC<{ modals; bg; color }> = ({
         position: "fixed",
         fontFamily: "-apple-system, BlinkMacSystemFont, sans-serif",
         zIndex: modals ? "" : 100000000000,
+        marginLeft: 20,
       }}
     >
       {broken && (

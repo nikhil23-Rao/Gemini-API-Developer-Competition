@@ -61,10 +61,19 @@ export default function Dashboard() {
   const [folderData, setFolderData] = useState<any[]>([]);
   const [theme, setTheme] = useState<any>();
   const [color, setColor] = useState<string>();
+  const [time, setTime] = useState<Date>();
 
   useEffect(() => {
     getTheme(setTheme, setColor);
   }, [typeof localStorage]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   // google calendar stuff
 
@@ -291,7 +300,7 @@ export default function Dashboard() {
                     className="text-gradient-clock"
                     style={{ fontSize: "6vw", fontFamily: "" }}
                   >
-                    {formatAMPM(new Date())}
+                    {formatAMPM(time)}
                   </h1>
                 </div>
 
