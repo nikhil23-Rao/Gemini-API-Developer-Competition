@@ -641,6 +641,7 @@ background: -webkit-linear-gradient(to right, #4A00E0, #8E2DE2);  /* Chrome 10-2
 background: linear-gradient(to right, #4A00E0, #8E2DE2); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 color:#FFF;
 cursor: pointer;
+box-shadow: none;
 
 }
 
@@ -650,6 +651,7 @@ background: -webkit-linear-gradient(to right, #2948ff, #396afc);  /* Chrome 10-2
 background: linear-gradient(to right, #2948ff, #396afc); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 color:#FFF;
 cursor: pointer;
+box-shadow: none;
 }
 
 .infographic-cards li.color-3{
@@ -658,6 +660,7 @@ background: -webkit-linear-gradient(to right, #414345, #232526);  /* Chrome 10-2
 background: linear-gradient(to right, #414345, #232526); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 
  height: 100%; 
+box-shadow: none;
 color: #FFF;
 
 }
@@ -667,6 +670,7 @@ color: #FFF;
   background: -webkit-linear-gradient(to right, #FF4B2B, #FF416C);  /* Chrome 10-25, Safari 5.1-6 */
   background: linear-gradient(to right, #FF4B2B, #FF416C); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 cursor: pointer;
+box-shadow: none;
   
   
 color: #FFF;
@@ -1777,7 +1781,6 @@ table {
 }
 
 li:hover {
-background-color: #F1F0F0;
 cursor: pointer;
 }
 
@@ -1892,6 +1895,13 @@ background: linear-gradient(to right, #6f0000, #200122); /* W3C, IE 10+/ Edge, F
 
 }
 
+.moonlight {
+  background: #0F2027;  /* fallback for old browsers */
+background: -webkit-linear-gradient(to right, #2C5364, #203A43, #0F2027);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to right, #2C5364, #203A43, #0F2027); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+}
+
 .lightningtheme {
   background: #0f0c29;  /* fallback for old browsers */
 background: -webkit-linear-gradient(to right, #24243e, #302b63, #0f0c29);  /* Chrome 10-25, Safari 5.1-6 */
@@ -1910,13 +1920,7 @@ background: linear-gradient(to right, #004e92, #000428); /* W3C, IE 10+/ Edge, F
   background: radial-gradient(780px at 37.8% 100.3%, rgb(19, 55, 115) 2.2%, rgb(32, 7, 80) 20.2%, rgb(27, 88, 111) 58.6%, rgb(115, 88, 44) 75%, rgb(99, 19, 90) 89.6%, rgb(12, 51, 76) 96.1%);
 
 
-  padding-top: 0.5em;
-  margin-top: -0.5em;
 
-  padding-bottom: 0.5em;
-  margin-bottom: -0.5em;
-
-  font-weight: 600;
   
 }
 
@@ -1945,4 +1949,35 @@ background: linear-gradient(to right, #061161, #780206); /* W3C, IE 10+/ Edge, F
 background: -webkit-linear-gradient(to right, #4B1248, #F0C27B);  /* Chrome 10-25, Safari 5.1-6 */
 background: linear-gradient(to right, #4B1248, #F0C27B); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 
+}
+
+.twitter {
+  background-color:#00ACEC;
+}
+
+.textgradient {
+ 
+  
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+
+  padding-top: 0.5em;
+  margin-top: -0.5em;
+
+  padding-bottom: 0.5em;
+  margin-bottom: -0.5em;
+
+  font-weight: 600; 
+}
+
+#hover:hover {
+  font-weight: bold;
+}
+
+.white {
+  background-color: #fff;
+}
+
+.black {
+  background-color: black;
 }

@@ -47,6 +47,9 @@ import { getFRQ } from "@/api/getFRQ";
 import { getFRQByImage } from "@/api/getFRQByImage";
 import loadingdata from "../../public/loader.json";
 import { getMCQByImage } from "@/api/getMCQByImage";
+import { getTheme } from "@/utils/getTheme";
+import { Splash } from "@/components/general/Splash";
+import { getColor } from "@/utils/getColor";
 
 export default function QuestionGenerator() {
   const router = useRouter();
@@ -81,6 +84,12 @@ export default function QuestionGenerator() {
 
   const [loading, setLoading] = useState(true);
 
+  const [theme, setTheme] = useState<any>();
+  const [color, setColor] = useState<string>();
+
+  useEffect(() => {
+    getTheme(setTheme, setColor);
+  }, [typeof localStorage]);
   const [userProblemSets, setUserProblemSets] = useState<any>([]);
 
   const onImageChange = (event) => {
@@ -376,7 +385,7 @@ export default function QuestionGenerator() {
           }}
         >
           <h1
-            className="text-gradient-black"
+            className={getColor(color!)}
             style={{ fontSize: "4vw", marginTop: 120 }}
           >
             Question Generator
@@ -750,179 +759,210 @@ export default function QuestionGenerator() {
     );
   }
 
-  return (
-    <>
-      <AppSidebar modals={false} />
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          flexDirection: "column",
-          marginLeft: "10%",
-        }}
-      >
+  if (!theme) return <Splash></Splash>;
+
+  if (theme)
+    return (
+      <>
         <div
           style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexDirection: "column",
+            height: "100%",
+            width: "100%",
+            backgroundColor:
+              theme.backgroundColor.length > 0
+                ? theme.backgroundColor
+                : "transparent",
           }}
+          className={theme.className}
         >
-          <h1
-            className="text-gradient-black"
-            style={{ fontSize: "4vw", marginTop: 50 }}
-          >
-            Question Generator
-          </h1>
-          <p
+          <AppSidebar
+            modals={false}
+            bg={theme.backgroundColor}
+            color={theme.textColor}
+          />
+          <div
             style={{
-              marginTop: 40,
-              maxWidth: "55%",
-              textAlign: "center",
-              color: "gray",
-              fontSize: 14,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexDirection: "column",
+              marginLeft: "10%",
             }}
+            className={theme.className}
           >
-            Welcome to your very own question/quiz generator. Need more practice
-            questions for your upcoming test. Need AP-styled FRQ's? Need some
-            additonal MCQs on a concept. Simply use AI to create them.
-          </p>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexDirection: "column",
+              }}
+            >
+              <h1
+                className={getColor(color!)}
+                style={{ fontSize: "4vw", marginTop: 50 }}
+              >
+                Question Generator
+              </h1>
+              <p
+                style={{
+                  marginTop: 40,
+                  maxWidth: "55%",
+                  textAlign: "center",
+                  color: "gray",
+                  fontSize: 14,
+                }}
+              >
+                Welcome to your very own question/quiz generator. Need more
+                practice questions for your upcoming test. Need AP-styled FRQ's?
+                Need some additonal MCQs on a concept. Simply use AI to create
+                them.
+              </p>
 
-          <Button
-            variant="outlined"
-            style={{ marginTop: 20 }}
-            onClick={() => setQuestionGenerateModal(true)}
-          >
-            <i className="fa fa-plus" style={{ marginRight: 10 }}></i>
-            <p style={{ marginTop: 1 }}>Generate Practice</p>
-          </Button>
+              <Button
+                variant="contained"
+                style={{ marginTop: 20 }}
+                onClick={() => setQuestionGenerateModal(true)}
+              >
+                <i className="fa fa-plus" style={{ marginRight: 10 }}></i>
+                <p style={{ marginTop: 1 }}>Generate Practice</p>
+              </Button>
 
-          <Button
-            variant="outlined"
-            style={{ marginTop: 20 }}
-            color="success"
-            onClick={() => setResourceModal(true)}
-          >
-            <i className="fa fa-search" style={{ marginRight: 10 }}></i>
-            <p style={{ marginTop: 1 }}>Resource Finder</p>
-          </Button>
+              <Button
+                variant="contained"
+                style={{ marginTop: 20 }}
+                color="success"
+                onClick={() => setResourceModal(true)}
+              >
+                <i className="fa fa-search" style={{ marginRight: 10 }}></i>
+                <p style={{ marginTop: 1 }}>Resource Finder</p>
+              </Button>
 
-          <TextField
-            style={{
-              borderRadius: 400,
-              width: "40%",
-              marginTop: 40,
-            }}
-            placeholder="Search for my problem sets..."
-            InputProps={{ sx: { borderRadius: 100, paddingLeft: 2 } }}
-          ></TextField>
-        </div>
-        {loading && userProblemSets.length === 0 ? (
-          <>
-            <Lottie
-              animationData={loadingdata}
-              loop
-              style={{ width: "16vw", marginTop: 30 }}
-            />
-            <p>Fetching data...</p>
-          </>
-        ) : (
-          userProblemSets.length == 0 && (
-            <>
-              {" "}
-              <Lottie
-                animationData={animationdata}
-                loop
-                style={{ width: "16vw", marginTop: 30 }}
-              />
-              <p>Start practicing with the buttons above...</p>
-            </>
-          )
-        )}
-        <div className="relative font-inter antialiased">
-          <main className="" style={{ height: 20 }}>
-            <div className="mx-auto w-full max-w-5xl px-4 py-24 md:px-6">
-              <div className="mx-auto grid max-w-xs items-start gap-6 lg:max-w-none lg:grid-cols-3">
-                {userProblemSets.map((pset) => {
-                  return (
-                    <div className="flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow shadow-slate-950/5">
-                      <img
-                        className="h-48 w-full object-cover"
-                        src={pset.seed}
-                        width="304"
-                        height="192"
-                        alt="Course 01"
-                      />
-                      <div className="flex flex-1 flex-col p-6">
-                        <div className="flex-1">
-                          <header className="mb-2">
-                            <h2
-                              className="hoverunderline text-xl font-bold leading-snug"
-                              style={{ fontWeight: "bold" }}
-                            >
-                              <a
+              <TextField
+                style={{
+                  borderRadius: 400,
+                  width: "40%",
+                  marginTop: 40,
+                  backgroundColor:
+                    theme.name !== "Light" ? theme.textColor : "#fff",
+                }}
+                placeholder="Search for my problem sets..."
+                InputProps={{ sx: { borderRadius: 100, paddingLeft: 2 } }}
+              ></TextField>
+            </div>
+            {loading && userProblemSets.length === 0 ? (
+              <>
+                <Lottie
+                  animationData={loadingdata}
+                  loop
+                  style={{ width: "16vw", marginTop: 30 }}
+                />
+                <p>Fetching data...</p>
+              </>
+            ) : (
+              userProblemSets.length == 0 && (
+                <>
+                  {" "}
+                  <Lottie
+                    animationData={animationdata}
+                    loop
+                    style={{ width: "16vw", marginTop: 30 }}
+                  />
+                  <p>Start practicing with the buttons above...</p>
+                </>
+              )
+            )}
+            <div className="relative font-inter antialiased">
+              <main className="" style={{ height: "100%" }}>
+                <div className="mx-auto w-full max-w-5xl px-4 py-24 md:px-6">
+                  <div className="mx-auto grid max-w-xs items-start gap-6 lg:max-w-none lg:grid-cols-3">
+                    {userProblemSets.map((pset) => {
+                      return (
+                        <div
+                          className="flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow shadow-slate-950/5"
+                          style={{ backgroundColor: "#fff" }}
+                        >
+                          <img
+                            className="h-48 w-full object-cover"
+                            src={pset.seed}
+                            width="304"
+                            height="192"
+                            alt="Course 01"
+                          />
+                          <div className="flex flex-1 flex-col p-6">
+                            <div className="flex-1">
+                              <header className="mb-2">
+                                <h2
+                                  className="hoverunderline text-xl font-bold leading-snug"
+                                  style={{
+                                    fontWeight: "bold",
+                                  }}
+                                >
+                                  <a
+                                    style={{
+                                      cursor: "pointer",
+                                      color: "#000",
+                                    }}
+                                    className="text-slate-900 focus-visible:outline-none focus-visible:ring focus-visible:ring-indigo-300"
+                                    onClick={() => {
+                                      router.push(`/ps/${pset.docid}`);
+                                    }}
+                                  >
+                                    {pset.problemSetName}
+                                  </a>
+                                </h2>
+                              </header>
+                              <div
                                 style={{
-                                  cursor: "pointer",
-                                }}
-                                className="text-slate-900 focus-visible:outline-none focus-visible:ring focus-visible:ring-indigo-300"
-                                onClick={() => {
-                                  router.push(`/ps/${pset.docid}`);
+                                  display: "flex",
+                                  flexDirection: "row",
+                                  marginBottom: 15,
                                 }}
                               >
-                                {pset.problemSetName}
+                                <div
+                                  className={`badge ${color}`}
+                                  style={{ borderRadius: 5 }}
+                                >
+                                  <p>
+                                    {pset.public ? "💬 Public" : "🔒   Private"}
+                                  </p>
+                                </div>
+                                <div className={`badge ${color}`}>
+                                  <h1
+                                    style={{ fontWeight: "bold", fontSize: 13 }}
+                                  >
+                                    {pset.type}
+                                  </h1>
+                                </div>
+                              </div>
+                              <div className="mb-8 text-sm text-slate-600">
+                                <p>{pset.problemSetDescription}</p>
+                              </div>
+                            </div>
+                            <div className="flex justify-end space-x-2">
+                              <a
+                                className="hover:red-indigo-100 inline-flex justify-center whitespace-nowrap rounded-lg bg-red-50 px-3 py-2 text-sm font-medium text-red-500 transition-colors focus-visible:outline-none focus-visible:ring focus-visible:ring-red-300"
+                                href="#0"
+                              >
+                                Delete
                               </a>
-                            </h2>
-                          </header>
-                          <div
-                            style={{
-                              display: "flex",
-                              flexDirection: "row",
-                              marginBottom: 15,
-                            }}
-                          >
-                            <div
-                              className="badge"
-                              style={{ background: "#000", borderRadius: 5 }}
-                            >
-                              <p>
-                                {pset.public ? "💬 Public" : "🔒   Private"}
-                              </p>
-                            </div>
-                            <div className="badge">
-                              <h1 style={{ fontWeight: "bold", fontSize: 13 }}>
-                                {pset.type}
-                              </h1>
+                              <a
+                                className="inline-flex justify-center whitespace-nowrap rounded-lg bg-indigo-500 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-indigo-600 focus-visible:outline-none focus-visible:ring focus-visible:ring-indigo-300"
+                                href="#0"
+                              >
+                                Edit
+                              </a>
                             </div>
                           </div>
-                          <div className="mb-8 text-sm text-slate-600">
-                            <p>{pset.problemSetDescription}</p>
-                          </div>
                         </div>
-                        <div className="flex justify-end space-x-2">
-                          <a
-                            className="hover:red-indigo-100 inline-flex justify-center whitespace-nowrap rounded-lg bg-red-50 px-3 py-2 text-sm font-medium text-red-500 transition-colors focus-visible:outline-none focus-visible:ring focus-visible:ring-red-300"
-                            href="#0"
-                          >
-                            Delete
-                          </a>
-                          <a
-                            className="inline-flex justify-center whitespace-nowrap rounded-lg bg-indigo-500 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-indigo-600 focus-visible:outline-none focus-visible:ring focus-visible:ring-indigo-300"
-                            href="#0"
-                          >
-                            Edit
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </main>
             </div>
-          </main>
+          </div>
         </div>
-      </div>
-    </>
-  );
+      </>
+    );
 }

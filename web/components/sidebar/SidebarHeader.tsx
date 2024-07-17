@@ -5,6 +5,7 @@ import { Typography } from "./Typography";
 interface SidebarHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   children?: React.ReactNode;
   rtl: boolean;
+  white: boolean;
 }
 
 const StyledSidebarHeader = styled.div`
@@ -49,6 +50,7 @@ const StyledLogo = styled.div<{ rtl?: boolean }>`
 export const SidebarHeader: React.FC<SidebarHeaderProps> = ({
   children,
   rtl,
+  white,
   ...rest
 }) => {
   return (
@@ -60,7 +62,11 @@ export const SidebarHeader: React.FC<SidebarHeaderProps> = ({
           justifyContent: "flex-start",
         }}
       >
-        <img src="/logo.png" style={{ width: 74 }} alt="" />
+        <img
+          src={white ? "/whitelogo.png" : "/logo.png"}
+          style={{ width: 74 }}
+          alt=""
+        />
       </div>
     </StyledSidebarHeader>
   );

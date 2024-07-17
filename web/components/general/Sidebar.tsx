@@ -34,11 +34,7 @@ const themes = {
       menuContent: "#fbfcfd",
       borderRadius: "200px",
       icon: "#0098e5",
-      hover: {
-        backgroundColor: "#000",
-        color: "#44596e",
-        borderRadius: "200px",
-      },
+
       disabled: {
         color: "#9fb6cf",
       },
@@ -52,10 +48,7 @@ const themes = {
     menu: {
       menuContent: "#082440",
       icon: "#59d0ff",
-      hover: {
-        backgroundColor: "#00458b",
-        color: "#b6c8d9",
-      },
+
       disabled: {
         color: "#3e5e7e",
       },
@@ -72,7 +65,11 @@ const hexToRgba = (hex: string, alpha: number) => {
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 };
 
-export const AppSidebar: React.FC<{ modals }> = ({ modals }) => {
+export const AppSidebar: React.FC<{ modals; bg; color }> = ({
+  modals,
+  bg,
+  color,
+}) => {
   const [collapsed, setCollapsed] = React.useState(false);
   const [toggled, setToggled] = React.useState(false);
   const [broken, setBroken] = React.useState(false);
@@ -123,13 +120,6 @@ export const AppSidebar: React.FC<{ modals }> = ({ modals }) => {
       [`&.${menuClasses.disabled}`]: {
         color: themes[theme].menu.disabled.color,
       },
-      "&:hover": {
-        backgroundColor: hexToRgba(
-          themes[theme].menu.hover.backgroundColor,
-          hasImage ? 0.8 : 1,
-        ),
-        color: themes[theme].menu.hover.color,
-      },
     },
     label: ({ open }) => ({
       fontWeight: open ? 600 : undefined,
@@ -158,13 +148,8 @@ export const AppSidebar: React.FC<{ modals }> = ({ modals }) => {
         onBreakPoint={setBroken}
         rtl={rtl}
         breakPoint="md"
-        backgroundColor={hexToRgba(
-          themes[theme].sidebar.backgroundColor,
-          hasImage ? 0.9 : 1,
-        )}
-        rootStyles={{
-          color: themes[theme].sidebar.color,
-        }}
+        backgroundColor={bg}
+        style={{ borderRight: "none" }}
       >
         <div
           style={{
@@ -175,6 +160,7 @@ export const AppSidebar: React.FC<{ modals }> = ({ modals }) => {
           }}
         >
           <SidebarHeader
+            white={bg !== "#fff"}
             rtl={rtl}
             style={{ marginBottom: "24px", marginTop: "16px" }}
           />
@@ -187,6 +173,7 @@ export const AppSidebar: React.FC<{ modals }> = ({ modals }) => {
                   opacity: collapsed ? 0 : 0.7,
                   letterSpacing: "0.5px",
                   textTransform: "uppercase",
+                  color,
                 }}
               >
                 My Workspace
@@ -197,20 +184,21 @@ export const AppSidebar: React.FC<{ modals }> = ({ modals }) => {
                 <MenuItem
                   key={idx}
                   href={l.link}
+                  id="hover"
                   style={{
+                    backgroundColor: "transparent",
                     fontSize: 18,
-                    color: "#000",
-                    fontWeight: "bold",
-                    backgroundColor:
+                    color,
+                    fontWeight:
                       typeof window !== "undefined" &&
                       window.location.pathname === l.link
-                        ? "#F1F0F0"
+                        ? "bold"
                         : "",
                   }}
                   icon={
                     <i
                       className={l.icon}
-                      style={{ color: "#000", zoom: 1.6, marginRight: 0 }}
+                      style={{ color, zoom: 1.6, marginRight: 0 }}
                     />
                   }
                 >
@@ -244,19 +232,25 @@ export const AppSidebar: React.FC<{ modals }> = ({ modals }) => {
               {NavLinks.slice(6, 8).map((l, idx) => (
                 <MenuItem
                   key={idx}
+                  id="hover"
                   onClick={(e) => {
                     e.preventDefault();
                     router.push(l.link);
                   }}
                   style={{
+                    backgroundColor: "transparent",
                     fontSize: 18,
-                    color: "#000",
-                    fontWeight: "bold",
+                    color,
+                    fontWeight:
+                      typeof window !== "undefined" &&
+                      window.location.pathname === l.link
+                        ? "bold"
+                        : "",
                   }}
                   icon={
                     <i
                       className={l.icon}
-                      style={{ color: "#000", zoom: 1.6, marginRight: 0 }}
+                      style={{ color, zoom: 1.6, marginRight: 0 }}
                     />
                   }
                 >

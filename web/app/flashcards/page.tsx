@@ -39,6 +39,8 @@ import { SetView } from "@/components/flashcards/SetView";
 import { Splash } from "@/components/general/Splash";
 import loader from "../../public/loader.json";
 import Lottie from "lottie-react";
+import { getTheme } from "@/utils/getTheme";
+import { getColor } from "@/utils/getColor";
 
 export default function Flashcards() {
   const [modal, setModal] = useState(false);
@@ -65,6 +67,13 @@ export default function Flashcards() {
   >();
   const [flashcards, setFlashcards] = useState<Array<Flashcard> | []>([]);
   const [loadingSets, setLoadingSets] = useState(true);
+
+  const [theme, setTheme] = useState<any>();
+  const [color, setColor] = useState<string>();
+
+  useEffect(() => {
+    getTheme(setTheme, setColor);
+  }, [typeof localStorage]);
 
   const onImageChange = (event) => {
     if (event.target.files && event.target.files[0]) {
@@ -403,152 +412,178 @@ export default function Flashcards() {
     );
   }
 
+  if (!theme) return <Splash></Splash>;
+
   return (
     <>
-      <AppSidebar modals={openSet || modal} />
-
-      <Modal
-        open={openSet}
-        onClose={() => setOpenSet(false)}
-        styles={{
-          modal: {
-            width: "100vw",
-            overflowY: "scroll",
-            overflowX: "hidden",
-          },
-          modalContainer: {
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          },
-        }}
-      >
-        {currentCardInView && (
-          <Flipper
-            cardFlipped={cardFlipped}
-            currentCardInView={currentCardInView}
-            currentSetInView={currentSetInView}
-            progressView={progressView}
-            setCardFlipped={setCardFlipped}
-            setCurrentCardInView={setCurrentCardInView}
-            setProgressView={setProgressView}
-          />
-        )}
-      </Modal>
       <div
         style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          flexDirection: "column",
-          marginLeft: "10%",
+          height: "100%",
+          width: "100%",
+          backgroundColor:
+            theme.backgroundColor.length > 0
+              ? theme.backgroundColor
+              : "transparent",
         }}
+        className={theme.className}
       >
+        <AppSidebar
+          modals={openSet || modal}
+          bg={theme.backgroundColor}
+          color={theme.textColor}
+        />
+
+        <Modal
+          open={openSet}
+          onClose={() => setOpenSet(false)}
+          styles={{
+            modal: {
+              width: "100vw",
+              overflowY: "scroll",
+              overflowX: "hidden",
+            },
+            modalContainer: {
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            },
+          }}
+        >
+          {currentCardInView && (
+            <Flipper
+              cardFlipped={cardFlipped}
+              currentCardInView={currentCardInView}
+              currentSetInView={currentSetInView}
+              progressView={progressView}
+              setCardFlipped={setCardFlipped}
+              setCurrentCardInView={setCurrentCardInView}
+              setProgressView={setProgressView}
+            />
+          )}
+        </Modal>
         <div
           style={{
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             flexDirection: "column",
+            marginLeft: "10%",
           }}
         >
-          <h1
-            className="text-gradient-black"
-            style={{ fontSize: "4vw", marginTop: 50 }}
-          >
-            My Flashcards
-          </h1>
-          <p
+          <div
             style={{
-              marginTop: 40,
-              maxWidth: "30%",
-              textAlign: "center",
-              color: "gray",
-              fontSize: 14,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexDirection: "column",
             }}
           >
-            Welcome to your flashcards. To get started, create a new set of
-            flashcards with the button below. If you already have flashcard
-            sets, you can view them by clicking on the containers below. Use AI
-            to help create a boilerplate to help you study.
-          </p>
-
-          <Button
-            variant="outlined"
-            style={{ marginTop: 20 }}
-            onClick={() => setModal(true)}
-          >
-            <i className="fa fa-plus" style={{ marginRight: 10 }}></i>
-            <p style={{ marginTop: 1 }}>Create New Set</p>
-          </Button>
-
-          <TextField
-            style={{ borderRadius: 400, width: "40%", marginTop: 40 }}
-            placeholder="Search for a set by name or class..."
-            onChange={(e) => {
-              setSearch(e.target.value);
-            }}
-            InputProps={{ sx: { borderRadius: 100, paddingLeft: 2 } }}
-          ></TextField>
-        </div>
-
-        {userFlashCardSets.length > 0 ? (
-          <>
-            <div
+            <h1
+              className={getColor(color!)}
+              style={{ fontSize: "4vw", marginTop: 50 }}
+            >
+              My Flashcards
+            </h1>
+            <p
               style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                width: "100%",
                 marginTop: 40,
-                position: "relative",
+                maxWidth: "30%",
+                textAlign: "center",
+                color: "gray",
+                fontSize: 14,
               }}
             >
-              <main
-                className="main"
+              Welcome to your flashcards. To get started, create a new set of
+              flashcards with the button below. If you already have flashcard
+              sets, you can view them by clicking on the containers below. Use
+              AI to help create a boilerplate to help you study.
+            </p>
+
+            <Button
+              variant="contained"
+              style={{ marginTop: 20 }}
+              onClick={() => setModal(true)}
+            >
+              <i className="fa fa-plus" style={{ marginRight: 10 }}></i>
+              <p style={{ marginTop: 1 }}>Create New Set</p>
+            </Button>
+
+            <TextField
+              style={{
+                borderRadius: 400,
+                width: "40%",
+                marginTop: 40,
+                backgroundColor:
+                  theme.name !== "Light" ? theme.textColor : "#fff",
+              }}
+              placeholder="Search for a set by name or class..."
+              onChange={(e) => {
+                setSearch(e.target.value);
+              }}
+              InputProps={{ sx: { borderRadius: 100, paddingLeft: 2 } }}
+            ></TextField>
+          </div>
+
+          {userFlashCardSets.length > 0 ? (
+            <>
+              <div
                 style={{
-                  height: "100%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "100%",
+                  marginTop: 40,
+                  position: "relative",
                 }}
               >
-                {userFlashCardSets
-                  .filter(
-                    (s) =>
-                      s.cardsetName
-                        .toLowerCase()
-                        .includes(search.toLowerCase()) ||
-                      s.class.toLowerCase().includes(search.toLowerCase()),
-                  )
-                  .map((set) => (
-                    <>
-                      <SetView
-                        setName={setName}
-                        setId={setId}
-                        set={set}
-                        setCurrentCardInView={setCurrentCardInView}
-                        setCurrentSetInView={setCurrentSetInView}
-                        setOpenSet={setOpenSet}
-                        setProgressView={setProgressView}
-                        setEditModal={setEditModal}
-                        setFlashcards={setFlashcards}
-                        key={JSON.stringify(set)}
-                      />
-                    </>
-                  ))}
-              </main>
-            </div>
-          </>
-        ) : loadingSets ? (
-          <>
-            <Lottie
-              animationData={loader}
-              loop
-              style={{ width: "16vw", marginTop: 30 }}
-            />
-            <p>Fetching data...</p>
-          </>
-        ) : (
-          !loadingSets && <None setModal={setModal} />
-        )}
+                <main
+                  className="main"
+                  style={{
+                    height: "100%",
+                  }}
+                >
+                  {userFlashCardSets
+                    .filter(
+                      (s) =>
+                        s.cardsetName
+                          .toLowerCase()
+                          .includes(search.toLowerCase()) ||
+                        s.class.toLowerCase().includes(search.toLowerCase()),
+                    )
+                    .map((set) => (
+                      <>
+                        <SetView
+                          bg={theme.backgroundColor}
+                          color={theme.textColor}
+                          setName={setName}
+                          setId={setId}
+                          set={set}
+                          setCurrentCardInView={setCurrentCardInView}
+                          setCurrentSetInView={setCurrentSetInView}
+                          setOpenSet={setOpenSet}
+                          setProgressView={setProgressView}
+                          setEditModal={setEditModal}
+                          setFlashcards={setFlashcards}
+                          key={JSON.stringify(set)}
+                        />
+                      </>
+                    ))}
+                </main>
+              </div>
+            </>
+          ) : loadingSets ? (
+            <>
+              <Lottie
+                animationData={loader}
+                loop
+                style={{ width: "16vw", marginTop: 30 }}
+              />
+              <p>Fetching data...</p>
+            </>
+          ) : (
+            !loadingSets && <None setModal={setModal} />
+          )}
+        </div>
       </div>
     </>
   );

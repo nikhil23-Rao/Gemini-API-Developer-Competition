@@ -12,6 +12,8 @@ interface IProps {
   setFlashcards?: (i: Flashcard[]) => void;
   setId: (i: string) => void;
   setName: (i: string) => void;
+  bg: string;
+  color: string;
 }
 export const SetView = ({
   set,
@@ -23,6 +25,8 @@ export const SetView = ({
   setFlashcards,
   setId,
   setName,
+  bg,
+  color,
 }: IProps) => {
   return (
     <section
@@ -34,6 +38,7 @@ export const SetView = ({
         cursor: "pointer",
         zoom: 0.8,
         marginTop: 10,
+        backgroundColor: bg,
       }}
     >
       <figure
@@ -65,6 +70,7 @@ export const SetView = ({
           paddingTop: 25,
           paddingBottom: 25,
           paddingLeft: 10,
+          color,
         }}
       >
         <span className="span" style={{ letterSpacing: 1 }}>
@@ -76,6 +82,7 @@ export const SetView = ({
             marginTop: 20,
             fontWeight: "bold",
             fontSize: 24,
+            color,
           }}
         >
           {set.cardsetName}
@@ -101,7 +108,7 @@ export const SetView = ({
           setEditModal(true);
         }}
       >
-        <i className="fa fa-gear fa-2x"></i>
+        <i className="fa fa-gear fa-2x" style={{ color }}></i>
       </Button>
     </section>
   );
