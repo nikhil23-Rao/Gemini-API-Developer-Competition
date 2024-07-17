@@ -62,6 +62,7 @@ export default function Dashboard() {
   const [theme, setTheme] = useState<any>();
   const [color, setColor] = useState<string>();
   const [time, setTime] = useState<Date>();
+  const [imgPreview, setImgPreview] = useState("");
 
   useEffect(() => {
     getTheme(setTheme, setColor);
@@ -89,6 +90,20 @@ export default function Dashboard() {
 
   const handleUndoClick = () => {
     canvasRef.current?.undo();
+  };
+
+  const onImageChange = (event) => {
+    if (event.target.files && event.target.files[0]) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        console.log("res", reader.result);
+        setImgPreview(reader.result as any);
+        const base64String = (reader.result as string)
+          .replace("data:", "")
+          .replace(/^.+,/, "");
+      };
+      reader.readAsDataURL(event.target.files[0]);
+    }
   };
 
   const handleRedoClick = () => {
@@ -412,6 +427,25 @@ export default function Dashboard() {
               <Button onClick={handleClearClick} variant="outlined">
                 <i className="fa fa-minus"></i>
               </Button>
+              <Button variant="outlined">
+                <label htmlFor="group_image">
+                  <i
+                    className="fa fa-plus-circle"
+                    style={{
+                      cursor: "pointer",
+                      position: "relative",
+                    }}
+                  ></i>
+                </label>
+              </Button>
+              <input
+                type="file"
+                onChange={onImageChange}
+                className="filetype custom-file-upload"
+                id="group_image"
+                accept="image/*"
+              />
+
               <a href="/logo.png" download></a>
               <Button
                 onClick={() => {
@@ -454,11 +488,20 @@ export default function Dashboard() {
                 <i className="fa fa-save"></i>
               </Button>
             </div>
+            {imgPreview.length > 0 && (
+              <ReactSketchCanvas
+                width="18vw"
+                height="18vh"
+                strokeColor={hexColor}
+                backgroundImage={imgPreview}
+              />
+            )}
             <ReactSketchCanvas
+              id="hey"
               width="80vw"
               height="80vh"
               ref={canvasRef}
-              strokeColor={color}
+              strokeColor={hexColor}
             />
           </div>
         </NewModal>
