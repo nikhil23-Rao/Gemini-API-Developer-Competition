@@ -184,7 +184,7 @@ export default function Flashcards() {
     return (
       <NewModal modal={modal} setModal={setModal}>
         <h1
-          className="text-gradient-black"
+          className={getColor(color!)}
           style={{ fontSize: "4vw", marginTop: 130 }}
         >
           Create Flashcards
@@ -194,13 +194,28 @@ export default function Flashcards() {
           label={"Enter Set Name"}
           variant="outlined"
           value={name}
-          style={{ width: 400, marginTop: 80 }}
+          style={{
+            width: 400,
+            marginTop: 80,
+            backgroundColor: "#fff",
+            border: "9px solid #fff",
+            borderRadius: 10,
+          }}
           onChange={(e) => {
             setName(e.currentTarget.value);
           }}
           color={name.length > 0 ? "primary" : "error"}
         />
-        <FormControl style={{ width: 400, marginTop: 20, marginBottom: 20 }}>
+        <FormControl
+          style={{
+            width: 400,
+            marginTop: 20,
+            marginBottom: 20,
+            backgroundColor: "#fff",
+            border: "9px solid #fff",
+            borderRadius: 10,
+          }}
+        >
           <InputLabel id="demo-simple-select-label">
             Class Related To
           </InputLabel>
@@ -357,7 +372,7 @@ export default function Flashcards() {
         )}
 
         <button
-          className={"primary-effect"}
+          className={`primary-effect ${theme.className}`}
           style={{
             width: 400,
             borderRadius: 200,

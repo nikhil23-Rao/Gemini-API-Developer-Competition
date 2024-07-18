@@ -42,7 +42,7 @@ export const themes = [
 
   {
     name: "Night",
-    backgroundColor: "#1C2836",
+    backgroundColor: "#14202B",
     textColor: "#fff",
     className: "",
   },

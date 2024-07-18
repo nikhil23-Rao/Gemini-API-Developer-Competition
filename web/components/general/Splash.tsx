@@ -1,4 +1,8 @@
-export const Splash = () => {
+interface IProps {
+  white?: boolean;
+}
+
+export const Splash = ({ white = false }: IProps) => {
   return (
     <>
       <div
@@ -10,7 +14,7 @@ export const Splash = () => {
           height: "100vh",
         }}
       >
-        <img src="/logo.png" width={200} alt="" />
+        <img src={white ? "/whitelogo.png" : "logo.png"} width={200} alt="" />
       </div>
     </>
   );

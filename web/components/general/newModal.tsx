@@ -6,6 +6,7 @@ interface IProps {
   children: React.ReactNode;
   showClose?: boolean;
   overflow?: "hidden";
+  bg?: string;
 }
 
 export const NewModal = ({
@@ -14,6 +15,7 @@ export const NewModal = ({
   children,
   showClose = true,
   overflow,
+  bg = "#fff",
 }: IProps) => {
   if (modal)
     return (
@@ -41,8 +43,11 @@ export const NewModal = ({
             alignItems: "center",
             justifyContent: "center",
             flexDirection: "column",
-            marginBottom: 40,
             overflowY: overflow === "hidden" ? "hidden" : "auto",
+            backgroundColor: bg,
+            height: "100%",
+            minHeight: "100vh",
+            width: "100%",
           }}
         >
           {children}

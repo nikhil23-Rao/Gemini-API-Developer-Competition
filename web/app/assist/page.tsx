@@ -160,7 +160,7 @@ export default function Assist() {
         />
         {!currentUser ? (
           <>
-            <Splash></Splash>
+            <Splash white={theme.backgroundColor !== "#fff"}></Splash>
           </>
         ) : (
           <>

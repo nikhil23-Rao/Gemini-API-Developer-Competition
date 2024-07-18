@@ -45,6 +45,8 @@ import MarkdownPreview from "@uiw/react-markdown-preview";
 import { setUser } from "@/utils/getCurrentUser";
 import React from "react";
 import ComponentTab from "@/components/general/Tabs";
+import { getTheme } from "@/utils/getTheme";
+import { getColor } from "@/utils/getColor";
 
 export default function ProblemSetViewer({
   params,
@@ -64,10 +66,16 @@ export default function ProblemSetViewer({
   const [tabValue, setTabValue] = useState(0);
   const [height, setHeight] = useState(false);
   const [showAnsKey, setShowAnsKey] = useState(false);
+  const [theme, setTheme] = useState<any>();
+  const [color, setColor] = useState<string>();
 
   useEffect(() => {
     setUser(setCurrentUser);
   }, []);
+
+  useEffect(() => {
+    getTheme(setTheme, setColor);
+  }, [typeof localStorage]);
 
   useEffect(() => {
     if (showQuiz) {
@@ -238,7 +246,7 @@ export default function ProblemSetViewer({
                   {ps.problemSetDescription}
                 </p>
                 <Button
-                  variant="outlined"
+                  variant="contained"
                   color="error"
                   style={{ marginTop: 20 }}
                   onClick={() => setShowQuiz(false)}
@@ -247,7 +255,7 @@ export default function ProblemSetViewer({
                 </Button>
 
                 <Button
-                  variant="outlined"
+                  variant="contained"
                   color="success"
                   style={{ marginTop: 20 }}
                   onClick={() => setShowAnsKey(!showAnsKey)}
@@ -256,7 +264,7 @@ export default function ProblemSetViewer({
                 </Button>
 
                 <Button
-                  variant="outlined"
+                  variant="contained"
                   style={{ marginTop: 20 }}
                   onClick={() => generatePDF(targetRef, { filename: "ye.pdf" })}
                 >
@@ -404,7 +412,9 @@ export default function ProblemSetViewer({
                 display: "flex",
                 flexDirection: "row",
                 overflow: "hidden",
+                backgroundColor: theme.backgroundColor,
               }}
+              className={theme.className}
             >
               <div
                 style={{
@@ -427,7 +437,7 @@ export default function ProblemSetViewer({
                   }}
                 >
                   <h1
-                    className="text-gradient-black"
+                    className={getColor(color!)}
                     style={{
                       textAlign: "center",
                       fontSize: "3vw",
@@ -439,7 +449,7 @@ export default function ProblemSetViewer({
                     {ps.problemSetDescription}
                   </p>
                   <Button
-                    variant="outlined"
+                    variant="contained"
                     color="error"
                     style={{ marginTop: 20 }}
                     onClick={() => setShowQuiz(false)}
@@ -448,7 +458,7 @@ export default function ProblemSetViewer({
                   </Button>
 
                   <Button
-                    variant="outlined"
+                    variant="contained"
                     color="success"
                     style={{ marginTop: 20 }}
                     onClick={() => setShowAnsKey(!showAnsKey)}
@@ -457,7 +467,7 @@ export default function ProblemSetViewer({
                   </Button>
 
                   <Button
-                    variant="outlined"
+                    variant="contained"
                     style={{ marginTop: 20 }}
                     onClick={async () => {
                       setHeight(true);
@@ -480,7 +490,7 @@ export default function ProblemSetViewer({
                   }}
                 >
                   <p
-                    className="text-gradient-black"
+                    className={getColor(color!)}
                     style={{ fontWeight: "bold", textTransform: "uppercase" }}
                   >
                     Answer Sheet (NOT ALL MAY BE USED)
@@ -489,6 +499,7 @@ export default function ProblemSetViewer({
                     <FormControl style={{ marginTop: 20 }}>
                       <FormLabel
                         id="demo-radio-buttons-group-label"
+                        className={getColor(color!)}
                         style={{ fontWeight: "bold", fontSize: 22 }}
                       >
                         {q}
@@ -514,6 +525,7 @@ export default function ProblemSetViewer({
                               border: "2px solid #eee",
                               borderRadius: 100,
                               marginBottom: 20,
+                              backgroundColor: "#fff",
                             }}
                           />
                         ))}
@@ -536,12 +548,6 @@ export default function ProblemSetViewer({
                   </Button>
                 </div>
               </div>
-              <div
-                style={{
-                  width: 20,
-                  borderRight: "2px solid #eee",
-                }}
-              ></div>
 
               <div
                 ref={targetRef as any}
@@ -550,7 +556,6 @@ export default function ProblemSetViewer({
                   overflowY: "scroll",
                   height: "100%",
                   maxHeight: !height ? "100vh" : "",
-                  minWidth: "50vw",
                   overflowX: "hidden",
                 }}
               >
@@ -560,14 +565,18 @@ export default function ProblemSetViewer({
                       top: 20,
                       right: 70,
                       position: "absolute",
-                      color: "#182264",
+                      color,
                       fontWeight: "bold",
                     }}
                   >
                     Generated by Vertex
                   </h1>
                   <img
-                    src="/logo.png"
+                    src={
+                      theme.backgroundColor !== "#fff"
+                        ? "/whitelogo.png"
+                        : "/logo.png"
+                    }
                     style={{
                       position: "absolute",
                       width: 40,
@@ -577,7 +586,7 @@ export default function ProblemSetViewer({
                     alt=""
                   />
                   <MarkdownPreview
-                    className="markdowneditor"
+                    className={`markdowneditor ${theme.className} `}
                     source={`${
                       !showAnsKey
                         ? JSON.parse(
@@ -595,8 +604,8 @@ export default function ProblemSetViewer({
                       width: "100%",
                       height: "100%",
                       minHeight: "100vh",
-                      backgroundColor: "#fff",
-                      color: "#000",
+                      backgroundColor: theme.backgroundColor,
+                      color: theme.textColor,
                     }}
                     rehypePlugins={[rehypeKatex, remarkMath, remarkGfm]}
                     components={{
@@ -658,12 +667,12 @@ export default function ProblemSetViewer({
       );
   }
 
-  if (!ps || !currentUser) return <Splash></Splash>;
+  if (!ps || !currentUser || !theme) return <Splash></Splash>;
 
   return (
     <>
       <div style={{ display: "flex", flexDirection: "column" }}>
-        <div className="header">
+        <div className={`header ${color === "white" ? "default" : color}`}>
           <a
             className="fa fa-home fa-2x"
             style={{

@@ -766,7 +766,7 @@ export default function QuestionGenerator() {
       <>
         <div
           style={{
-            height: "100%",
+            height: loading ? "100vh" : "100%",
             width: "100%",
             backgroundColor:
               theme.backgroundColor.length > 0
@@ -788,7 +788,6 @@ export default function QuestionGenerator() {
               flexDirection: "column",
               marginLeft: "10%",
             }}
-            className={theme.className}
           >
             <div
               style={{

@@ -367,7 +367,11 @@ export default function Dashboard() {
     return (
       <>
         {" "}
-        <NewModal modal={drawingModal} setModal={setDrawingModal}>
+        <NewModal
+          modal={drawingModal}
+          bg={theme.backgroundColor}
+          setModal={setDrawingModal}
+        >
           {showColorPicker && (
             <HexColorPicker
               onChange={setHexColor}
@@ -390,15 +394,17 @@ export default function Dashboard() {
           >
             <div style={{ display: "flex", flexDirection: "row" }}>
               <Button
+                style={{ marginRight: 10 }}
                 disabled={!eraseMode}
                 onClick={handlePenClick}
-                variant="outlined"
+                variant="contained"
               >
                 <i className="fa fa-paint-brush"></i>
               </Button>
               <Button
+                style={{ marginRight: 10 }}
                 onClick={() => setShowColorPicker(!showColorPicker)}
-                variant="outlined"
+                variant="contained"
               >
                 <div
                   style={{
@@ -413,21 +419,34 @@ export default function Dashboard() {
               <Button
                 disabled={eraseMode}
                 onClick={handleEraserClick}
-                variant="outlined"
+                style={{ marginRight: 10 }}
+                variant="contained"
               >
                 <i className="fa fa-eraser"></i>
               </Button>
               <div className="vr" />
-              <Button onClick={handleUndoClick} variant="outlined">
+              <Button
+                style={{ marginRight: 10 }}
+                onClick={handleUndoClick}
+                variant="contained"
+              >
                 <i className="fa fa-undo"></i>
               </Button>
-              <Button onClick={handleRedoClick} variant="outlined">
+              <Button
+                style={{ marginRight: 10 }}
+                onClick={handleRedoClick}
+                variant="contained"
+              >
                 <i className="fa fa-rotate-right"></i>
               </Button>
-              <Button onClick={handleClearClick} variant="outlined">
+              <Button
+                style={{ marginRight: 10 }}
+                onClick={handleClearClick}
+                variant="contained"
+              >
                 <i className="fa fa-minus"></i>
               </Button>
-              <Button variant="outlined">
+              <Button style={{ marginRight: 10 }} variant="contained">
                 <label htmlFor="group_image">
                   <i
                     className="fa fa-plus-circle"
@@ -448,6 +467,7 @@ export default function Dashboard() {
 
               <a href="/logo.png" download></a>
               <Button
+                style={{ marginRight: 10 }}
                 onClick={() => {
                   async function saveBase64Image(base64Url, filename) {
                     try {
@@ -483,18 +503,24 @@ export default function Dashboard() {
 
                   saveFile();
                 }}
-                variant="outlined"
+                variant="contained"
               >
                 <i className="fa fa-save"></i>
               </Button>
             </div>
             {imgPreview.length > 0 && (
-              <ReactSketchCanvas
-                width="18vw"
-                height="18vh"
-                strokeColor={hexColor}
-                backgroundImage={imgPreview}
-              />
+              <Draggable>
+                <img
+                  src={imgPreview}
+                  style={{
+                    zoom: 0.9,
+                    position: "absolute",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => {}}
+                  draggable={false}
+                />
+              </Draggable>
             )}
             <ReactSketchCanvas
               id="hey"
@@ -523,7 +549,7 @@ export default function Dashboard() {
           bg={theme.backgroundColor}
           color={theme.textColor}
         />
-        {!currentUser || !theme ? (
+        {!currentUser ? (
           <>
             <div
               style={{
@@ -534,7 +560,7 @@ export default function Dashboard() {
                 flexDirection: "column",
               }}
             >
-              <Splash></Splash>
+              <Splash white={theme.backgroundColor !== "#fff"}></Splash>
             </div>
           </>
         ) : (
@@ -611,8 +637,9 @@ export default function Dashboard() {
                   }}
                 />
                 <Button
-                  variant="outlined"
-                  className="mt-10"
+                  variant="contained"
+                  style={{ marginTop: 50 }}
+                  className="mt-5"
                   color="success"
                   onClick={() => {
                     updateDoc(doc(db, "users", currentUser.docid), {
@@ -621,6 +648,8 @@ export default function Dashboard() {
                         chosenClass,
                       },
                     });
+
+                    setShowTarget(false);
                   }}
                 >
                   Update Target

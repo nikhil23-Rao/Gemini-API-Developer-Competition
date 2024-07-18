@@ -235,7 +235,6 @@ border: 1px solid rgba(255, 255, 255, 0.3);
 }
 .primary-effect > span {
   display: block;
-  background: radial-gradient(780px at 37.8% 100.3%, rgb(19, 55, 115) 2.2%, rgb(32, 7, 80) 20.2%, rgb(27, 88, 111) 58.6%,  rgb(12, 51, 76) 96.1%);
   background-size: 400% 400%;
   -moz-animation: gradient 3s ease-in-out infinite;
   -webkit-animation: gradient 3s ease-in-out infinite;
@@ -1917,7 +1916,7 @@ background: linear-gradient(to right, #004e92, #000428); /* W3C, IE 10+/ Edge, F
 }
 
 .default {
-  background: radial-gradient(780px at 37.8% 100.3%, rgb(19, 55, 115) 2.2%, rgb(32, 7, 80) 20.2%, rgb(27, 88, 111) 58.6%, rgb(115, 88, 44) 75%, rgb(99, 19, 90) 89.6%, rgb(12, 51, 76) 96.1%);
+  background: radial-gradient(780px at 37.8% 100.3%, rgb(19, 55, 115) 2.2%, rgb(32, 7, 80) 20.2%, rgb(27, 88, 111) 58.6%, );
 
 
 
@@ -1946,8 +1945,8 @@ background: linear-gradient(to right, #061161, #780206); /* W3C, IE 10+/ Edge, F
 
 .lakers{
   background: #F0C27B;  /* fallback for old browsers */
-background: -webkit-linear-gradient(to right, #4B1248, #F0C27B);  /* Chrome 10-25, Safari 5.1-6 */
-background: linear-gradient(to right, #4B1248, #F0C27B); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+background: -webkit-linear-gradient(to right, #e116d7, #F0C27B);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to right, #e116d7, #F0C27B); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 
 }
 
@@ -1985,3 +1984,4 @@ background: linear-gradient(to right, #4B1248, #F0C27B); /* W3C, IE 10+/ Edge, F
 *::-webkit-scrollbar { 
   display: none;  /* Safari and Chrome */
 }
+
