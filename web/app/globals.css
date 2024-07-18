@@ -1985,3 +1985,8 @@ background: linear-gradient(to right, #e116d7, #F0C27B); /* W3C, IE 10+/ Edge, F
   display: none;  /* Safari and Chrome */
 }
 
+
+
+.hover:hover {
+  background-color: #eee;
+}

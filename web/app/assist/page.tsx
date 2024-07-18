@@ -496,7 +496,7 @@ export default function Assist() {
                             width: "90%",
                             borderRadius: 20,
                             resize: "none",
-                            maxHeight: 200,
+                            maxHeight: 70,
                             border: "2px solid #eee",
                             padding: 4,
                             paddingLeft: 10,
@@ -641,7 +641,12 @@ export default function Assist() {
                             </h1>
                             <TextField
                               className="mb-5 mt-5"
-                              style={{ borderRadius: 400, width: "70%" }}
+                              style={{
+                                borderRadius: 400,
+                                width: "70%",
+                                marginTop: 10,
+                                marginBottom: 10,
+                              }}
                               placeholder="search through your sets..."
                             ></TextField>
                             <div
@@ -653,6 +658,7 @@ export default function Assist() {
                             >
                               {userProblemSets.map((ps) => (
                                 <li
+                                  className="hover"
                                   onClick={() => {
                                     setSelected(ps);
                                   }}

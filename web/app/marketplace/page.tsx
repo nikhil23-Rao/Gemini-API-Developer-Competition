@@ -1,4 +1,5 @@
 "use client";
+import "react-loading-skeleton/dist/skeleton.css";
 import React, { useEffect, useState } from "react";
 import { AppSidebar } from "../../components/general/Sidebar";
 import { Button, TextField } from "@mui/material";
@@ -14,9 +15,12 @@ import Lottie from "lottie-react";
 import { getTheme } from "@/utils/getTheme";
 import { Splash } from "@/components/general/Splash";
 import { getColor } from "@/utils/getColor";
+import animation from "../../public/loader.json";
+import Skeleton from "react-loading-skeleton";
 
 export default function Marketplace() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [loadingForYou, setLoadingForYou] = useState(true);
   const [items, setCurrentItems] = useState<any[]>();
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -100,12 +104,14 @@ export default function Marketplace() {
 
   useEffect(() => {
     if (items && items.length > 0 && currentUser) {
+      setLoadingForYou(true);
       getMarketplaceSearchResults(
         items as any,
         `${currentUser?.target?.chosenClass}: ${currentUser?.target?.text}`,
       ).then((results) => {
         console.log("JFWEIOJIOFEWJIOWEF", results);
         setForYou(JSON.parse(results).slice(0, 3));
+        setLoadingForYou(false);
       });
     }
   }, [items]);
@@ -356,6 +362,14 @@ export default function Marketplace() {
             Current Target: {currentUser?.target?.chosenClass} -{" "}
             {currentUser?.target?.text}
           </p>
+
+          {loadingForYou && (
+            <>
+              <p style={{ marginTop: 20, color: theme.textColor }}>
+                fetching data...
+              </p>
+            </>
+          )}
 
           <main className="" style={{ maxWidth: "60%", marginTop: -50 }}>
             <div className="mx-auto w-full max-w-5xl px-4 py-24 md:px-6">

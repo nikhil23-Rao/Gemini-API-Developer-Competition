@@ -145,7 +145,7 @@ export default function QuestionGenerator() {
 
   if (quizModal) {
     return (
-      <NewModal modal={quizModal} setModal={setQuizModal}>
+      <NewModal modal={quizModal} setModal={setQuizModal} showClose={true}>
         <div
           style={{
             display: "flex",
@@ -248,7 +248,7 @@ export default function QuestionGenerator() {
             </div>
           </div>
           <button
-            className={"primary-effect"}
+            className={`primary-effect ${color}`}
             style={{
               width: 400,
               borderRadius: 200,
@@ -549,7 +549,7 @@ export default function QuestionGenerator() {
             message="Unrelated Search Detected. Please try again with a proper search..."
           />
           <button
-            className={"primary-effect"}
+            className={`primary-effect ${color}`}
             style={{
               width: 400,
               borderRadius: 200,
@@ -721,7 +721,7 @@ export default function QuestionGenerator() {
             message="Unrelated Search Detected. Please try again with a proper search..."
           />
           <button
-            className={"primary-effect"}
+            className={`primary-effect ${color}`}
             style={{
               width: 400,
               borderRadius: 200,

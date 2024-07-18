@@ -264,7 +264,7 @@ export const assistUserImg = async (req: Request, res: Response) => {
 
     // Restore the previous context
 
-    const chat = model.startChat({
+    const chat = fastModel.startChat({
       history: [],
       safetySettings,
     });
