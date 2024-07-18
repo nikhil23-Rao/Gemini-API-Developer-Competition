@@ -175,8 +175,20 @@ export const Flipper = ({
       <div style={{ position: "absolute", bottom: 20, right: 20 }}>
         <Button
           style={{ color: "#fff", backgroundColor: "#4255FF" }}
-          href="https://quizlet.com/create-set"
-          target="_blank"
+          onClick={() => {
+            let str = ``;
+
+            for (const card of currentSetInView) {
+              let term = card.term;
+              let def = card.definition;
+
+              str += term + `\t` + def + "\n";
+            }
+
+            navigator.clipboard.writeText(str);
+            console.log(str);
+            // https://quizlet.com/create-set
+          }}
         >
           Export to Quizlet
         </Button>
