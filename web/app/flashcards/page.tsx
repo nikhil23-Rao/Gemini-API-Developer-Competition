@@ -127,13 +127,14 @@ export default function Flashcards() {
           // if (userFlashCardSets.includes(doc.data())) return;
           else {
             createdSets.push(doc.data());
+            createdSets.sort((a, b) => b.dateCreated - a.dateCreated);
             setUserFlashCardSets(createdSets);
             console.log(createdSets);
             duplicate = false;
-            setLoadingSets(false);
           }
         });
       });
+      setLoadingSets(false);
     }
   }, [currentUser]);
 
@@ -372,11 +373,12 @@ export default function Flashcards() {
         )}
 
         <button
-          className={`primary-effect ${theme.className}`}
+          className={`primary-effect ${color}`}
           style={{
             width: 400,
             borderRadius: 200,
             marginTop: 50,
+            marginBottom: 40,
             cursor:
               chosenClass.length === 0 || selectedUnits.length === 0
                 ? "disabled"
@@ -596,7 +598,7 @@ export default function Flashcards() {
               <p>Fetching data...</p>
             </>
           ) : (
-            !loadingSets && <None setModal={setModal} />
+            !loadingSets && <None color={color!} setModal={setModal} />
           )}
         </div>
       </div>

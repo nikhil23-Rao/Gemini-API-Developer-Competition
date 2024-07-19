@@ -133,13 +133,14 @@ export default function QuestionGenerator() {
           // if (userFlashCardSets.includes(doc.data())) return;
           else {
             createdSets.push(doc.data());
+            createdSets.sort((a, b) => b.dateCreated - a.dateCreated);
             setUserProblemSets(createdSets);
             console.log(createdSets);
             duplicate = false;
-            setLoading(false);
           }
         });
       });
+      setLoading(false);
     }
   }, [currentUser]);
 
@@ -272,6 +273,7 @@ export default function QuestionGenerator() {
                 public: status === "public" ? true : false,
                 type: content,
                 savedToFolder: [currentUser?.docid],
+                dateCreated: new Date().getTime(),
               });
               await updateDoc(doc(db, "problemsets", docid.id), {
                 docid: docid.id,
@@ -849,7 +851,7 @@ export default function QuestionGenerator() {
                 InputProps={{ sx: { borderRadius: 100, paddingLeft: 2 } }}
               ></TextField>
             </div>
-            {loading && userProblemSets.length === 0 ? (
+            {loading ? (
               <>
                 <Lottie
                   animationData={loadingdata}

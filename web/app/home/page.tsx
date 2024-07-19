@@ -3,6 +3,8 @@
 // data:image/jpeg;base64,
 import { AppSidebar } from "@/components/general/Sidebar";
 import "../globals.css";
+import { Resizable } from "react-resizable";
+
 import {
   Button,
   Checkbox,
@@ -43,6 +45,7 @@ import {
 } from "@firebase/firestore";
 import db from "@/utils/initDB";
 import { getTheme } from "@/utils/getTheme";
+import { quotes } from "@/api/quotes";
 
 export default function Dashboard() {
   const canvasRef = useRef<ReactSketchCanvasRef>(null);
@@ -63,6 +66,16 @@ export default function Dashboard() {
   const [color, setColor] = useState<string>();
   const [time, setTime] = useState<Date>();
   const [imgPreview, setImgPreview] = useState("");
+  const [width, setWidth] = useState(200);
+  const [height, setHeight] = useState(200);
+  const [matra, setMatra] = useState({ quote: "", author: "" });
+
+  useEffect(() => {
+    setMatra({
+      author: quotes[Math.floor(Math.random() * quotes.length)].author,
+      quote: quotes[Math.floor(Math.random() * quotes.length)].quote,
+    });
+  }, []);
 
   useEffect(() => {
     getTheme(setTheme, setColor);
@@ -77,6 +90,10 @@ export default function Dashboard() {
   }, []);
 
   // google calendar stuff
+
+  const onResize = (event, { node, size, handle }) => {
+    this.setState({ width: size.width, height: size.height });
+  };
 
   const handleEraserClick = () => {
     setEraseMode(true);
@@ -319,7 +336,13 @@ export default function Dashboard() {
                   </h1>
                 </div>
 
-                <div style={{ position: "absolute" }}>
+                <div
+                  style={{
+                    position: "absolute",
+                    bottom: 0,
+                    left: -650,
+                  }}
+                >
                   {showCalculator && <Calculator></Calculator>}
                   {showDesmos && (
                     <Draggable onStart={() => console.log("drag")}>
@@ -332,6 +355,7 @@ export default function Dashboard() {
                           alignItems: "center",
                           justifyContent: "center",
                           cursor: "grab",
+                          resize: "both",
                         }}
                       >
                         <iframe
@@ -798,8 +822,7 @@ export default function Dashboard() {
                     fontWeight: "bold",
                   }}
                 >
-                  "Education is the most powerful weapon which you can use to
-                  change the world."
+                  {matra.quote}
                 </p>
                 <p
                   style={{
@@ -809,7 +832,7 @@ export default function Dashboard() {
                     fontWeight: "bold",
                   }}
                 >
-                  ~ Nelson Mandela
+                  ~ {matra.author}
                 </p>
                 <div
                   style={{

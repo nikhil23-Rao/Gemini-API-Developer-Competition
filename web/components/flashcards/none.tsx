@@ -3,35 +3,49 @@ import Lottie from "lottie-react";
 
 interface IProps {
   setModal: (i: boolean) => void;
+  color: string;
 }
 
-export const None = ({ setModal }: IProps) => {
+export const None = ({ setModal, color }: IProps) => {
   return (
     <>
-      <Lottie
-        animationData={createData}
-        loop
-        style={{ width: "33vw", marginTop: 30 }}
-      />
-      <button
-        className={"primary-effect"}
+      <div
         style={{
-          width: 400,
-          borderRadius: 200,
-          marginTop: 50,
-          marginBottom: 50,
-          cursor: "pointer",
+          minHeight: "70vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexDirection: "column",
         }}
-        onClick={() => setModal(true)}
       >
-        <span
+        <Lottie
+          animationData={createData}
+          loop
+          style={{ width: "15vw", marginTop: 30 }}
+        />
+        <p>No sets yet. Create one now!</p>
+        <button
+          className={`primary-effect ${
+            color === ("white" || "black") ? "default" : color
+          }`}
           style={{
+            width: 400,
+            borderRadius: 200,
+            marginTop: 50,
+            marginBottom: 50,
             cursor: "pointer",
           }}
+          onClick={() => setModal(true)}
         >
-          Create New Set
-        </span>
-      </button>
+          <span
+            style={{
+              cursor: "pointer",
+            }}
+          >
+            Create New Set
+          </span>
+        </button>
+      </div>
     </>
   );
 };

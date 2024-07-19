@@ -232,7 +232,15 @@ border: 1px solid rgba(255, 255, 255, 0.3);
 
 .primary-effect {
   position: relative;
+background-color: rgb(6, 157, 207);
+  transition: 0.3s ease;
 }
+
+.primary-effect:hover {
+  background-color: lightblue;
+  transition: 0.3s ease;
+}
+
 .primary-effect > span {
   display: block;
   background-size: 400% 400%;

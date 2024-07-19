@@ -298,6 +298,10 @@ export default function Marketplace() {
                             width: "100%",
                             borderRadius: 10,
                           }}
+                          className="hover"
+                          onClick={() => {
+                            router.push(`/ps/${r.id}`);
+                          }}
                         >
                           <li
                             style={{
@@ -305,9 +309,6 @@ export default function Marketplace() {
                               marginBottom: 15,
                               padding: 15,
                               borderRadius: 10,
-                            }}
-                            onClick={() => {
-                              router.push(`/ps/${r.id}`);
                             }}
                           >
                             <i
@@ -363,6 +364,16 @@ export default function Marketplace() {
             {currentUser?.target?.text}
           </p>
 
+          {!loadingForYou && forYou.length === 0 ? (
+            <>
+              <p style={{ marginTop: 10 }}>
+                Looks like no sets were found. Try changing your target to get
+                better reccomendations
+              </p>
+            </>
+          ) : (
+            <></>
+          )}
           {loadingForYou && (
             <>
               <p style={{ marginTop: 20, color: theme.textColor }}>

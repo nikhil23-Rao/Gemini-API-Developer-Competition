@@ -199,6 +199,7 @@ export const EditFlashcards = ({
                   Math.random() * 1000000,
                 ).toString()}`,
                 savedToFolder: [currentUser?.docid],
+                dateCreated: new Date().getTime(),
               });
 
               await updateDoc(doc(db, "flashcards", docid.id), {

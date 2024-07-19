@@ -23,6 +23,7 @@ import {
   doc,
   getDocs,
   onSnapshot,
+  orderBy,
   query,
   updateDoc,
   where,
@@ -118,6 +119,7 @@ export default function ProblemSetViewer({
           // if (userFlashCardSets.includes(doc.data())) return;
           else {
             createdSets.push(doc.data());
+            createdSets.sort((a, b) => b.dateCreated - a.dateCreated);
             setComments(createdSets);
             console.log(createdSets);
             duplicate = false;
@@ -834,6 +836,7 @@ export default function ProblemSetViewer({
                   body: commentText,
                   replies: [],
                   communityUsername: currentUser.communityUsername,
+                  dateCreated: new Date().getTime(),
                 });
                 await updateDoc(doc(db, "discussions", docid.id), {
                   docid: docid.id,
