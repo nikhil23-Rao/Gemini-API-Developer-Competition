@@ -171,6 +171,7 @@ export default function Assist() {
                 justifyContent: "center",
                 flexDirection: "column",
                 marginLeft: "10%",
+                overflow: "hidden",
               }}
             >
               <div
@@ -604,16 +605,6 @@ export default function Assist() {
                       accept="image/*"
                     />
 
-                    <i
-                      className="fa fa-calculator fa-2x"
-                      style={{
-                        color: showMath ? "orange" : theme.textColor,
-                        cursor: "pointer",
-                        top: showMath ? 20 : 10,
-                        position: "relative",
-                      }}
-                      onClick={() => setShowMath(!showMath)}
-                    ></i>
                     {openDropdown && (
                       <div
                         style={{
@@ -713,6 +704,7 @@ export default function Assist() {
                                 .match(/# Question/g)
                                 ?.map((q, idx) => (
                                   <li
+                                    className="hover"
                                     onClick={async () => {
                                       setLoading(true);
                                       setSelected(undefined);
