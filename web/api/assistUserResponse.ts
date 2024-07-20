@@ -1,7 +1,7 @@
 import axios from "axios";
 export const assistUserResponse = async (old, message) => {
   const res = await axios.post(
-    "http://localhost:3001/assist",
+    process.env.NEXT_PUBLIC_API_URL + "assist",
     { old, message },
     {
       headers: {
@@ -15,7 +15,7 @@ export const assistUserResponse = async (old, message) => {
 
 export const assistUserResponseImg = async (img, details) => {
   const res = await axios.post(
-    "http://localhost:3001/assistimg",
+    process.env.NEXT_PUBLIC_API_URL + "assistimg",
     { img, details },
     {
       headers: {

@@ -3,7 +3,7 @@ import axios from "axios";
 export const getFlashcardsThroughImage = async (image: string) => {
   console.log(prompt);
   const res = await axios.post(
-    "http://localhost:3001/flashcardImage",
+    process.env.NEXT_PUBLIC_API_URL + "flashcardImage",
     { image },
     {
       headers: {

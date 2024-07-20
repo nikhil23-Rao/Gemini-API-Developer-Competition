@@ -7,7 +7,7 @@ export const getFRQByImage = async (
 ) => {
   console.log(prompt);
   const res = await axios.post(
-    "http://localhost:3001/frqimage",
+    process.env.NEXT_PUBLIC_API_URL + "frqimage",
     { length, chosenClass, image },
     {
       headers: {

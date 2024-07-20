@@ -8,7 +8,7 @@ export const getMCQByImage = async (
 ) => {
   console.log(prompt);
   const res = await axios.post(
-    "http://localhost:3001/mcqimage",
+    process.env.NEXT_PUBLIC_API_URL + "mcqimage",
     { length, style, chosenClass, image },
     {
       headers: {

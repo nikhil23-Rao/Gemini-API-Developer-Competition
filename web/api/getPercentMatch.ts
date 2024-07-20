@@ -3,7 +3,7 @@ import axios from "axios";
 export const getPercentMatch = async (input: string, className: string) => {
   console.log(prompt);
   const res = await axios.post(
-    "http://localhost:3001/validation",
+    process.env.NEXT_PUBLIC_API_URL + "validation",
     { input, className },
     {
       headers: {

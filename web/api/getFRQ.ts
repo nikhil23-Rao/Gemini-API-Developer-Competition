@@ -8,7 +8,7 @@ export const getFRQ = async (
 ) => {
   console.log(prompt);
   const res = await axios.post(
-    "http://localhost:3001/frqprompt",
+    process.env.NEXT_PUBLIC_API_URL + "frqprompt",
     { length, style, chosenClass, topic },
     {
       headers: {
