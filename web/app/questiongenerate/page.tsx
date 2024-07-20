@@ -26,12 +26,12 @@ import { setUser } from "@/utils/getCurrentUser";
 import { ResourceContent } from "@/types/questiongenerate/ResourceContent";
 import ComponentTab from "@/components/general/Tabs";
 import { Searching } from "@/components/general/Searching";
-import { getPercentMatch } from "@/api/getPercentMatch";
-import { getResourcesAPI } from "@/api/getResourcesAPI";
+import { getPercentMatch } from "@/serversideapi/getPercentMatch";
+import { getResourcesAPI } from "@/serversideapi/getResourcesAPI";
 import { NumberInput } from "@/components/general/NumberInput";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { ProcessingRequest } from "@/components/general/ProcessingRequest";
-import { getMCQ } from "@/api/getMCQ";
+import { getMCQ } from "@/serversideapi/getMCQ";
 import {
   addDoc,
   collection,
@@ -43,10 +43,10 @@ import {
 } from "@firebase/firestore";
 import db from "@/utils/initDB";
 import { useRouter } from "next/navigation";
-import { getFRQ } from "@/api/getFRQ";
-import { getFRQByImage } from "@/api/getFRQByImage";
+import { getFRQ } from "@/serversideapi/getFRQ";
+import { getFRQByImage } from "@/serversideapi/getFRQByImage";
 import loadingdata from "../../public/loader.json";
-import { getMCQByImage } from "@/api/getMCQByImage";
+import { getMCQByImage } from "@/serversideapi/getMCQByImage";
 import { getTheme } from "@/utils/getTheme";
 import { Splash } from "@/components/general/Splash";
 import { getColor } from "@/utils/getColor";

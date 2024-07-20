@@ -8,7 +8,7 @@ import { setUser } from "@/utils/getCurrentUser";
 import { User } from "@/types/auth/User";
 import { collection, getDocs, query, where } from "@firebase/firestore";
 import db from "@/utils/initDB";
-import { getMarketplaceSearchResults } from "@/api/getMarketplaceSearchResults";
+import { getMarketplaceSearchResults } from "@/serversideapi/getMarketplaceSearchResults";
 import { useRouter } from "next/navigation";
 import loader from "../../public/searchLoader.json";
 import Lottie from "lottie-react";

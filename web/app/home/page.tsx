@@ -45,7 +45,7 @@ import {
 } from "@firebase/firestore";
 import db from "@/utils/initDB";
 import { getTheme } from "@/utils/getTheme";
-import { quotes } from "@/api/quotes";
+import { quotes } from "@/serversideapi/quotes";
 
 export default function Dashboard() {
   const canvasRef = useRef<ReactSketchCanvasRef>(null);

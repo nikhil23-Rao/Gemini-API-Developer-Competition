@@ -52,7 +52,7 @@ import ComponentTab from "@/components/general/Tabs";
 import { getTheme } from "@/utils/getTheme";
 import { getColor } from "@/utils/getColor";
 import Modal from "react-responsive-modal";
-import { assistUserResponse } from "@/api/assistUserResponse";
+import { assistUserResponse } from "@/serversideapi/assistUserResponse";
 
 export default function ProblemSetViewer({
   params,

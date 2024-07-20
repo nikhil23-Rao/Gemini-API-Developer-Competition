@@ -23,7 +23,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 import {
   assistUserResponse,
   assistUserResponseImg,
-} from "@/api/assistUserResponse";
+} from "@/serversideapi/assistUserResponse";
 import remarkGfm from "remark-gfm";
 import "katex/dist/katex.min.css";
 import rehypeKatex from "rehype-katex";
