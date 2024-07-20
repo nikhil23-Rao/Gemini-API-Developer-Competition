@@ -177,6 +177,14 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (currentUser) {
+      console.log("Updating target...");
+      setTarget(currentUser.target?.text as string);
+      setChosenClass(currentUser.target?.chosenClass as string);
+    }
+  }, [typeof currentUser]);
+
+  useEffect(() => {
+    if (currentUser) {
       let flashcardFolder: any[] = [];
       let problemSetFolder: any[] = [];
       const q = query(

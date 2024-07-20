@@ -1,7 +1,9 @@
 import { Flashcard } from "@/types/flashcard/Flashcard";
+import "react-responsive-modal/styles.css";
 import { Button } from "@mui/material";
 import ProgressBar from "@ramonak/react-progress-bar";
 import ReactCardFlip from "react-card-flip";
+import Modal from "react-responsive-modal";
 
 interface IProps {
   progressView: number;
@@ -11,6 +13,8 @@ interface IProps {
   currentSetInView: Flashcard[];
   setProgressView: (i: number) => void;
   setCurrentCardInView: (i: Flashcard) => void;
+  quizletModal: boolean;
+  setQuizletModal: (i: boolean) => void;
 }
 
 export const Flipper = ({
@@ -21,6 +25,8 @@ export const Flipper = ({
   currentSetInView,
   setProgressView,
   setCurrentCardInView,
+  quizletModal,
+  setQuizletModal,
 }: IProps) => {
   return (
     <div>
@@ -172,10 +178,60 @@ export const Flipper = ({
           ></i>
         </div>
       </div>
+
+      <Modal
+        open={quizletModal}
+        onClose={() => setQuizletModal(false)}
+        styles={{
+          modal: {
+            width: "50%",
+            height: "40%",
+            marginTop: "10%",
+          },
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <h1
+            style={{
+              fontSize: "2.5vw",
+              color: "#4255FF",
+              fontWeight: "bold",
+              marginTop: 40,
+            }}
+          >
+            Exporting to Quizlet
+          </h1>
+        </div>
+        <ol style={{ marginTop: 45, paddingLeft: 45 }}>
+          <li>
+            Step 1: Head on over to create a new imported set on Quizlet with{" "}
+            <a
+              href="https://quizlet.com/create-set"
+              style={{ color: "#4255FF", textDecoration: "underline" }}
+              target="_blank"
+            >
+              this link
+            </a>
+          </li>{" "}
+          <li>Step 2: Click on the import button</li>{" "}
+          <li>
+            Step 3: Paste. The results are already copied to your clipboard.
+            (Command/CTRL + V)
+          </li>{" "}
+        </ol>
+      </Modal>
       <div style={{ position: "absolute", bottom: 20, right: 20 }}>
         <Button
           style={{ color: "#fff", backgroundColor: "#4255FF" }}
           onClick={() => {
+            setQuizletModal(true);
             let str = ``;
 
             for (const card of currentSetInView) {
@@ -187,7 +243,7 @@ export const Flipper = ({
 
             navigator.clipboard.writeText(str);
             console.log(str);
-            // https://quizlet.com/create-set
+            //
           }}
         >
           Export to Quizlet

@@ -70,6 +70,7 @@ export default function Flashcards() {
 
   const [theme, setTheme] = useState<any>();
   const [color, setColor] = useState<string>();
+  const [quizletModal, setQuizletModal] = useState(false);
 
   useEffect(() => {
     getTheme(setTheme, setColor);
@@ -469,6 +470,8 @@ export default function Flashcards() {
           {currentCardInView && (
             <Flipper
               cardFlipped={cardFlipped}
+              quizletModal={quizletModal}
+              setQuizletModal={setQuizletModal}
               currentCardInView={currentCardInView}
               currentSetInView={currentSetInView}
               progressView={progressView}
