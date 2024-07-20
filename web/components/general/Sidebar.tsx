@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { useMediaQuery } from "react-responsive";
 import {
   Sidebar,
   Menu,
@@ -126,20 +127,31 @@ export const AppSidebar: React.FC<{ modals; bg; color }> = ({
     }),
   };
 
+  const isTabletOrMobile = useMediaQuery({ maxWidth: 1224 });
+
   return (
     <div
       style={{
         display: "flex",
         direction: rtl ? "rtl" : "ltr",
-        position: "fixed",
+        position: "absolute",
         fontFamily: "-apple-system, BlinkMacSystemFont, sans-serif",
         zIndex: modals ? "" : 100000000000,
-        marginLeft: 20,
+        marginLeft: !isTabletOrMobile && !broken ? "" : -70,
       }}
     >
       {broken && (
-        <button className="sb-button" onClick={() => setToggled(!toggled)}>
-          <i className="fa fa-menu"></i> Show Sidebar
+        <button
+          className="sb-button ml-10"
+          style={{
+            marginLeft: 90,
+            marginTop: 40,
+            backgroundColor: "transparent",
+            position: "fixed",
+          }}
+          onClick={() => setToggled(!toggled)}
+        >
+          <i className="fa fa-bars fa-2x"></i>
         </button>
       )}
       <Sidebar
@@ -167,20 +179,25 @@ export const AppSidebar: React.FC<{ modals; bg; color }> = ({
           />
           <div style={{ flex: 1, marginBottom: "32px", marginLeft: 5 }}>
             <div style={{ padding: "20px", marginBottom: "0px" }}>
-              <Typography
-                variant="body2"
-                fontWeight={600}
-                style={{
-                  opacity: collapsed ? 0 : 0.7,
-                  letterSpacing: "0.5px",
-                  textTransform: "uppercase",
-                  color,
-                }}
-              >
-                My Workspace
-              </Typography>
+              {!isTabletOrMobile && !broken && (
+                <Typography
+                  variant="body2"
+                  fontWeight={600}
+                  style={{
+                    opacity: collapsed ? 0 : 0.7,
+                    letterSpacing: "0.5px",
+                    textTransform: "uppercase",
+                    color,
+                  }}
+                >
+                  My Workspace
+                </Typography>
+              )}
             </div>
-            <Menu menuItemStyles={menuItemStyles} style={{ marginLeft: -7 }}>
+            <Menu
+              menuItemStyles={menuItemStyles}
+              style={{ marginLeft: !isTabletOrMobile && !broken ? -7 : 70 }}
+            >
               {NavLinks.slice(0, 6).map((l, idx) => (
                 <MenuItem
                   key={idx}
@@ -203,7 +220,7 @@ export const AppSidebar: React.FC<{ modals; bg; color }> = ({
                     />
                   }
                 >
-                  {l.name}
+                  {!isTabletOrMobile && !broken ? l.name : ""}
                 </MenuItem>
               ))}
             </Menu>
@@ -215,22 +232,27 @@ export const AppSidebar: React.FC<{ modals; bg; color }> = ({
                 marginTop: "32px",
               }}
             >
-              <Typography
-                variant="body2"
-                fontWeight={600}
-                style={{
-                  opacity: collapsed ? 0 : 0.7,
-                  letterSpacing: "0.5px",
-                  textTransform: "uppercase",
-                  color: "#F9444A",
-                  fontWeight: "bold",
-                }}
-              >
-                Danger Zone
-              </Typography>
+              {!isTabletOrMobile && !broken && (
+                <Typography
+                  variant="body2"
+                  fontWeight={600}
+                  style={{
+                    opacity: collapsed ? 0 : 0.7,
+                    letterSpacing: "0.5px",
+                    textTransform: "uppercase",
+                    color: "#F9444A",
+                    fontWeight: "bold",
+                  }}
+                >
+                  Danger Zone
+                </Typography>
+              )}
             </div>
 
-            <Menu menuItemStyles={menuItemStyles} style={{ marginLeft: -7 }}>
+            <Menu
+              menuItemStyles={menuItemStyles}
+              style={{ marginLeft: !isTabletOrMobile && !broken ? -7 : 70 }}
+            >
               {NavLinks.slice(6, 8).map((l, idx) => (
                 <MenuItem
                   key={idx}
@@ -256,7 +278,7 @@ export const AppSidebar: React.FC<{ modals; bg; color }> = ({
                     />
                   }
                 >
-                  {l.name}
+                  {!isTabletOrMobile && !broken ? l.name : ""}
                 </MenuItem>
               ))}
             </Menu>

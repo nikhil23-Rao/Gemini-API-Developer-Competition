@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 import React from "react";
 import { Typography } from "./Typography";
+import { useMediaQuery } from "react-responsive";
 
 interface SidebarHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   children?: React.ReactNode;
@@ -53,6 +54,7 @@ export const SidebarHeader: React.FC<SidebarHeaderProps> = ({
   white,
   ...rest
 }) => {
+  const isTabletOrMobile = useMediaQuery({ maxWidth: 1224 });
   return (
     <StyledSidebarHeader {...rest}>
       <div
@@ -64,7 +66,7 @@ export const SidebarHeader: React.FC<SidebarHeaderProps> = ({
       >
         <img
           src={white ? "/whitelogo.png" : "/logo.png"}
-          style={{ width: 74 }}
+          style={{ width: 74, marginLeft: isTabletOrMobile ? 60 : "" }}
           alt=""
         />
       </div>

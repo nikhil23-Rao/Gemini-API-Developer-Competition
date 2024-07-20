@@ -54,6 +54,7 @@
     "react-math-keyboard": "^1.5.18",
     "react-pro-sidebar": "^1.1.0",
     "react-resizable": "^3.0.5",
+    "react-responsive": "^10.0.0",
     "react-responsive-modal": "^6.4.2",
     "react-rnd": "^10.4.11",
     "react-sketch-canvas": "^6.2.0",
