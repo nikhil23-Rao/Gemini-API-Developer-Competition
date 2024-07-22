@@ -52,19 +52,24 @@ export const classes = [
   },
   {
     Subject: "Social Studies",
-    Regular: ["World History", "US History", "Government", "Economics"],
+    Regular: [
+      "World History",
+      "United States History",
+      "Government",
+      "Economics",
+    ],
     Honors: [
       "Honors World History",
-      "Honors US History",
+      "Honors United States History",
       "Honors Government",
       "Honors Economics",
     ],
     AP: [
-      "AP US History",
+      "AP United States History",
       "AP World History: Modern",
       "AP European History",
       "AP Human Geography",
-      "AP US Government and Politics",
+      "AP United States Government and Politics",
       "AP Comparative Government and Politics",
       "AP Macroeconomics",
       "AP Microeconomics",

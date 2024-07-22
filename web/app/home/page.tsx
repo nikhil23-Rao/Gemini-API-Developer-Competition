@@ -46,6 +46,8 @@ import {
 import db from "@/utils/initDB";
 import { getTheme } from "@/utils/getTheme";
 import { quotes } from "@/serversideapi/quotes";
+import ApiCalendar from "react-google-calendar-api";
+import { getColor } from "@/utils/getColor";
 
 export default function Dashboard() {
   const canvasRef = useRef<ReactSketchCanvasRef>(null);
@@ -222,6 +224,10 @@ export default function Dashboard() {
       });
     }
   }, [currentUser]);
+
+  // useEffect(() => {
+  //   if (apiCalendar)
+  // }, [typeof apiCalendar]);
 
   function convertSecondsToTime(seconds) {
     const hours = Math.floor(seconds / 3600);
@@ -904,15 +910,24 @@ export default function Dashboard() {
               >
                 <div className="main-dash container">
                   <ul className="infographic-cards" style={{ width: "100%" }}>
-                    <li className="color-3" style={{ width: "100%" }}>
+                    <li
+                      className="color-3 suzy"
+                      style={{
+                        width: "100%",
+                        minWidth: 500,
+                        overflowY: "scroll",
+                        maxHeight: 400,
+                      }}
+                    >
                       <i className="fa fa-check-square"></i>
-                      <h5>My Tasks</h5>
+                      <h5>Today's Tasks</h5>
                       <h6>Keep track of upcoming tasks</h6>
                       <div
                         style={{
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
+                          flexDirection: "column",
                         }}
                       >
                         <div
@@ -926,17 +941,25 @@ export default function Dashboard() {
                           {todos.length == 0 && (
                             <p>No todos yet. Add one below.</p>
                           )}
+
                           {todos.map((t, idx) => (
                             <>
                               <div
                                 style={{
                                   display: "flex",
                                   flexDirection: "row",
-                                  padding: 15,
                                   alignItems: "center",
+                                  border: "2px solid #fff",
+                                  borderRadius: 105,
+                                  paddingTop: 25,
+                                  paddingLeft: 40,
+                                  marginBottom: 45,
+                                  paddingRight: 40,
+                                  backgroundColor: "#fff",
+                                  maxWidth: "100%",
                                 }}
                               >
-                                <ListItemText>
+                                <ListItemText style={{ color: "#000" }}>
                                   <TextareaAutosize
                                     className="card-title"
                                     value={t.todo}
@@ -987,7 +1010,11 @@ export default function Dashboard() {
 
                                     setTodos([...todos]);
                                   }}
-                                  style={{ color: "#fff", marginTop: -20 }}
+                                  style={{
+                                    color: "#000",
+                                    marginTop: -20,
+                                    borderRadius: 100,
+                                  }}
                                 />
                               </div>
                             </>
@@ -1008,11 +1035,18 @@ export default function Dashboard() {
                         }}
                       ></i>
                     </li>
-
-                    <li className="color-3" style={{ width: "100%" }}>
-                      <i className="fa fa-calendar mb-5"></i>
-                      <h5>My Calendar</h5>
-                      <h6>Keep track of upcoming tasks</h6>
+                    <li
+                      className="color-3 "
+                      style={{
+                        height: 400,
+                        width: "100%",
+                        overflowY: "scroll",
+                        minWidth: 500,
+                      }}
+                    >
+                      <i className="fa fa-bar-chart"></i>
+                      <h5>My Courses</h5>
+                      <h6>Courses you are enrolled in</h6>
                       <div
                         style={{
                           display: "flex",
@@ -1028,22 +1062,24 @@ export default function Dashboard() {
                             alignItems: "center",
                           }}
                         >
-                          <h1>hey</h1>
+                          {currentUser.selectedClasses.map((c, idx) => (
+                            <>
+                              <div
+                                className="hover"
+                                style={{
+                                  backgroundColor: "#fff",
+                                  padding: 20,
+                                  width: 300,
+                                  borderRadius: 10,
+                                  marginTop: 10,
+                                }}
+                              >
+                                <h1 style={{ color: "#000" }}>{c}</h1>
+                              </div>
+                            </>
+                          ))}
                         </div>
                       </div>
-                      <i
-                        className="fa fa-plus-circle mt-4"
-                        style={{ cursor: "pointer" }}
-                        onClick={() => {
-                          let oldTodos = [...todos];
-                          oldTodos.push({
-                            todo: "New todo",
-                            checked: false,
-                            idx: oldTodos.length,
-                          });
-                          setTodos(oldTodos);
-                        }}
-                      ></i>
                     </li>
                   </ul>
                 </div>

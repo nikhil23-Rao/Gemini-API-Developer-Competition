@@ -4,6 +4,7 @@ import {
   getRedirectResult,
   signInWithPopup,
   signInWithRedirect,
+  signOut,
 } from "firebase/auth";
 import db from "./initDB";
 import auth from "./initAuth";
@@ -20,6 +21,10 @@ import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.share
 const googleProvider = new GoogleAuthProvider();
 const githubProvider = new GithubAuthProvider();
 
+export const logout = () => {
+  signOut(auth).then(() => {});
+};
+
 export const login = () => {
   signInWithPopup(auth, googleProvider)
     .then(async (result) => {
@@ -35,7 +40,7 @@ export const login = () => {
         }
       });
 
-      if (userExists) window.location.href = "/home";
+      if (userExists) return (window.location.href = "/home");
       else {
         const writeUserData = async () => {
           const userRef = doc(collection(db, "users")); // know which db to call

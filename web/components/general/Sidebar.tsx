@@ -20,6 +20,7 @@ import "font-awesome/css/font-awesome.min.css";
 import { NavLinks } from "@/data/navLinks";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { logout } from "@/utils/signInWithGoogle";
 
 type Theme = "light" | "dark";
 
@@ -134,7 +135,7 @@ export const AppSidebar: React.FC<{ modals; bg; color }> = ({
       style={{
         display: "flex",
         direction: rtl ? "rtl" : "ltr",
-        position: "absolute",
+        position: "fixed",
         fontFamily: "-apple-system, BlinkMacSystemFont, sans-serif",
         zIndex: modals ? "" : 100000000000,
         marginLeft: !isTabletOrMobile && !broken ? "" : -70,
@@ -258,6 +259,9 @@ export const AppSidebar: React.FC<{ modals; bg; color }> = ({
                   key={idx}
                   id="hover"
                   onClick={(e) => {
+                    if (l.name === "Sign Out") {
+                      logout();
+                    }
                     e.preventDefault();
                     router.push(l.link);
                   }}
