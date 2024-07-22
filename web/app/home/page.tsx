@@ -1087,6 +1087,42 @@ export default function Dashboard() {
             </motion.div>
           </>
         )}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            backgroundColor: theme.backgroundColor,
+            position: "relative",
+            top: 20,
+            width: "100%",
+          }}
+          className={theme.className}
+        >
+          <p
+            style={{
+              fontSize: 24,
+              marginTop: 22,
+              marginRight: -125,
+              color: "gray",
+              fontWeight: "bold",
+              letterSpacing: 1.9,
+              textTransform: "uppercase",
+              marginLeft: "45%",
+            }}
+          >
+            Powered by
+          </p>
+          <img
+            src="/geminitrans.png"
+            style={{
+              zoom: 0.4,
+              left: 10,
+              position: "relative",
+              marginTop: -195,
+            }}
+            alt=""
+          />
+        </div>
       </div>
     </>
   );

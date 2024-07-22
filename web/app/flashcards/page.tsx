@@ -456,7 +456,58 @@ export default function Flashcards() {
           bg={theme.backgroundColor}
           color={theme.textColor}
         />
-
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            backgroundColor: "transparent",
+            top: 20,
+            position: "absolute",
+            right: -20,
+            zoom: 0.7,
+          }}
+          className={theme.className}
+        >
+          <p
+            style={{
+              fontSize: 24,
+              marginTop: 22,
+              marginRight: -125,
+              color: "gray",
+              fontWeight: "bold",
+              letterSpacing: 1.9,
+              textTransform: "uppercase",
+            }}
+          >
+            Powered by
+          </p>
+          <img
+            src="/geminitrans.png"
+            style={{
+              zoom: 0.4,
+              left: 10,
+              position: "relative",
+              marginTop: -185,
+            }}
+            alt=""
+          />
+          <p
+            style={{
+              fontSize: 17,
+              marginTop: 22,
+              fontWeight: "bold",
+              letterSpacing: 1.9,
+              textTransform: "uppercase",
+              position: "absolute",
+              top: 4,
+              right: 56,
+              color: "gold",
+            }}
+            className={getColor("gemini")}
+          >
+            Flash
+          </p>
+        </div>
         <Modal
           open={openSet}
           onClose={() => setOpenSet(false)}
