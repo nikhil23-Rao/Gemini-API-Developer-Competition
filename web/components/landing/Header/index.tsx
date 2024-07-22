@@ -141,7 +141,7 @@ const Header = () => {
 
           <div className="mt-7 flex items-center gap-6 xl:mt-0">
             <Link
-              href="https://github.com/NextJSTemplates/solid-nextjs"
+              href="https://github.com/nikhil23-Rao/vertex"
               className="text-regular font-medium text-waterloo hover:text-primary"
             >
               GitHub Repo
