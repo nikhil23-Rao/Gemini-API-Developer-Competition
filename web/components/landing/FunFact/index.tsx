@@ -41,10 +41,11 @@ const FunFact = () => {
             className="animate_top mx-auto mb-12.5 px-4 text-center md:w-4/5 md:px-0 lg:mb-17.5 lg:w-2/3 xl:w-1/2"
           >
             <h2 className="mb-4 text-3xl font-bold text-black dark:text-white xl:text-sectiontitle3">
-             It's A Whole Different Experience 
+              It's A Whole Different Experience
             </h2>
             <p className="mx-auto lg:w-11/12">
-              Continue with an account today, and change the way you are as a student.
+              Continue with an account today, and change the way you are as a
+              student.
             </p>
           </motion.div>
 
@@ -68,9 +69,9 @@ const FunFact = () => {
               className="animate_top text-center"
             >
               <h3 className="mb-2.5 text-3xl font-bold text-black dark:text-white xl:text-sectiontitle3">
-                500K
+                5
               </h3>
-              <p className="text-lg lg:text-para2">World Wide Clients</p>
+              <p className="text-lg lg:text-para2">Features</p>
             </motion.div>
             <motion.div
               variants={{
@@ -91,9 +92,9 @@ const FunFact = () => {
               className="animate_top text-center"
             >
               <h3 className="mb-2.5 text-3xl font-bold text-black dark:text-white xl:text-sectiontitle3">
-                1M+
+                4+
               </h3>
-              <p className="text-lg lg:text-para2">Downloads</p>
+              <p className="text-lg lg:text-para2">School Districts</p>
             </motion.div>
             <motion.div
               variants={{
@@ -114,9 +115,9 @@ const FunFact = () => {
               className="animate_top text-center"
             >
               <h3 className="mb-2.5 text-3xl font-bold text-black dark:text-white xl:text-sectiontitle3">
-                865
+                4
               </h3>
-              <p className="text-lg lg:text-para2">Winning Award</p>
+              <p className="text-lg lg:text-para2">Founders</p>
             </motion.div>
           </div>
         </div>

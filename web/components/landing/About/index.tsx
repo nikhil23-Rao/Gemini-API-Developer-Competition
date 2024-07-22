@@ -29,11 +29,11 @@ const About = () => {
               className="animate_left relative mx-auto hidden aspect-[588/526.5] md:block md:w-1/2"
             >
               <Image
-                src="/images/about/about-light-01.png"
+                src="/01.png"
+                style={{ borderRadius: 10 }}
                 alt="About"
                 fill
               />
-            
             </motion.div>
             <motion.div
               variants={{
@@ -53,15 +53,15 @@ const About = () => {
               viewport={{ once: true }}
               className="animate_right md:w-1/2"
             >
-           
               <h2 className="relative mb-6 text-3xl font-bold text-black dark:text-white xl:text-hero">
-               Transforming The Way 
+                Transforming The Way
                 <span className="relative inline-block before:absolute before:bottom-2.5 before:left-0 before:-z-1 before:h-3 before:w-full before:bg-titlebg dark:before:bg-titlebgdark">
-                 Students Work
+                  Students Work
                 </span>
               </h2>
               <p>
-               So many features on your personalized dashboard to make studying easier, along with tons of resources...
+                So many features on your personalized dashboard to make studying
+                easier, along with tons of resources...
               </p>
 
               <div className="mt-7.5 flex items-center gap-5">
@@ -72,7 +72,7 @@ const About = () => {
                 </div>
                 <div className="w-3/4">
                   <h3 className="mb-0.5 text-metatitle2 text-black dark:text-white">
-                   Step 1: Create an Account
+                    Step 1: Create an Account
                   </h3>
                   <p>As easy as a click of a button</p>
                 </div>
@@ -87,7 +87,10 @@ const About = () => {
                   <h3 className="mb-0.5 text-metatitle2 text-black dark:text-white">
                     Step 2: Enjoy your new personalized workspace
                   </h3>
-                  <p>Customize themes, organize tasks, and make your own workspace.</p>
+                  <p>
+                    Customize themes, organize tasks, and make your own
+                    workspace.
+                  </p>
                 </div>
               </div>
             </motion.div>
@@ -119,7 +122,7 @@ const About = () => {
               className="animate_left md:w-1/2"
             >
               <h4 className="font-medium uppercase text-black dark:text-white">
-              Try Out Focus Mode
+                Try Out Focus Mode
               </h4>
               <h2 className="relative mb-6 text-3xl font-bold text-black dark:text-white xl:text-hero">
                 Get Into Your Zone With {"   "}
@@ -128,9 +131,9 @@ const About = () => {
                 </span>
               </h2>
               <p>
-                Graphics to display while studying. No distractions. Just a timer, and a calming environment
+                Graphics to display while studying. No distractions. Just a
+                timer, and a calming environment
               </p>
-              
             </motion.div>
             <motion.div
               variants={{
@@ -151,13 +154,13 @@ const About = () => {
               className="animate_right relative mx-auto hidden aspect-[588/526.5] md:block md:w-1/2"
             >
               <Image
-                src="./images/about/about-light-02.svg"
+                src="/02.png"
+                style={{ borderRadius: 10 }}
                 alt="About"
-                className="dark:hidden"
                 fill
               />
               <Image
-                src="./images/about/about-dark-02.svg"
+                src="/03.png"
                 alt="About"
                 className="hidden dark:block"
                 fill

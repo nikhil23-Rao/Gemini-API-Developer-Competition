@@ -4,14 +4,14 @@ const featuresData: Feature[] = [
   {
     id: 1,
     icon: "/images/icon/icon-01.svg",
-    title: "Produce Questions",
+    title: "Question Generator",
     description:
       "Choose a class, then a unit, then your style. MCQ or FRQ? AP Styled? Honors Styled? Easy? Hard? You choose.",
   },
   {
     id: 2,
     icon: "/images/icon/icon-02.svg",
-    title: "Take Care Of Tasks",
+    title: "Flashcard Generator",
     description:
       "Organize your tasks, and complete them. Stay focued and on top of your work.",
   },
@@ -25,21 +25,23 @@ const featuresData: Feature[] = [
   {
     id: 4,
     icon: "/images/icon/icon-04.svg",
-    title: "Work Grader",
+    title: "Marketplace",
     description:
       "Not sure if what you have written is correct? Upload your work to the work checker, and recieve instant feedback, as well as the correct steps.",
   },
   {
     id: 5,
     icon: "/images/icon/icon-05.svg",
-    title: "a",
-    description: "a",
+    title: "Study Assist",
+    description:
+      "Need help with solving questions. Ask our tailored bot to answer and help you understand questions on any worksheet you are working on.",
   },
   {
     id: 6,
     icon: "/images/icon/icon-06.svg",
-    title: "a",
-    description: "a",
+    title: "Customization",
+    description:
+      "Themes, colors and more. Customize your experience completely with Vertex.",
   },
 ];
 

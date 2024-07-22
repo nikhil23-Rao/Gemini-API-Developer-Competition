@@ -57,14 +57,7 @@ const Integration = () => {
               viewport={{ once: true }}
               className="animate_top w-1/6"
             >
-              <div className="inline-block rounded-[10px] bg-white p-4.5 shadow-solid-7 dark:bg-btndark">
-                <Image
-                  width={50}
-                  height={50}
-                  src="./images/brand/brand-07.svg"
-                  alt="Brand"
-                />
-              </div>
+              <div className="inline-block rounded-[10px] bg-white p-4.5 shadow-solid-7 dark:bg-btndark"></div>
             </motion.div>
 
             <motion.div
@@ -105,12 +98,7 @@ const Integration = () => {
               className="animate_top w-1/6"
             >
               <div className="inline-block rounded-[10px] bg-white p-4.5 shadow-solid-7 dark:bg-btndark">
-                <Image
-                  width={50}
-                  height={50}
-                  src="./images/brand/brand-08.svg"
-                  alt="Brand"
-                />
+                <Image width={50} height={50} src="/logo.png" alt="Brand" />
               </div>
             </motion.div>
 
@@ -157,7 +145,7 @@ const Integration = () => {
                 <Image
                   width={50}
                   height={50}
-                  src="./images/brand/brand-09.svg"
+                  src="/geminiicon.png"
                   alt="Brand"
                 />
               </div>
@@ -221,14 +209,7 @@ const Integration = () => {
               viewport={{ once: true }}
               className="animate_top w-1/6"
             >
-              <div className="inline-block rounded-[10px] bg-white p-4.5 shadow-solid-7 dark:bg-btndark">
-                <Image
-                  width={50}
-                  height={50}
-                  src="./images/brand/brand-10.svg"
-                  alt="Brand"
-                />
-              </div>
+              <div className="inline-block rounded-[10px] bg-white p-4.5 shadow-solid-7 dark:bg-btndark"></div>
             </motion.div>
 
             <motion.div
@@ -271,12 +252,7 @@ const Integration = () => {
               className="animate_top w-1/6"
             >
               <div className="inline-block rounded-[10px] bg-white p-4.5 shadow-solid-7 dark:bg-btndark">
-                <Image
-                  width={50}
-                  height={50}
-                  src="./images/brand/brand-11.svg"
-                  alt="Brand"
-                />
+                <Image width={50} height={50} src="/quizlet.webp" alt="Brand" />
               </div>
             </motion.div>
 
@@ -319,14 +295,7 @@ const Integration = () => {
               viewport={{ once: true }}
               className="animate_top w-1/6"
             >
-              <div className="inline-block rounded-[10px] bg-white p-4.5 shadow-solid-7 dark:bg-btndark">
-                <Image
-                  width={50}
-                  height={50}
-                  src="./images/brand/brand-12.svg"
-                  alt="Brand"
-                />
-              </div>
+              <div className="inline-block rounded-[10px] bg-white p-4.5 shadow-solid-7 dark:bg-btndark"></div>
             </motion.div>
           </div>
         </div>
