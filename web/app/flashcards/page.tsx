@@ -73,6 +73,12 @@ export default function Flashcards() {
   const [quizletModal, setQuizletModal] = useState(false);
 
   useEffect(() => {
+    if (window) {
+      window.scrollTo(0, 0);
+    }
+  }, [userFlashCardSets, typeof window]);
+
+  useEffect(() => {
     getTheme(setTheme, setColor);
   }, [typeof localStorage]);
 
