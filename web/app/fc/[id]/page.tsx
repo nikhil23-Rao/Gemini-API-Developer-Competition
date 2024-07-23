@@ -62,7 +62,7 @@ export default function FlashcardViewer({
 
   useEffect(() => {
     if (flashcardSet) {
-      setCurrentCardInView(flashcardSet.flashcardSet[1]);
+      setCurrentCardInView(flashcardSet.flashcardSet[0]);
     }
   }, [typeof flashcardSet]);
 
