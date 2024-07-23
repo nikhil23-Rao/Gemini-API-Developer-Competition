@@ -754,7 +754,11 @@ export default function Dashboard() {
                               label={
                                 <>
                                   <a
-                                    href={`/ps/${d.docid}`}
+                                    href={
+                                      d.type === "flashcard"
+                                        ? `/fc/${d.docid}`
+                                        : `/ps/${d.docid}`
+                                    }
                                     target="_blank"
                                     style={{
                                       display: "flex",

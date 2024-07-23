@@ -4,6 +4,7 @@ import { Button } from "@mui/material";
 import ProgressBar from "@ramonak/react-progress-bar";
 import ReactCardFlip from "react-card-flip";
 import Modal from "react-responsive-modal";
+import "font-awesome/css/font-awesome.css";
 
 interface IProps {
   progressView: number;
@@ -15,6 +16,7 @@ interface IProps {
   setCurrentCardInView: (i: Flashcard) => void;
   quizletModal: boolean;
   setQuizletModal: (i: boolean) => void;
+  color?: string;
 }
 
 export const Flipper = ({
@@ -27,6 +29,7 @@ export const Flipper = ({
   setCurrentCardInView,
   quizletModal,
   setQuizletModal,
+  color,
 }: IProps) => {
   return (
     <div>
@@ -42,13 +45,23 @@ export const Flipper = ({
         isFlipped={cardFlipped}
         flipDirection="vertical"
         cardStyles={{
-          back: { height: 400, overflowY: "scroll", textAlign: "center" },
-          front: { height: 400, overflowY: "scroll", textAlign: "center" },
+          back: {
+            height: 450,
+            overflowY: "scroll",
+            textAlign: "center",
+            backgroundColor: "transparent",
+          },
+          front: {
+            height: 450,
+            overflowY: "scroll",
+            textAlign: "center",
+            backgroundColor: "transparent",
+          },
         }}
       >
         <div
           style={{
-            backgroundColor: "#fff",
+            backgroundColor: "transparent",
             justifyContent: "center",
             alignItems: "center",
             display: "flex",
@@ -64,6 +77,7 @@ export const Flipper = ({
               lineHeight: 1.4,
               textAlign: "center",
               marginTop: 100,
+              color,
             }}
           >
             {currentCardInView.term}
@@ -72,7 +86,7 @@ export const Flipper = ({
 
         <div
           style={{
-            backgroundColor: "#fff",
+            backgroundColor: "transparent",
             justifyContent: "center",
             alignItems: "center",
             display: "flex",
@@ -81,7 +95,7 @@ export const Flipper = ({
           }}
           onClick={() => setCardFlipped(!cardFlipped)}
         >
-          <p style={{ fontSize: 25, lineHeight: 1.4, width: "100%" }}>
+          <p style={{ fontSize: 25, lineHeight: 1.4, width: "100%", color }}>
             {currentCardInView.definition}
           </p>
         </div>
@@ -104,6 +118,7 @@ export const Flipper = ({
             alignItems: "center",
             border: "1px solid #eee",
             borderRadius: 200,
+            backgroundColor: "#fff",
           }}
           onClick={() => {
             if (currentSetInView.indexOf(currentCardInView) + -1 === -1) {
@@ -134,9 +149,11 @@ export const Flipper = ({
           ></i>
         </div>
 
-        <p style={{ marginRight: 20, marginLeft: 20 }}>{`${
-          currentSetInView.indexOf(currentCardInView) + 1
-        } / ${currentSetInView.length}`}</p>
+        <p
+          style={{ marginRight: 20, marginLeft: 20, fontWeight: "bold", color }}
+        >{`${currentSetInView.indexOf(currentCardInView) + 1} / ${
+          currentSetInView.length
+        }`}</p>
         <div
           style={{
             width: 50,
@@ -146,6 +163,7 @@ export const Flipper = ({
             alignItems: "center",
             border: "1px solid #eee",
             borderRadius: 200,
+            backgroundColor: "#fff",
           }}
         >
           <i
@@ -227,7 +245,14 @@ export const Flipper = ({
           </li>{" "}
         </ol>
       </Modal>
-      <div style={{ position: "absolute", bottom: 20, right: 20 }}>
+      <div
+        style={{
+          position: "absolute",
+          bottom: 20,
+          right: color ? "3%" : 20,
+          top: color ? 40 : "",
+        }}
+      >
         <Button
           style={{ color: "#fff", backgroundColor: "#4255FF" }}
           onClick={() => {

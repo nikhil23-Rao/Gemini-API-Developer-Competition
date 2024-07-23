@@ -109,7 +109,6 @@ export default function Marketplace() {
         items as any,
         `${currentUser?.target?.chosenClass}: ${currentUser?.target?.text}`,
       ).then((results) => {
-        console.log("JFWEIOJIOFEWJIOWEF", results);
         setForYou(JSON.parse(results).slice(0, 3));
         setLoadingForYou(false);
       });
@@ -352,7 +351,11 @@ export default function Marketplace() {
                           }}
                           className="hover"
                           onClick={() => {
-                            router.push(`/ps/${r.id}`);
+                            if (r.type === "problemset") {
+                              window.location.href = `/ps/${r.id}`;
+                            } else {
+                              window.location.href = `/fc/${r.id}`;
+                            }
                           }}
                         >
                           <li
@@ -469,7 +472,16 @@ export default function Marketplace() {
                       </span>
 
                       <h2 className="card__title">{c.title}</h2>
-                      <a href={`/ps/${c.id}`} className="card__button">
+                      <a
+                        onClick={() => {
+                          if (c.type === "problemset") {
+                            window.location.href = `/ps/${c.id}`;
+                          } else {
+                            window.location.href = `/fc/${c.id}`;
+                          }
+                        }}
+                        className="card__button"
+                      >
                         Visit Set
                       </a>
                     </div>
@@ -516,7 +528,16 @@ export default function Marketplace() {
                       </span>
 
                       <h2 className="card__title">{c.title}</h2>
-                      <a href={`/ps/${c.id}`} className="card__button">
+                      <a
+                        onClick={() => {
+                          if (c.type === "problemset") {
+                            window.location.href = `/ps/${c.id}`;
+                          } else {
+                            window.location.href = `/fc/${c.id}`;
+                          }
+                        }}
+                        className="card__button"
+                      >
                         Visit Set
                       </a>
                     </div>
