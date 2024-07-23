@@ -257,7 +257,7 @@ export default function Assist() {
 
                 <div
                   style={{
-                    height: "60vh",
+                    height: "54vh",
                     display: "flex",
                     flexDirection: "column",
                     overflowY: "scroll",
