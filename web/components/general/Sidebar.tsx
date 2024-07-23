@@ -259,6 +259,10 @@ export const AppSidebar: React.FC<{ modals; bg; color }> = ({
                   key={idx}
                   id="hover"
                   onClick={(e) => {
+                    if (l.name === "Bug Report") {
+                      window.location.href =
+                        "https://docs.google.com/forms/d/e/1FAIpQLScXU1zvmWD-ImatHaej5PzzeBVMUGXec7Lyn8dviV9xbp6hfQ/viewform?usp=sf_link";
+                    }
                     if (l.name === "Sign Out") {
                       logout();
                     }

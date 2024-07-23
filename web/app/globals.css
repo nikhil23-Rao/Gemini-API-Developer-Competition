@@ -1785,6 +1785,7 @@ input[type=radio]:checked ~ label{
 
 table {
   color:#fff !important;
+  background-color: #000;
 }
 
 li:hover {
