@@ -2,7 +2,6 @@ import axios from "axios";
 export const assistUserResponse = async (old, message) => {
   const res = await axios.post(
     process.env.NEXT_PUBLIC_API_URL + "assist",
-    // "http://localhost:3001/assist",
     { old, message },
     {
       headers: {
