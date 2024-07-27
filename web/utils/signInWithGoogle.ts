@@ -22,7 +22,9 @@ const googleProvider = new GoogleAuthProvider();
 const githubProvider = new GithubAuthProvider();
 
 export const logout = () => {
-  signOut(auth).then(() => {});
+  signOut(auth).then(() => {
+    window.location.href = "/";
+  });
 };
 
 export const login = () => {

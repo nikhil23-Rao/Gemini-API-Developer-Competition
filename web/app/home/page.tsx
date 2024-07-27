@@ -818,7 +818,10 @@ export default function Dashboard() {
                 </p>
                 <h2 style={{ fontWeight: "bold" }}>
                   Welcome back,{" "}
-                  {currentUser?.username.split(" ").slice(0, -1).join(" ")}.
+                  {currentUser.username.includes(" ")
+                    ? currentUser?.username.split(" ").slice(0, -1).join(" ")
+                    : currentUser.username}
+                  .
                 </h2>
                 <img
                   src="/intro.png"

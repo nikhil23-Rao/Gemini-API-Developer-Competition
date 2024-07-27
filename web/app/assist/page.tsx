@@ -43,6 +43,17 @@ export default function Assist() {
   const [showMath, setShowMath] = useState(false);
   const [imgPreview, setImgPreview] = useState("");
   const [selected, setSelected] = useState();
+  const [currentMode, setCurrentMode] = useState<"tutor" | "assist">("assist");
+  const [history, setHistory] = useState([
+    {
+      parts: [
+        {
+          text: `You are a chatbot assisting a student with solving worksheet problems; DO NOT GENERATE QUESTIONS OR ANSWER ANYTHING UNRELATED FROM STRICTLY WORKSHEET PROBLEMS; If the query you are about to recieve is not related to solving questions for an educational class, please do not answer; RETURN YOUR ANSWER IN MARKDOWN AND PROVIDE STEP BY STEP EXPLANATIONS.`,
+        },
+      ],
+      role: "user",
+    },
+  ]);
   const [messageList, setMessageList] = useState<any>([
     {
       user: "bot",
@@ -53,11 +64,14 @@ export default function Assist() {
     },
   ]);
 
-  const [latex, setLatex] = useState("");
+  const [idx, setIdx] = useState(0);
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(false);
   const [userProblemSets, setUserProblemSets] = useState<any[]>([]);
+  const [currentClassTutoring, setCurrentClassTutoring] = useState<string[]>([
+    "loading...",
+  ]);
 
   const [theme, setTheme] = useState<any>();
   const [color, setColor] = useState<string>();
@@ -89,8 +103,14 @@ export default function Assist() {
   }, [messageList]);
 
   useEffect(() => {
-    console.log(selected);
-  }, [selected]);
+    console.log("HIST", history);
+  }, [history]);
+
+  useEffect(() => {
+    if (currentUser) {
+      setCurrentClassTutoring(currentUser.selectedClasses);
+    }
+  }, [currentUser]);
 
   const onImageChange = (event) => {
     if (event.target.files && event.target.files[0]) {
@@ -142,14 +162,59 @@ export default function Assist() {
     console.log(imported);
   }, [imported]);
 
+  useEffect(() => {
+    setOpenDropdown(false);
+    setImported("");
+    if (currentMode === "assist") {
+      setMessageList([
+        {
+          user: "bot",
+          message:
+            "Hey there! Welcome to the study assist tab? Do you need help on a problem that you just took a screenshot of? Or maybe there was a problem in a problem set you found confusing? Feel free to ask for a step by step guide here!",
+          id: 1,
+          date: new Date(),
+        },
+      ]);
+    } else {
+      setHistory([
+        {
+          parts: [
+            {
+              text: `You are a Skilled Instructor for the class: ${
+                currentClassTutoring[idx]
+              } ${
+                currentClassTutoring[idx].includes("AP")
+                  ? "You follow all AP Standards based on Collgeboard"
+                  : ""
+              } who makes complex topics easy to understand. You come up with fun exercises so that your students learn by doing. Your goal is to teach students what they want to learn. DO NOT REVEAL ANSWERS TO MINI EXCERSIZES/QUIZZES UNTIL STUDENT GIVES AN ANSWER OF THEIR OWN. FOR CLARIFYING QUESTIONS: DO NOT QUIZ THEM. You will first ask them what they want to learn and teach them that. Move one step at a time. You provide a concept first, then quiz the student. DO NOT REVEAL ANSWER UNTIL STUDENT ANSWERS SOMETHING. If the student provides wrong answer, then give them a hint. Responses should be formatted in markdown with titles for every concept. ALSO, SEPERATE MULTIPLE CHOICE OPTIONS, OR FREE RESPONSE PARTS IN NEW LINES IN MARKDOWN.`,
+            },
+          ],
+          role: "user",
+        },
+      ]);
+      setMessageList([
+        {
+          user: "bot",
+          message:
+            "Hey there! Welcome to the study tutor tab? Do you want to be taught a concept step by step. Or maybe you need more practice questions? One by one, step by step, I am here to help you for as long as you need it.",
+          id: 1,
+          date: new Date(),
+        },
+      ]);
+    }
+  }, [currentMode, idx]);
+
   if (!theme) return <Splash></Splash>;
   return (
     <>
       <div
         style={{
-          height: "100vh",
+          minHeight: "100vh",
+          height: "100%",
           width: "100%",
           backgroundColor: theme.backgroundColor,
+          overflowX: "hidden",
+          minWidth: "100vw",
         }}
         className={theme.className}
       >
@@ -162,7 +227,7 @@ export default function Assist() {
           style={{
             display: "flex",
             flexDirection: "row",
-            backgroundColor: "transparent",
+            backgroundColor: theme.backgroundColor,
             top: 20,
             position: "absolute",
             right: -20,
@@ -223,7 +288,7 @@ export default function Assist() {
                 justifyContent: "center",
                 flexDirection: "column",
                 marginLeft: "10%",
-                overflow: "hidden",
+                overflowX: "hidden",
               }}
             >
               <div
@@ -254,7 +319,59 @@ export default function Assist() {
                   the subject, you can ask our chatbot on a question for
                   anything related to problem-solving, and it will be done.
                 </p>
-
+                <div
+                  style={{
+                    width: "40%",
+                    border: "2px solid #eee",
+                    borderRadius: 100,
+                    padding: 8,
+                    display: "flex",
+                    marginTop: 20,
+                  }}
+                >
+                  <div
+                    style={{
+                      width: "50%",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      display: "flex",
+                      borderRadius: 100,
+                      padding: 10,
+                      fontWeight: "bold",
+                      color:
+                        currentMode === "assist" ? "#fff" : theme.textColor,
+                      cursor: "pointer",
+                      marginRight: 20,
+                      transition: "0.2s ease-in",
+                    }}
+                    onClick={() => {
+                      setCurrentMode("assist");
+                    }}
+                    className={currentMode === "assist" ? color : ""}
+                  >
+                    Assist
+                  </div>
+                  <div
+                    style={{
+                      width: "50%",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      display: "flex",
+                      borderRadius: 100,
+                      padding: 10,
+                      fontWeight: "bold",
+                      cursor: "pointer",
+                      transition: "0.2s ease-in",
+                      color: currentMode === "tutor" ? "#fff" : theme.textColor,
+                    }}
+                    onClick={() => {
+                      setCurrentMode("tutor");
+                    }}
+                    className={currentMode === "tutor" ? color : ""}
+                  >
+                    Tutor
+                  </div>
+                </div>
                 <div
                   style={{
                     height: "54vh",
@@ -265,382 +382,357 @@ export default function Assist() {
                   }}
                   id="messageview"
                 >
-                  {messageList.map((m) => {
-                    return (
-                      <div>
-                        <div
-                          style={{
-                            padding: 20,
-                            marginBottom: 0,
-                          }}
-                        >
+                  {currentMode === "tutor" && (
+                    <>
+                      <h1
+                        style={{
+                          color: theme.textColor,
+                          padding: 20,
+                          position: "relative",
+                          backgroundColor: theme.backgroundColor,
+                          width: "30%",
+                          marginTop: 40,
+                          border: "2px solid" + " " + theme.textColor,
+                          cursor: "pointer",
+                          userSelect: "none",
+                          borderRadius: `10px`,
+                        }}
+                        onClick={() => {
+                          if (idx === currentClassTutoring.length - 1) {
+                            setIdx(0);
+                          } else {
+                            setIdx(idx + 1);
+                          }
+                        }}
+                      >
+                        Currently Tutoring: {currentClassTutoring[idx]}
+                        <i className="fa fa-pencil ml-4"></i>
+                      </h1>
+                    </>
+                  )}
+                  <div style={{ marginTop: currentMode === "tutor" ? 20 : "" }}>
+                    {messageList.map((m) => {
+                      return (
+                        <div>
                           <div
                             style={{
-                              display: "flex",
-                              flexDirection: "row",
+                              padding: 20,
+                              marginBottom: 0,
                             }}
                           >
-                            <img
-                              src={
-                                m.user === "me"
-                                  ? currentUser.pfp
-                                  : "/geminilogo.png"
-                              }
-                              style={{
-                                width: 60,
-                                borderRadius: 100,
-                                border: "2px solid #1F2E5D",
-                              }}
-                              alt=""
-                            />
                             <div
                               style={{
                                 display: "flex",
-                                flexDirection: "column",
-                                marginTop: 3,
+                                flexDirection: "row",
                               }}
                             >
-                              <p
+                              <img
+                                src={
+                                  m.user === "me"
+                                    ? currentUser.pfp
+                                    : "/geminilogo.png"
+                                }
                                 style={{
-                                  marginLeft: 10,
-                                  color: theme.textColor,
+                                  width: 60,
+                                  borderRadius: 100,
+                                  border: "2px solid #1F2E5D",
+                                }}
+                                alt=""
+                              />
+                              <div
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  marginTop: 3,
                                 }}
                               >
-                                {m.user === "me"
-                                  ? currentUser.username
-                                  : "Vertex"}
-                              </p>
-                              <p
-                                style={{
-                                  marginLeft: 10,
-                                  color: theme.textColor,
-                                }}
-                              >
-                                {formatAMPM(m.date)}
-                              </p>
-                            </div>
-                          </div>
-                          {m.user === "me" ? (
-                            <li
-                              style={{
-                                marginTop: 10,
-                                paddingLeft: 10,
-                                color: theme.textColor,
-                              }}
-                            >
-                              {m.message}
-                              {m.image && <img src={m.image}></img>}
-                            </li>
-                          ) : m.message.length === 0 ? (
-                            <div style={{ marginTop: 20 }}>
-                              <Skeleton count={5} style={{ width: "98%" }} />
-                              <CircularProgress
-                                size={"20px"}
-                                style={{ marginTop: 10 }}
-                              />{" "}
-                              <p style={{ color: theme.textColor }}>
-                                Response Generating...
-                              </p>
-                            </div>
-                          ) : (
-                            <>
-                              <div style={{ marginTop: 20 }}>
-                                <MarkdownPreview
-                                  className="markdowneditorassist"
-                                  source={m.message}
+                                <p
                                   style={{
-                                    padding: 16,
-                                    width: "100%",
-                                    height: "100%",
-
+                                    marginLeft: 10,
                                     color: theme.textColor,
-                                    backgroundColor: "transparent",
                                   }}
-                                  rehypePlugins={[
-                                    rehypeKatex,
-                                    remarkMath,
-                                    remarkGfm,
-                                  ]}
-                                  components={{
-                                    code: ({
-                                      children = [],
-                                      className,
-                                      ...props
-                                    }) => {
-                                      if (
-                                        typeof children === "string" &&
-                                        /^\$\$(.*)\$\$/.test(children)
-                                      ) {
-                                        const html = katex.renderToString(
-                                          children.replace(
-                                            /^\$\$(.*)\$\$/,
-                                            "$1",
-                                          ),
-                                          {
-                                            throwOnError: false,
-                                          },
-                                        );
-                                        return (
-                                          <code
-                                            dangerouslySetInnerHTML={{
-                                              __html: html,
-                                            }}
-                                            style={{
-                                              background: "transparent",
-                                            }}
-                                          />
-                                        );
-                                      }
-                                      const code =
-                                        props.node && props.node.children
-                                          ? getCodeString(props.node.children)
-                                          : children;
-                                      if (
-                                        typeof code === "string" &&
-                                        typeof className === "string" &&
-                                        /^language-katex/.test(
-                                          className.toLocaleLowerCase(),
-                                        )
-                                      ) {
-                                        const html = katex.renderToString(
-                                          code,
-                                          {
-                                            throwOnError: false,
-                                          },
-                                        );
-                                        return (
-                                          <code
-                                            style={{ fontSize: "150%" }}
-                                            dangerouslySetInnerHTML={{
-                                              __html: html,
-                                            }}
-                                          />
-                                        );
-                                      }
-                                      return (
-                                        <code className={String(className)}>
-                                          {children}
-                                        </code>
-                                      );
-                                    },
+                                >
+                                  {m.user === "me"
+                                    ? currentUser.username
+                                    : "Vertex"}
+                                </p>
+                                <p
+                                  style={{
+                                    marginLeft: 10,
+                                    color: theme.textColor,
                                   }}
-                                />
+                                >
+                                  {formatAMPM(m.date)}
+                                </p>
                               </div>
-                            </>
-                          )}
+                            </div>
+                            {m.user === "me" ? (
+                              <li
+                                style={{
+                                  marginTop: 10,
+                                  paddingLeft: 10,
+                                  color: theme.textColor,
+                                }}
+                              >
+                                {m.message}
+                                {m.image && <img src={m.image}></img>}
+                              </li>
+                            ) : m.message.length === 0 ? (
+                              <div style={{ marginTop: 20 }}>
+                                <Skeleton count={5} style={{ width: "98%" }} />
+                                <CircularProgress
+                                  size={"20px"}
+                                  style={{ marginTop: 10 }}
+                                />{" "}
+                                <p style={{ color: theme.textColor }}>
+                                  Response Generating...
+                                </p>
+                              </div>
+                            ) : (
+                              <>
+                                <div style={{ marginTop: 20 }}>
+                                  <MarkdownPreview
+                                    className="markdowneditorassist"
+                                    source={m.message}
+                                    style={{
+                                      padding: 16,
+                                      width: "100%",
+                                      height: "100%",
+
+                                      color: theme.textColor,
+                                      backgroundColor: "transparent",
+                                    }}
+                                    rehypePlugins={[
+                                      rehypeKatex,
+                                      remarkMath,
+                                      remarkGfm,
+                                    ]}
+                                    components={{
+                                      code: ({
+                                        children = [],
+                                        className,
+                                        ...props
+                                      }) => {
+                                        if (
+                                          typeof children === "string" &&
+                                          /^\$\$(.*)\$\$/.test(children)
+                                        ) {
+                                          const html = katex.renderToString(
+                                            children.replace(
+                                              /^\$\$(.*)\$\$/,
+                                              "$1",
+                                            ),
+                                            {
+                                              throwOnError: false,
+                                            },
+                                          );
+                                          return (
+                                            <code
+                                              dangerouslySetInnerHTML={{
+                                                __html: html,
+                                              }}
+                                              style={{
+                                                background: "transparent",
+                                              }}
+                                            />
+                                          );
+                                        }
+                                        const code =
+                                          props.node && props.node.children
+                                            ? getCodeString(props.node.children)
+                                            : children;
+                                        if (
+                                          typeof code === "string" &&
+                                          typeof className === "string" &&
+                                          /^language-katex/.test(
+                                            className.toLocaleLowerCase(),
+                                          )
+                                        ) {
+                                          const html = katex.renderToString(
+                                            code,
+                                            {
+                                              throwOnError: false,
+                                            },
+                                          );
+                                          return (
+                                            <code
+                                              style={{ fontSize: "150%" }}
+                                              dangerouslySetInnerHTML={{
+                                                __html: html,
+                                              }}
+                                            />
+                                          );
+                                        }
+                                        return (
+                                          <code className={String(className)}>
+                                            {children}
+                                          </code>
+                                        );
+                                      },
+                                    }}
+                                  />
+                                </div>
+                              </>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    })}
+                  </div>
                 </div>
                 <div
                   style={{
-                    width: "80%",
                     display: "flex",
                     flexDirection: "row",
+                    backgroundColor: theme.backgroundColor,
+                    width: "90%",
+                    marginBottom: 40,
                   }}
                 >
-                  {showMath ? (
-                    <>
-                      <MathInput
-                        label="Enter an expression..."
-                        fullWidth={false}
+                  <>
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        width: "90%",
+                        alignItems: "center",
+                      }}
+                    >
+                      {imported.length > 0 && (
+                        <p
+                          style={{
+                            color: theme.textColor,
+                            alignSelf: "flex-start",
+                            marginLeft: "12%",
+                          }}
+                        >
+                          File Attached: {name}
+                          <i
+                            className="fa fa-close ml-5"
+                            style={{ color: "red", cursor: "pointer" }}
+                            onClick={() => {
+                              setImported("");
+                            }}
+                          ></i>
+                        </p>
+                      )}
+                      <TextareaAutosize
+                        value={message}
+                        onChange={(e) => setMessage(e.currentTarget.value)}
                         style={{
-                          width: "72vw",
+                          width: "80%",
                           borderRadius: 20,
                           resize: "none",
+                          maxHeight: 70,
+                          border: "2px solid #eee",
                           padding: 4,
                           paddingLeft: 10,
                           paddingTop: 7,
-                          maxWidth: "72vw",
-                          paddingBottom: 7,
-                          paddingRight: 90,
+                          overflowY: "scroll",
+                          marginTop: 5,
+                          cursor: loading ? "not-allowed" : "",
                         }}
-                        setValue={setLatex}
-                      ></MathInput>
-                      <h1
-                        style={{
-                          left: -70,
-                          position: "relative",
-                          top: 20,
-                          textTransform: "uppercase",
-                          color: "#1B1E60",
-                          cursor: "pointer",
-                        }}
-                        onClick={async (e) => {
-                          let oldMessages = [
-                            ...messageList,
-                            {
-                              user: "me",
-                              id: messageList.length + 1,
-                              message: latex,
-                              date: new Date(),
-                            },
-                            {
-                              user: "bot",
-                              id: messageList.length + 2,
-                              message: "",
-                              date: new Date(),
-                            },
-                          ];
-                          setMessageList([
-                            ...messageList,
-                            {
-                              user: "me",
-                              id: messageList.length + 1,
-                              message: latex,
-                              date: new Date(),
-                            },
-                            {
-                              user: "bot",
-                              id: messageList.length + 2,
-                              message: "",
-                              date: new Date(),
-                            },
-                          ]);
+                        onKeyDown={async (e) => {
+                          if (e.key === "Enter" && !e.shiftKey) {
+                            setLoading(true);
+                            let oldHist: any = [...history];
+                            let oldMessages = [
+                              ...messageList,
+                              {
+                                user: "me",
+                                id: messageList.length + 1,
+                                message: message,
+                                image: imported.length > 0 ? imgPreview : null,
+                                date: new Date(),
+                              },
+                              {
+                                user: "bot",
+                                id: messageList.length + 2,
+                                message: "",
+                                date: new Date(),
+                              },
+                            ];
+                            setMessageList([
+                              ...messageList,
+                              {
+                                user: "me",
+                                id: messageList.length + 1,
+                                message: message,
+                                image: imported.length > 0 ? imgPreview : null,
+                                date: new Date(),
+                              },
+                              {
+                                user: "bot",
+                                id: messageList.length + 2,
+                                message: "",
+                                date: new Date(),
+                              },
+                            ]);
 
-                          setMessage("");
-                          setImported("");
-                          setLatex("");
-                          setShowMath(false);
-                          e.preventDefault();
-                          const botMessage = await assistUserResponse(
-                            [],
-                            latex,
-                          );
-                          let objIndex = oldMessages.findIndex(
-                            (obj) =>
-                              obj.message == "" && obj.image.length === 0,
-                          );
-                          console.log(objIndex);
-                          oldMessages[objIndex].message = botMessage;
-
-                          setMessageList(oldMessages);
-                        }}
-                      >
-                        Send
-                      </h1>
-                    </>
-                  ) : (
-                    <>
-                      <div
-                        style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          width: "90%",
-                        }}
-                      >
-                        {imported.length > 0 && (
-                          <p style={{ color: theme.textColor }}>
-                            File Attached: {name}
-                            <i
-                              className="fa fa-close ml-5"
-                              style={{ color: "red", cursor: "pointer" }}
-                              onClick={() => {
-                                setImported("");
-                              }}
-                            ></i>
-                          </p>
-                        )}
-                        <TextareaAutosize
-                          value={message}
-                          onChange={(e) => setMessage(e.currentTarget.value)}
-                          style={{
-                            width: "90%",
-                            borderRadius: 20,
-                            resize: "none",
-                            maxHeight: 70,
-                            border: "2px solid #eee",
-                            padding: 4,
-                            paddingLeft: 10,
-                            paddingTop: 7,
-                            paddingBottom: 7,
-                            overflowY: "scroll",
-                            marginTop: 5,
-                            cursor: loading ? "not-allowed" : "",
-                          }}
-                          onKeyDown={async (e) => {
-                            if (e.key === "Enter" && !e.shiftKey) {
-                              setLoading(true);
-                              let oldMessages = [
-                                ...messageList,
+                            oldHist.push({
+                              parts: [
                                 {
-                                  user: "me",
-                                  id: messageList.length + 1,
-                                  message: message,
-                                  image:
-                                    imported.length > 0 ? imgPreview : null,
-                                  date: new Date(),
+                                  text: message,
                                 },
-                                {
-                                  user: "bot",
-                                  id: messageList.length + 2,
-                                  message: "",
-                                  date: new Date(),
-                                },
-                              ];
-                              setMessageList([
-                                ...messageList,
-                                {
-                                  user: "me",
-                                  id: messageList.length + 1,
-                                  message: message,
-                                  image:
-                                    imported.length > 0 ? imgPreview : null,
-                                  date: new Date(),
-                                },
-                                {
-                                  user: "bot",
-                                  id: messageList.length + 2,
-                                  message: "",
-                                  date: new Date(),
-                                },
-                              ]);
+                              ],
+                              role: "user",
+                            });
 
-                              setMessage("");
-                              setImported("");
-                              e.preventDefault();
-                              let botMessage = "";
-                              if (imported.length > 0) {
-                                botMessage = await assistUserResponseImg(
-                                  imported,
-                                  message,
-                                );
-                              } else {
-                                botMessage = await assistUserResponse(
-                                  [],
-                                  message,
-                                );
-                              }
+                            setMessage("");
+                            setImported("");
+                            e.preventDefault();
+                            let botMessage = "";
+                            if (imported.length > 0) {
+                              botMessage = await assistUserResponseImg(
+                                imported,
+                                message,
+                              );
+                            } else {
+                              botMessage = await assistUserResponse(
+                                oldHist,
+                                message,
+                              );
 
-                              if (botMessage.length > 0) {
-                                let objIndex = oldMessages.findIndex(
-                                  (obj) =>
-                                    obj.message == "" && obj.user !== "me",
-                                );
-                                console.log(objIndex);
-                                oldMessages[objIndex].message = botMessage;
-
-                                setMessageList(oldMessages);
-                              }
-                              setLoading(false);
+                              oldHist.push({
+                                parts: [
+                                  {
+                                    text: botMessage,
+                                  },
+                                ],
+                                role: "model",
+                              });
                             }
-                          }}
-                          placeholder={
-                            loading
-                              ? "Generating response..."
-                              : "What do you need help with?"
+
+                            if (botMessage.length > 0) {
+                              let objIndex = oldMessages.findIndex(
+                                (obj) => obj.message == "" && obj.user !== "me",
+                              );
+                              console.log(objIndex);
+                              oldMessages[objIndex].message = botMessage;
+
+                              setHistory(oldHist);
+                              setMessageList(oldMessages);
+                            }
+                            setLoading(false);
                           }
-                          disabled={loading}
-                        />
-                      </div>
-                    </>
-                  )}
+                        }}
+                        placeholder={
+                          loading
+                            ? "Generating response..."
+                            : currentMode === "assist"
+                            ? "What do you need help with?"
+                            : `Ask your ${currentClassTutoring[idx]} tutor anything`
+                        }
+                        disabled={loading}
+                      />
+                    </div>
+                  </>
                   <div style={{ marginLeft: "-7%" }}>
                     <label htmlFor="group_image">
                       <i
                         className="fa fa-plus-circle fa-2x"
                         style={{
+                          display: currentMode === "tutor" ? "none" : "",
                           color: theme.textColor,
                           cursor: "pointer",
                           top: showMath ? 20 : 10,
@@ -857,6 +949,7 @@ export default function Assist() {
                         position: "relative",
                         marginLeft: 10,
                         zIndex: 1,
+                        display: currentMode === "tutor" ? "none" : "",
                       }}
                       onClick={() => {
                         setOpenDropdown(!openDropdown);

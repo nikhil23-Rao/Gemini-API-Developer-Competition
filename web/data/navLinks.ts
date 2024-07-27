@@ -31,12 +31,12 @@ export const NavLinks = [
   },
   {
     name: "Sign Out",
-    link: "/home",
+    link: "/",
     icon: "fa fa-sign-out",
   },
   {
     name: "Bug Report",
-    link: "/home",
+    link: "/",
     icon: "fa fa-bug",
   },
 ];

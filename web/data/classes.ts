@@ -159,7 +159,7 @@ export const classes = [
   },
   {
     Subject: "Test Prep",
-    Regular: ["ACT", "SAT"],
+    Regular: ["ACT", "Digital SAT", "Paper SAT"],
     Honors: [],
     AP: [],
   },

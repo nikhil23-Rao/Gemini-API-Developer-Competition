@@ -37,6 +37,7 @@ interface TabProps {
   t: string;
   idx: number;
   props?: ExtendButtonBase<TabTypeMap<{}, "div">>;
+  color?: string;
 }
 
 // export const handleChange = (
@@ -47,6 +48,14 @@ interface TabProps {
 //   console.log(newValue);
 // };
 
-export default function ComponentTab({ t, idx, ...props }: TabProps) {
-  return <Tab label={t} {...a11yProps(idx)} value={t} {...props} />;
+export default function ComponentTab({ t, idx, color, ...props }: TabProps) {
+  return (
+    <Tab
+      label={t}
+      {...a11yProps(idx)}
+      style={{ color: color ? color : "" }}
+      value={t}
+      {...props}
+    />
+  );
 }
