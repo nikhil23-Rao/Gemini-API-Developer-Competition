@@ -228,18 +228,15 @@ export const generateFlashcardsBasedOnImage = async (
 export const assistUser = async (req: Request, res: Response) => {
   try {
     const { message, old } = req.body;
-    let history: [{ role: string; parts: [{ text: string }] }] = old;
 
     // Restore the previous context
 
     const chat = fastModel.startChat({
-      history,
+      history: old,
       safetySettings,
     });
 
-    const result = await chat.sendMessageStream([
-      `You are a chatbot assisting a student with solving worksheet problems; If the query you are about to recieve is not related to solving questions for an educational class, please do not answer; Here is what you are to answer:${message}; RETURN YOUR ANSWER IN MARKDOWN AND PROVIDE STEP BY STEP EXPLANATIONS. `,
-    ]);
+    const result = await chat.sendMessageStream(message);
 
     let data = "";
     for await (const chunk of result.stream) {
@@ -520,6 +517,48 @@ export const marketPlaceSearch = async (req: Request, res: Response) => {
   }
 };
 
+export const tutor = async (req: Request, res: Response) => {
+  try {
+    const { chosenClass, message } = req.body;
+
+    // Restore the previous context
+
+    const chat = search.startChat({
+      history: [
+        {
+          parts: [
+            {
+              text: ``,
+            },
+          ],
+          role: "user",
+        },
+      ],
+      generationConfig: {
+        // responseMimeType: "application/json",
+        // temperature: 1,
+        // topP: 0.95,
+      },
+    });
+
+    const result = await chat.sendMessageStream(message);
+
+    let data = "";
+    for await (const chunk of result.stream) {
+      console.log(chunk.text());
+      data = data.concat(chunk.text()); // also prints "42"
+      console.log("DATA", data);
+    }
+    // Stores the conversation
+    res.send({
+      response: data,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 app.post("/flashcards", async (req: Request, res: Response) => {
   await generateFlashcards(req, res);
 });
@@ -577,6 +616,10 @@ app.post("/assist", async (req: Request, res: Response) => {
 
 app.post("/assistimg", async (req: Request, res: Response) => {
   await assistUserImg(req, res);
+});
+
+app.post("/tutor", async (req: Request, res: Response) => {
+  await tutor(req, res);
 });
 
 app.listen(port, () => {
