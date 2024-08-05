@@ -42,7 +42,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.marketPlaceSearch = exports.generateFRQFromImage = exports.generateMCQFromImage = exports.generateFRQFromPrompt = exports.generateMCQFromPrompt = exports.validationBasedOnPrompt = exports.generateFlashcardsBasedOnPrompt = exports.assistUserImg = exports.assistUser = exports.generateFlashcardsBasedOnImage = exports.generateUnit = exports.getQuote = exports.generateFlashcards = void 0;
+exports.tutor = exports.marketPlaceSearch = exports.generateFRQFromImage = exports.generateMCQFromImage = exports.generateFRQFromPrompt = exports.generateMCQFromPrompt = exports.validationBasedOnPrompt = exports.generateFlashcardsBasedOnPrompt = exports.assistUserImg = exports.assistUser = exports.generateFlashcardsBasedOnImage = exports.generateUnit = exports.getQuote = exports.generateFlashcards = void 0;
 const express_1 = __importDefault(require("express"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const dotenv_1 = __importDefault(require("dotenv"));
@@ -96,7 +96,7 @@ function getFirstPage(query) {
 // })();
 dotenv_1.default.config();
 const app = (0, express_1.default)();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8080;
 app.use(body_parser_1.default.json({ limit: "50mb" }));
 app.use(body_parser_1.default.urlencoded({ limit: "50mb", extended: true }));
 app.use(body_parser_1.default.json());
@@ -264,15 +264,12 @@ const assistUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     var _a, e_3, _b, _c;
     try {
         const { message, old } = req.body;
-        let history = old;
         // Restore the previous context
         const chat = fastModel.startChat({
-            history,
+            history: old,
             safetySettings,
         });
-        const result = yield chat.sendMessageStream([
-            `You are a chatbot assisting a student with solving worksheet problems; If the query you are about to recieve is not related to solving questions for an educational class, please do not answer; Here is what you are to answer:${message}; RETURN YOUR ANSWER IN MARKDOWN AND PROVIDE STEP BY STEP EXPLANATIONS. `,
-        ]);
+        const result = yield chat.sendMessageStream(message);
         let data = "";
         try {
             for (var _d = true, _e = __asyncValues(result.stream), _f; _f = yield _e.next(), _a = _f.done, !_a; _d = true) {
@@ -581,6 +578,58 @@ const marketPlaceSearch = (req, res) => __awaiter(void 0, void 0, void 0, functi
     }
 });
 exports.marketPlaceSearch = marketPlaceSearch;
+const tutor = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, e_9, _b, _c;
+    try {
+        const { chosenClass, message } = req.body;
+        // Restore the previous context
+        const chat = search.startChat({
+            history: [
+                {
+                    parts: [
+                        {
+                            text: ``,
+                        },
+                    ],
+                    role: "user",
+                },
+            ],
+            generationConfig: {
+            // responseMimeType: "application/json",
+            // temperature: 1,
+            // topP: 0.95,
+            },
+        });
+        const result = yield chat.sendMessageStream(message);
+        let data = "";
+        try {
+            for (var _d = true, _e = __asyncValues(result.stream), _f; _f = yield _e.next(), _a = _f.done, !_a; _d = true) {
+                _c = _f.value;
+                _d = false;
+                const chunk = _c;
+                console.log(chunk.text());
+                data = data.concat(chunk.text()); // also prints "42"
+                console.log("DATA", data);
+            }
+        }
+        catch (e_9_1) { e_9 = { error: e_9_1 }; }
+        finally {
+            try {
+                if (!_d && !_a && (_b = _e.return)) yield _b.call(_e);
+            }
+            finally { if (e_9) throw e_9.error; }
+        }
+        // Stores the conversation
+        res.send({
+            response: data,
+        });
+    }
+    catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
+exports.tutor = tutor;
 app.post("/flashcards", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, exports.generateFlashcards)(req, res);
 }));
@@ -624,6 +673,9 @@ app.post("/assist", (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 }));
 app.post("/assistimg", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, exports.assistUserImg)(req, res);
+}));
+app.post("/tutor", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    yield (0, exports.tutor)(req, res);
 }));
 app.listen(port, () => {
     console.log(`[server]: Server is running at http://localhost:${port}`);
