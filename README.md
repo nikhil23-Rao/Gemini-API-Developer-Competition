@@ -1,1 +1,3 @@
-#hello cuh
+# Gemini API Developer Contest
+
+descrip
