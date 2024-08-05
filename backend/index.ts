@@ -362,7 +362,7 @@ export const generateMCQFromPrompt = async (req: Request, res: Response) => {
     });
 
     const result = await chat.sendMessageStream([
-      `Create a ${length} question MCQ set of ${style} questions on ${topic} for ${chosenClass};  IF THERE IS ANY EXTERNAL PASSAGES OR EXCERPTS NEEDED GENERATE THEM (DO NOT MAKE THEM HEADERS); IF ANY TABLES ARE NEEDED GENERATE THEM WITH MARKDOWN; DO NOT BASE THE QUESTION AROUND ANY IMAGES. Return answer in markdown format; SEPERATE ALL ANSWER OPTIONS WITH <br> AND FOR EACH QUESTION INCLUDE header BEFORE THE QUESTION SUCH AS: # Question 1; # Question 2; etc. for however many questions there are; AT THE VERY BOTTOM: provide an answer explanation header (using ##), and under it, fill it in for each choice in this format: Option A is the correct answer because...; IF CHOICE IS WRONG SAY: Option A is the wrong answer because...(Use the real corect/wrong answers)`,
+      `Create a ${length} question MCQ set of ${style} questions on ${topic} for ${chosenClass};  IF THERE IS ANY EXTERNAL PASSAGES OR EXCERPTS NEEDED GENERATE THEM (DO NOT MAKE THEM HEADERS); IF ANY TABLES ARE NEEDED GENERATE THEM WITH MARKDOWN; DO NOT BASE THE QUESTION AROUND ANY IMAGES. Return answer in markdown format; SEPERATE ALL ANSWER OPTIONS WITH <br> AND FOR EACH QUESTION INCLUDE header BEFORE THE QUESTION SUCH AS: # Question 1; # Question 2; etc. for however many questions there are;`,
     ]);
 
     let data = "";
@@ -394,7 +394,7 @@ export const generateFRQFromPrompt = async (req: Request, res: Response) => {
     });
 
     const result = await chat.sendMessageStream([
-      `Create a ${length} question FRQ set of questions similar to the "concepts/question related to: ${topic}" for ${chosenClass}; IF THERE IS ANY EXTERNAL PASSAGES OR EXCERPTS NEEDED GENERATE THEM; DO NOT BASE THE QUESTION AROUND ANY IMAGES. Return answer in markdown format; SEPERATE ALL ANSWER OPTIONS WITH <br> FOR EACH QUESTION INCLUDE header BEFORE THE QUESTION SUCH AS: #Question 1; #Question 2; etc. for however many questions there are; AT THE VERY BOTTOM: provide an answer explanation header (using ##), and under it, fill in the correct answer for each frq part`,
+      `Create a ${length} question FRQ set of questions similar to the "concepts/question related to: ${topic}" for ${chosenClass}; IF THERE IS ANY EXTERNAL PASSAGES OR EXCERPTS NEEDED GENERATE THEM; DO NOT BASE THE QUESTION AROUND ANY IMAGES. Return answer in markdown format; SEPERATE ALL ANSWER OPTIONS WITH <br> FOR EACH QUESTION INCLUDE header BEFORE THE QUESTION SUCH AS: #Question 1; #Question 2; etc. for however many questions there are;  `,
     ]);
 
     let data = "";
@@ -426,7 +426,7 @@ export const generateMCQFromImage = async (req: Request, res: Response) => {
     });
 
     const result = await chat.sendMessageStream([
-      `Create a ${length} question MCQ set of ${style} questions similar to the question in the image for ${chosenClass};  IF THERE IS ANY EXTERNAL PASSAGES OR EXCERPTS NEEDED GENERATE THEM (DO NOT MAKE THEM HEADERS); IF ANY TABLES ARE NEEDED GENERATE THEM WITH MARKDOWN; DO NOT BASE THE QUESTION AROUND ANY IMAGES. Return answer in markdown format; SEPERATE ALL ANSWER OPTIONS WITH <br> AND FOR EACH QUESTION INCLUDE header BEFORE THE QUESTION SUCH AS: # Question 1; # Question 2; etc. for however many questions there are; AT THE VERY BOTTOM: provide an answer explanation header (using ##), and under it, fill it in for each choice in this format: Option A is the correct answer because...; IF CHOICE IS WRONG SAY: Option A is the wrong answer because...(Use the real corect/wrong answers)`,
+      `Create a ${length} question MCQ set of ${style} questions similar to the question in the image for ${chosenClass};  IF THERE IS ANY EXTERNAL PASSAGES OR EXCERPTS NEEDED GENERATE THEM (DO NOT MAKE THEM HEADERS); IF ANY TABLES ARE NEEDED GENERATE THEM WITH MARKDOWN; DO NOT BASE THE QUESTION AROUND ANY IMAGES. Return answer in markdown format; SEPERATE ALL ANSWER OPTIONS WITH <br> AND FOR EACH QUESTION INCLUDE header BEFORE THE QUESTION SUCH AS: # Question 1; # Question 2; etc. for however many questions there are;`,
       { inlineData: { data: image, mimeType: "image/png" } },
     ]);
 
@@ -459,7 +459,7 @@ export const generateFRQFromImage = async (req: Request, res: Response) => {
     });
 
     const result = await chat.sendMessageStream([
-      `Create a ${length} question FRQ set of questions similar to the "concepts/question tested in the image" for ${chosenClass}; IF THERE IS ANY EXTERNAL PASSAGES OR EXCERPTS NEEDED GENERATE THEM; DO NOT BASE THE QUESTION AROUND ANY IMAGES. Return answer in markdown format; SEPERATE ALL ANSWER OPTIONS WITH <br> FOR EACH QUESTION INCLUDE header BEFORE THE QUESTION SUCH AS: #Question 1; #Question 2; etc. for however many questions there are; AT THE VERY BOTTOM: provide an answer explanation header (using ##), and under it, fill in the correct answer for each frq part`,
+      `Create a ${length} question FRQ set of questions similar to the "concepts/question tested in the image" for ${chosenClass}; IF THERE IS ANY EXTERNAL PASSAGES OR EXCERPTS NEEDED GENERATE THEM; DO NOT BASE THE QUESTION AROUND ANY IMAGES. Return answer in markdown format; SEPERATE ALL ANSWER OPTIONS WITH <br> FOR EACH QUESTION INCLUDE header BEFORE THE QUESTION SUCH AS: #Question 1; #Question 2; etc. for however many questions there are;  `,
       { inlineData: { data: image, mimeType: "image/png" } },
     ]);
 
@@ -519,39 +519,29 @@ export const marketPlaceSearch = async (req: Request, res: Response) => {
 
 export const tutor = async (req: Request, res: Response) => {
   try {
-    const { chosenClass, message } = req.body;
+    const { query } = req.body;
 
     // Restore the previous context
 
-    const chat = search.startChat({
-      history: [
-        {
-          parts: [
-            {
-              text: ``,
-            },
-          ],
-          role: "user",
-        },
-      ],
+    const chat = fastModel.startChat({
+      history: [],
       generationConfig: {
-        // responseMimeType: "application/json",
+        responseMimeType: "application/json",
         // temperature: 1,
         // topP: 0.95,
       },
     });
 
-    const result = await chat.sendMessageStream(message);
+    const { response } = await chat.sendMessage(
+      `Generate an answer key for the following problem set: ${query}; EXPLAIN WHY THE CORRECT ANSWER IS CORRECT; IF THE ANSWER IS A FREE RESPONSE QUESTION WITH NO ANSWER CHOICES, return your response in JSON FORMAT like so: [{questionNumber:"", explanation:""}]; IF THE ANSWER IS A MULTIPLE CHOICE QUESTION, RETURN YOUR ANSWER IN JSON FORMAT LIKE SO: [{questionNumber:"", explanation:"", correctAnswerChoice:""}]; DO NOT USE MARKDOWN, AND TAKE YOUR TIME TO ENSURE THE JSON IS PARSABLE`
+    );
+    const responseText = response;
 
-    let data = "";
-    for await (const chunk of result.stream) {
-      console.log(chunk.text());
-      data = data.concat(chunk.text()); // also prints "42"
-      console.log("DATA", data);
-    }
     // Stores the conversation
     res.send({
-      response: data,
+      response: JSON.parse(
+        (responseText as any).candidates[0].content.parts[0].text as any
+      ),
     });
   } catch (err) {
     console.error(err);
@@ -618,7 +608,7 @@ app.post("/assistimg", async (req: Request, res: Response) => {
   await assistUserImg(req, res);
 });
 
-app.post("/tutor", async (req: Request, res: Response) => {
+app.post("/answerkey", async (req: Request, res: Response) => {
   await tutor(req, res);
 });
 
@@ -627,3 +617,5 @@ app.listen(port, () => {
 });
 
 module.exports = app;
+
+export const maxDuration = 300;

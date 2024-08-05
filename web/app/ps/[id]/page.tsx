@@ -53,6 +53,7 @@ import { getTheme } from "@/utils/getTheme";
 import { getColor } from "@/utils/getColor";
 import Modal from "react-responsive-modal";
 import { assistUserResponse } from "@/serversideapi/assistUserResponse";
+import { getAnswerKey } from "@/serversideapi/getAnswerKey";
 
 export default function ProblemSetViewer({
   params,
@@ -79,6 +80,10 @@ export default function ProblemSetViewer({
   const [showAIContent, setShowAIContent] = useState("");
   const [aiLoading, setAILoading] = useState(false);
   const [pagination, setPagination] = useState([4]);
+  const [answerKey, setAnswerKey] = useState<any[]>([]);
+  const [chosenAnswers, setChosenAnswers] = useState([]);
+  const [showCheck, setShowCheck] = useState(false);
+  const [totalScore, setTotalScore] = useState(0);
 
   useEffect(() => {
     setUser(setCurrentUser);
@@ -87,6 +92,18 @@ export default function ProblemSetViewer({
   useEffect(() => {
     getTheme(setTheme, setColor);
   }, [typeof localStorage]);
+
+  useEffect(() => {
+    if (showCheck && answerKey) {
+      for (const el of chosenAnswers as any) {
+        for (const k of answerKey) {
+          if (el.choice === k.correctAnswerChoice) {
+            setTotalScore(totalScore + 1);
+          }
+        }
+      }
+    }
+  }, [answerKey, showCheck]);
 
   useEffect(() => {
     if (showQuiz) {
@@ -224,8 +241,34 @@ export default function ProblemSetViewer({
   }, [params.id]);
 
   useEffect(() => {
+    if (
+      ps &&
+      JSON.parse(JSON.stringify(ps.markdown)).response &&
+      answerKey.length === 0
+    ) {
+      getAnswerKey(JSON.parse(JSON.stringify(ps.markdown)).response)
+        .then((res) => {
+          setAnswerKey(res);
+        })
+        .catch((err) => {
+          alert(
+            "ERROR: retrieving answer key; Please report this as a bug if seen again; FOR NOW TRY REFRESHING",
+          );
+        });
+    }
+  }, [typeof ps]);
+
+  useEffect(() => {
+    console.log("ANS", answerKey);
+  }, [answerKey]);
+
+  useEffect(() => {
     console.log(currentUser);
   }, [currentUser]);
+
+  useEffect(() => {
+    console.log("CHOSEN", chosenAnswers);
+  }, [chosenAnswers]);
 
   if (showQuiz) {
     if (ps.type === "FRQ") {
@@ -331,16 +374,7 @@ export default function ProblemSetViewer({
                 />
                 <MarkdownPreview
                   className={`markdowneditor ${theme.className}`}
-                  source={`${
-                    !showAnsKey
-                      ? JSON.parse(JSON.stringify(ps.markdown)).response.slice(
-                          0,
-                          JSON.parse(
-                            JSON.stringify(ps.markdown),
-                          ).response.indexOf("## Answer Explanation"),
-                        )
-                      : JSON.parse(JSON.stringify(ps.markdown)).response
-                  }`}
+                  source={`${JSON.parse(JSON.stringify(ps.markdown)).response}`}
                   style={{
                     padding: 16,
                     width: "100%",
@@ -394,6 +428,38 @@ export default function ProblemSetViewer({
                     },
                   }}
                 />
+                {showAnsKey ? (
+                  <>
+                    <h1
+                      style={{
+                        color: theme.textColor,
+                        fontSize: 24,
+                        marginBottom: 20,
+                        marginTop: 40,
+                      }}
+                    >
+                      Answer Explanations
+                    </h1>
+                    <hr />
+
+                    {answerKey.map((a) => (
+                      <>
+                        <h1 style={{ color: theme.textColor, marginTop: 20 }}>
+                          Question {a.questionNumber}:
+                        </h1>
+                        <p
+                          style={{
+                            fontStyle: "italic",
+                            color: "gray",
+                            marginBottom: 40,
+                          }}
+                        >
+                          {a.explanation}
+                        </p>
+                      </>
+                    ))}
+                  </>
+                ) : null}
               </div>
             </div>
           </NewModal>
@@ -496,7 +562,12 @@ export default function ProblemSetViewer({
                   >
                     Answer Sheet (NOT ALL MAY BE USED)
                   </p>
-                  {numQuestions.map((q) => (
+                  {showCheck && (
+                    <h1 style={{ color: theme.textColor, fontSize: 14 }}>
+                      Score: {totalScore} / {numQuestions.length}
+                    </h1>
+                  )}
+                  {numQuestions.map((q, index) => (
                     <FormControl style={{ marginTop: 20 }}>
                       <FormLabel
                         id="demo-radio-buttons-group-label"
@@ -511,25 +582,90 @@ export default function ProblemSetViewer({
                         name="radio-buttons-group"
                         style={{ marginTop: 20 }}
                       >
-                        {[
-                          "Option A",
-                          "Option B",
-                          "Option C",
-                          "Option D",
-                          "Option E",
-                        ].map((o) => (
-                          <FormControlLabel
-                            value={o}
-                            control={<Radio />}
-                            label={o}
-                            style={{
-                              border: "2px solid #eee",
-                              borderRadius: 100,
-                              marginBottom: 20,
-                              backgroundColor: "#fff",
-                            }}
-                          />
-                        ))}
+                        {showCheck
+                          ? chosenAnswers.map((a: any) => (
+                              <>
+                                {answerKey.map((k) => {
+                                  if (
+                                    k.correctAnswerChoice === a.choice &&
+                                    parseInt(k.questionNumber) - 1 === index &&
+                                    a.questionNumber === index
+                                  ) {
+                                    return (
+                                      <>
+                                        <h1 style={{ color: "lightgreen" }}>
+                                          Correct! Answer choice {a.choice} is
+                                          correct. Here's why:
+                                        </h1>
+                                        <p style={{ color: "lightgreen" }}>
+                                          {k.explanation}
+                                        </p>
+                                      </>
+                                    );
+                                  } else if (
+                                    k.correctAnswerChoice !== a.choice &&
+                                    parseInt(k.questionNumber) - 1 === index &&
+                                    a.questionNumber === index
+                                  ) {
+                                    return (
+                                      <>
+                                        <h1 style={{ color: "red" }}>
+                                          Not quite. You chose answer choice{" "}
+                                          {a.choice}. The real answer is answer
+                                          choice {k.correctAnswerChoice} Here's
+                                          why:
+                                        </h1>
+                                        <p style={{ color: "red" }}>
+                                          {k.explanation}
+                                        </p>
+                                      </>
+                                    );
+                                  }
+                                })}
+                              </>
+                            ))
+                          : [
+                              "Option A",
+                              "Option B",
+                              "Option C",
+                              "Option D",
+                              "Option E",
+                            ].map((o, idx) => (
+                              <FormControlLabel
+                                value={o}
+                                control={
+                                  <Radio
+                                    onChange={(e) => {
+                                      let oldAnswers: any = [...chosenAnswers];
+                                      for (const el of oldAnswers) {
+                                        if (el.questionNumber === index) {
+                                          oldAnswers = oldAnswers.filter(
+                                            (a) => a.questionNumber !== index,
+                                          );
+                                        }
+                                      }
+                                      oldAnswers.push({
+                                        questionNumber: index,
+                                        choice: e.currentTarget.value.slice(7),
+                                      } as never);
+                                      setChosenAnswers(
+                                        oldAnswers.sort(
+                                          (a, b) =>
+                                            a.questionNumber - b.questionNumber,
+                                        ),
+                                      );
+                                    }}
+                                  />
+                                }
+                                label={o}
+                                style={{
+                                  border: "2px solid #eee",
+                                  borderRadius: 100,
+                                  marginBottom: 20,
+                                  backgroundColor: "#fff",
+                                }}
+                              />
+                            ))}
                       </RadioGroup>
                     </FormControl>
                   ))}
@@ -539,13 +675,15 @@ export default function ProblemSetViewer({
                     style={{
                       marginTop: 20,
                       marginBottom: 40,
-                      borderRadius: 100,
+                      width: "50%",
+                      alignSelf: "center",
                     }}
                     onClick={async () => {
                       setShowAnsKey(true);
+                      setShowCheck(true);
                     }}
                   >
-                    See Answers
+                    Check Answers
                   </Button>
                 </div>
               </div>
@@ -590,17 +728,8 @@ export default function ProblemSetViewer({
                   <MarkdownPreview
                     className={`markdowneditor ${theme.className} `}
                     source={`${
-                      !showAnsKey
-                        ? JSON.parse(
-                            JSON.stringify(ps.markdown),
-                          ).response.slice(
-                            0,
-                            JSON.parse(
-                              JSON.stringify(ps.markdown),
-                            ).response.indexOf("## Answer Explanation"),
-                          )
-                        : JSON.parse(JSON.stringify(ps.markdown)).response
-                    }`}
+                      JSON.parse(JSON.stringify(ps.markdown)).response
+                    } `}
                     style={{
                       padding: 16,
                       width: "100%",
@@ -654,6 +783,38 @@ export default function ProblemSetViewer({
                       },
                     }}
                   />
+                  {showAnsKey ? (
+                    <>
+                      <h1
+                        style={{
+                          color: theme.textColor,
+                          fontSize: 24,
+                          marginBottom: 20,
+                          marginTop: 40,
+                        }}
+                      >
+                        Answer Explanations
+                      </h1>
+                      <hr />
+                      {answerKey.map((a) => (
+                        <>
+                          <h1 style={{ color: theme.textColor, marginTop: 20 }}>
+                            Question {a.questionNumber}: The correct answer is
+                            choice {a.correctAnswerChoice}
+                          </h1>
+                          <p
+                            style={{
+                              fontStyle: "italic",
+                              color: "gray",
+                              marginBottom: 40,
+                            }}
+                          >
+                            {a.explanation}
+                          </p>
+                        </>
+                      ))}
+                    </>
+                  ) : null}
                   <div
                     style={{
                       width: "100%",

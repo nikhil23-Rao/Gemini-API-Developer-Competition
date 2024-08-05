@@ -36,7 +36,7 @@ export const NavLinks = [
   },
   {
     name: "Bug Report",
-    link: "/",
+    link: "",
     icon: "fa fa-bug",
   },
 ];

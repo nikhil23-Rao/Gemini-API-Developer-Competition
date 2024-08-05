@@ -42,7 +42,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.tutor = exports.marketPlaceSearch = exports.generateFRQFromImage = exports.generateMCQFromImage = exports.generateFRQFromPrompt = exports.generateMCQFromPrompt = exports.validationBasedOnPrompt = exports.generateFlashcardsBasedOnPrompt = exports.assistUserImg = exports.assistUser = exports.generateFlashcardsBasedOnImage = exports.generateUnit = exports.getQuote = exports.generateFlashcards = void 0;
+exports.maxDuration = exports.tutor = exports.marketPlaceSearch = exports.generateFRQFromImage = exports.generateMCQFromImage = exports.generateFRQFromPrompt = exports.generateMCQFromPrompt = exports.validationBasedOnPrompt = exports.generateFlashcardsBasedOnPrompt = exports.assistUserImg = exports.assistUser = exports.generateFlashcardsBasedOnImage = exports.generateUnit = exports.getQuote = exports.generateFlashcards = void 0;
 const express_1 = __importDefault(require("express"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const dotenv_1 = __importDefault(require("dotenv"));
@@ -398,7 +398,7 @@ const generateMCQFromPrompt = (req, res) => __awaiter(void 0, void 0, void 0, fu
             safetySettings,
         });
         const result = yield chat.sendMessageStream([
-            `Create a ${length} question MCQ set of ${style} questions on ${topic} for ${chosenClass};  IF THERE IS ANY EXTERNAL PASSAGES OR EXCERPTS NEEDED GENERATE THEM (DO NOT MAKE THEM HEADERS); IF ANY TABLES ARE NEEDED GENERATE THEM WITH MARKDOWN; DO NOT BASE THE QUESTION AROUND ANY IMAGES. Return answer in markdown format; SEPERATE ALL ANSWER OPTIONS WITH <br> AND FOR EACH QUESTION INCLUDE header BEFORE THE QUESTION SUCH AS: # Question 1; # Question 2; etc. for however many questions there are; AT THE VERY BOTTOM: provide an answer explanation header (using ##), and under it, fill it in for each choice in this format: Option A is the correct answer because...; IF CHOICE IS WRONG SAY: Option A is the wrong answer because...(Use the real corect/wrong answers)`,
+            `Create a ${length} question MCQ set of ${style} questions on ${topic} for ${chosenClass};  IF THERE IS ANY EXTERNAL PASSAGES OR EXCERPTS NEEDED GENERATE THEM (DO NOT MAKE THEM HEADERS); IF ANY TABLES ARE NEEDED GENERATE THEM WITH MARKDOWN; DO NOT BASE THE QUESTION AROUND ANY IMAGES. Return answer in markdown format; SEPERATE ALL ANSWER OPTIONS WITH <br> AND FOR EACH QUESTION INCLUDE header BEFORE THE QUESTION SUCH AS: # Question 1; # Question 2; etc. for however many questions there are;`,
         ]);
         let data = "";
         try {
@@ -438,7 +438,7 @@ const generateFRQFromPrompt = (req, res) => __awaiter(void 0, void 0, void 0, fu
             safetySettings,
         });
         const result = yield chat.sendMessageStream([
-            `Create a ${length} question FRQ set of questions similar to the "concepts/question related to: ${topic}" for ${chosenClass}; IF THERE IS ANY EXTERNAL PASSAGES OR EXCERPTS NEEDED GENERATE THEM; DO NOT BASE THE QUESTION AROUND ANY IMAGES. Return answer in markdown format; SEPERATE ALL ANSWER OPTIONS WITH <br> FOR EACH QUESTION INCLUDE header BEFORE THE QUESTION SUCH AS: #Question 1; #Question 2; etc. for however many questions there are; AT THE VERY BOTTOM: provide an answer explanation header (using ##), and under it, fill in the correct answer for each frq part`,
+            `Create a ${length} question FRQ set of questions similar to the "concepts/question related to: ${topic}" for ${chosenClass}; IF THERE IS ANY EXTERNAL PASSAGES OR EXCERPTS NEEDED GENERATE THEM; DO NOT BASE THE QUESTION AROUND ANY IMAGES. Return answer in markdown format; SEPERATE ALL ANSWER OPTIONS WITH <br> FOR EACH QUESTION INCLUDE header BEFORE THE QUESTION SUCH AS: #Question 1; #Question 2; etc. for however many questions there are;  `,
         ]);
         let data = "";
         try {
@@ -478,7 +478,7 @@ const generateMCQFromImage = (req, res) => __awaiter(void 0, void 0, void 0, fun
             safetySettings,
         });
         const result = yield chat.sendMessageStream([
-            `Create a ${length} question MCQ set of ${style} questions similar to the question in the image for ${chosenClass};  IF THERE IS ANY EXTERNAL PASSAGES OR EXCERPTS NEEDED GENERATE THEM (DO NOT MAKE THEM HEADERS); IF ANY TABLES ARE NEEDED GENERATE THEM WITH MARKDOWN; DO NOT BASE THE QUESTION AROUND ANY IMAGES. Return answer in markdown format; SEPERATE ALL ANSWER OPTIONS WITH <br> AND FOR EACH QUESTION INCLUDE header BEFORE THE QUESTION SUCH AS: # Question 1; # Question 2; etc. for however many questions there are; AT THE VERY BOTTOM: provide an answer explanation header (using ##), and under it, fill it in for each choice in this format: Option A is the correct answer because...; IF CHOICE IS WRONG SAY: Option A is the wrong answer because...(Use the real corect/wrong answers)`,
+            `Create a ${length} question MCQ set of ${style} questions similar to the question in the image for ${chosenClass};  IF THERE IS ANY EXTERNAL PASSAGES OR EXCERPTS NEEDED GENERATE THEM (DO NOT MAKE THEM HEADERS); IF ANY TABLES ARE NEEDED GENERATE THEM WITH MARKDOWN; DO NOT BASE THE QUESTION AROUND ANY IMAGES. Return answer in markdown format; SEPERATE ALL ANSWER OPTIONS WITH <br> AND FOR EACH QUESTION INCLUDE header BEFORE THE QUESTION SUCH AS: # Question 1; # Question 2; etc. for however many questions there are;`,
             { inlineData: { data: image, mimeType: "image/png" } },
         ]);
         let data = "";
@@ -519,7 +519,7 @@ const generateFRQFromImage = (req, res) => __awaiter(void 0, void 0, void 0, fun
             safetySettings,
         });
         const result = yield chat.sendMessageStream([
-            `Create a ${length} question FRQ set of questions similar to the "concepts/question tested in the image" for ${chosenClass}; IF THERE IS ANY EXTERNAL PASSAGES OR EXCERPTS NEEDED GENERATE THEM; DO NOT BASE THE QUESTION AROUND ANY IMAGES. Return answer in markdown format; SEPERATE ALL ANSWER OPTIONS WITH <br> FOR EACH QUESTION INCLUDE header BEFORE THE QUESTION SUCH AS: #Question 1; #Question 2; etc. for however many questions there are; AT THE VERY BOTTOM: provide an answer explanation header (using ##), and under it, fill in the correct answer for each frq part`,
+            `Create a ${length} question FRQ set of questions similar to the "concepts/question tested in the image" for ${chosenClass}; IF THERE IS ANY EXTERNAL PASSAGES OR EXCERPTS NEEDED GENERATE THEM; DO NOT BASE THE QUESTION AROUND ANY IMAGES. Return answer in markdown format; SEPERATE ALL ANSWER OPTIONS WITH <br> FOR EACH QUESTION INCLUDE header BEFORE THE QUESTION SUCH AS: #Question 1; #Question 2; etc. for however many questions there are;  `,
             { inlineData: { data: image, mimeType: "image/png" } },
         ]);
         let data = "";
@@ -579,49 +579,22 @@ const marketPlaceSearch = (req, res) => __awaiter(void 0, void 0, void 0, functi
 });
 exports.marketPlaceSearch = marketPlaceSearch;
 const tutor = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, e_9, _b, _c;
     try {
-        const { chosenClass, message } = req.body;
+        const { query } = req.body;
         // Restore the previous context
-        const chat = search.startChat({
-            history: [
-                {
-                    parts: [
-                        {
-                            text: ``,
-                        },
-                    ],
-                    role: "user",
-                },
-            ],
+        const chat = fastModel.startChat({
+            history: [],
             generationConfig: {
-            // responseMimeType: "application/json",
-            // temperature: 1,
-            // topP: 0.95,
+                responseMimeType: "application/json",
+                // temperature: 1,
+                // topP: 0.95,
             },
         });
-        const result = yield chat.sendMessageStream(message);
-        let data = "";
-        try {
-            for (var _d = true, _e = __asyncValues(result.stream), _f; _f = yield _e.next(), _a = _f.done, !_a; _d = true) {
-                _c = _f.value;
-                _d = false;
-                const chunk = _c;
-                console.log(chunk.text());
-                data = data.concat(chunk.text()); // also prints "42"
-                console.log("DATA", data);
-            }
-        }
-        catch (e_9_1) { e_9 = { error: e_9_1 }; }
-        finally {
-            try {
-                if (!_d && !_a && (_b = _e.return)) yield _b.call(_e);
-            }
-            finally { if (e_9) throw e_9.error; }
-        }
+        const { response } = yield chat.sendMessage(`Generate an answer key for the following problem set: ${query}; EXPLAIN WHY THE CORRECT ANSWER IS CORRECT; IF THE ANSWER IS A FREE RESPONSE QUESTION WITH NO ANSWER CHOICES, return your response in JSON FORMAT like so: [{questionNumber:"", explanation:""}]; IF THE ANSWER IS A MULTIPLE CHOICE QUESTION, RETURN YOUR ANSWER IN JSON FORMAT LIKE SO: [{questionNumber:"", explanation:"", correctAnswerChoice:""}]; DO NOT USE MARKDOWN, AND TAKE YOUR TIME TO ENSURE THE JSON IS PARSABLE`);
+        const responseText = response;
         // Stores the conversation
         res.send({
-            response: data,
+            response: JSON.parse(responseText.candidates[0].content.parts[0].text),
         });
     }
     catch (err) {
@@ -674,10 +647,11 @@ app.post("/assist", (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 app.post("/assistimg", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, exports.assistUserImg)(req, res);
 }));
-app.post("/tutor", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.post("/answerkey", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, exports.tutor)(req, res);
 }));
 app.listen(port, () => {
     console.log(`[server]: Server is running at http://localhost:${port}`);
 });
 module.exports = app;
+exports.maxDuration = 300;
