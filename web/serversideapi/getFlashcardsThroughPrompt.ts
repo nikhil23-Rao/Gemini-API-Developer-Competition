@@ -6,7 +6,7 @@ export const getFlashcardsThroughPrompt = async (
 ) => {
   console.log(prompt);
   const res = await axios.post(
-    process.env.NEXT_PUBLIC_API_URL + "flashcardPrompt",
+    process.env.NEXT_PUBLIC_API_URL + "flashcardPrompt/",
     { prompt, className },
     {
       headers: {

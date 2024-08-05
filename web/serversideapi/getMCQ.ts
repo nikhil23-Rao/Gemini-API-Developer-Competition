@@ -8,7 +8,7 @@ export const getMCQ = async (
 ) => {
   console.log(prompt);
   const res = await axios.post(
-    process.env.NEXT_PUBLIC_API_URL + "mcqprompt",
+    process.env.NEXT_PUBLIC_API_URL + "mcqprompt/",
     { length, style, chosenClass, topic },
     {
       headers: {

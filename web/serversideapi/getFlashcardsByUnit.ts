@@ -3,7 +3,7 @@ import axios from "axios";
 export const getFlashcardsByUnit = async (prompt: string) => {
   console.log(prompt);
   const res = await axios.post(
-    process.env.NEXT_PUBLIC_API_URL + "flashcards",
+    process.env.NEXT_PUBLIC_API_URL + "flashcards/",
     { prompt },
     {
       headers: {

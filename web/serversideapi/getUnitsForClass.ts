@@ -6,7 +6,7 @@ export const getUnitsForClass = async (
 ) => {
   console.log(ap);
   const res = await axios.post(
-    process.env.NEXT_PUBLIC_API_URL + "get-AP-unit",
+    process.env.NEXT_PUBLIC_API_URL + "get-AP-unit/",
     { ap },
     {
       headers: {

@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const getResourcesAPI = async (query) => {
   const res = await axios.post(
-    process.env.NEXT_PUBLIC_API_URL + "resourcefinder",
+    process.env.NEXT_PUBLIC_API_URL + "resourcefinder/",
     { query },
     {
       headers: {
