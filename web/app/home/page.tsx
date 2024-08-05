@@ -225,6 +225,12 @@ export default function Dashboard() {
     }
   }, [currentUser]);
 
+  useEffect(() => {
+    if (currentUser && !currentUser.selectedClasses) {
+      window.location.href = "/setup";
+    }
+  }, [typeof currentUser]);
+
   // useEffect(() => {
   //   if (apiCalendar)
   // }, [typeof apiCalendar]);
@@ -248,6 +254,10 @@ export default function Dashboard() {
     minutes = minutes < 10 ? "0" + minutes : minutes;
     var strTime = hours + ":" + minutes + " " + ampm;
     return strTime;
+  }
+
+  if (!currentUser?.selectedClasses) {
+    return <Splash></Splash>;
   }
 
   if (focusMode) {
@@ -571,6 +581,7 @@ export default function Dashboard() {
         </NewModal>
       </>
     );
+
   if (!theme) return <Splash></Splash>;
   return (
     <>

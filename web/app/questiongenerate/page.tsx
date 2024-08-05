@@ -193,7 +193,7 @@ export default function QuestionGenerator() {
               aria-controls="panel-content"
               expandIcon={<i className="fa fa-angle-down fa-2x"></i>}
             >
-              To View Generated Questions - Save Set
+              View Generated Questions
             </AccordionSummary>
             <AccordionDetails></AccordionDetails>
           </Accordion>
