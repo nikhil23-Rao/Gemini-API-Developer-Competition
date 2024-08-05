@@ -680,3 +680,4 @@ app.post("/tutor", (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 app.listen(port, () => {
     console.log(`[server]: Server is running at http://localhost:${port}`);
 });
+module.exports = app;
