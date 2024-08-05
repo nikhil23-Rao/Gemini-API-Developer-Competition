@@ -83,7 +83,7 @@ export default function ProblemSetViewer({
   const [answerKey, setAnswerKey] = useState<any[]>([]);
   const [chosenAnswers, setChosenAnswers] = useState([]);
   const [showCheck, setShowCheck] = useState(false);
-  const [totalScore, setTotalScore] = useState(0);
+  const [totalScore, setTotalScore] = useState<any>([]);
 
   useEffect(() => {
     setUser(setCurrentUser);
@@ -92,18 +92,6 @@ export default function ProblemSetViewer({
   useEffect(() => {
     getTheme(setTheme, setColor);
   }, [typeof localStorage]);
-
-  useEffect(() => {
-    if (showCheck && answerKey) {
-      for (const el of chosenAnswers as any) {
-        for (const k of answerKey) {
-          if (el.choice === k.correctAnswerChoice) {
-            setTotalScore(totalScore + 1);
-          }
-        }
-      }
-    }
-  }, [answerKey, showCheck]);
 
   useEffect(() => {
     if (showQuiz) {
@@ -562,11 +550,7 @@ export default function ProblemSetViewer({
                   >
                     Answer Sheet (NOT ALL MAY BE USED)
                   </p>
-                  {showCheck && (
-                    <h1 style={{ color: theme.textColor, fontSize: 14 }}>
-                      Score: {totalScore} / {numQuestions.length}
-                    </h1>
-                  )}
+
                   {numQuestions.map((q, index) => (
                     <FormControl style={{ marginTop: 20 }}>
                       <FormLabel
