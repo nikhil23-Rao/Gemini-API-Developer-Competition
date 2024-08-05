@@ -12,6 +12,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <meta
+          http-equiv={`Content-Security-Policy" content="default-src 'self'
+ data: gap: https://ssl.gstatic.com ${process.env.NEXT_PUBLIC_API_URL} 'unsafe-eval';
+ style-src 'self' unsafe-inline'; media-src *`}
+        />
+      </head>
       <body>{children}</body>
     </html>
   );

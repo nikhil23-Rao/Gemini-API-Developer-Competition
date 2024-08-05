@@ -5,6 +5,7 @@ export const getMarketplaceSearchResults = async (
   query: string,
 ) => {
   console.log(prompt);
+
   const res = await axios.post(
     process.env.NEXT_PUBLIC_API_URL + "marketplace/",
     { array, query },
