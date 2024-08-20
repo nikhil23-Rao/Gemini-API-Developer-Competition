@@ -27,9 +27,42 @@ export const logout = () => {
   });
 };
 
+export const getToken = () => {
+  googleProvider.addScope(
+    `https://www.googleapis.com/auth/classroom.courses.readonly`,
+  );
+  googleProvider.addScope(
+    `https://www.googleapis.com/auth/classroom.announcements.readonly`,
+  );
+  googleProvider.addScope(
+    `https://www.googleapis.com/auth/classroom.courseworkmaterials`,
+  );
+  googleProvider.addScope(
+    `https://www.googleapis.com/auth/classroom.push-notifications`,
+  );
+  googleProvider.addScope(
+    `https://www.googleapis.com/auth/classroom.rosters.readonly`,
+  );
+  googleProvider.addScope(
+    `https://www.googleapis.com/auth/classroom.student-submissions.me.readonly`,
+  );
+  googleProvider.addScope(
+    `https://www.googleapis.com/auth/classroom.topics.readonly`,
+  );
+
+  signInWithPopup(auth, googleProvider).then(async (result) => {
+    const credential = GoogleAuthProvider.credentialFromResult(result);
+    const token = credential?.accessToken;
+    console.log("TOKEN", token);
+  });
+};
+
 export const login = () => {
   signInWithPopup(auth, googleProvider)
     .then(async (result) => {
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      const token = credential?.accessToken;
+      console.log("TOKEN");
       const user = result.user;
       console.log(user);
 

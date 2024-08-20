@@ -187,16 +187,7 @@ export default function QuestionGenerator() {
             }}
             color={prompt.length > 0 ? "primary" : "error"}
           />
-          <Accordion style={{ width: "80%", marginTop: 40 }}>
-            <AccordionSummary
-              id="panel-header"
-              aria-controls="panel-content"
-              expandIcon={<i className="fa fa-angle-down fa-2x"></i>}
-            >
-              View Generated Questions
-            </AccordionSummary>
-            <AccordionDetails></AccordionDetails>
-          </Accordion>
+
           <div
             style={{
               marginTop: 40,

@@ -6,6 +6,7 @@ import auth from "./initAuth";
 export const setUser = (setCurrentUser: (input: any) => void) => {
   onAuthStateChanged(auth, async (user) => {
     if (user) {
+      console.log(await user.getIdToken());
       const querySnapshot = await getDocs(collection(db, "users"));
       querySnapshot.forEach((doc) => {
         if (doc.data().id === user.uid) {
